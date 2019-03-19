@@ -209,6 +209,19 @@ void main_task(intptr_t unused)
     waitForButton();
     //test();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     //Paul's Scheiße
     //arrays Nodes: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
 
@@ -219,34 +232,34 @@ void main_task(intptr_t unused)
     int green == 3;
     int yellow == 4;
 
-    int Fall;
-    //Fallunterscheidung
+    int fall1;
+    //fallunterscheidung
 
-    // Fall 1-4
-    if (Fall == 1 || Fall == 2 || Fall == 3)
+    // fall 1-4
+    if (fall1 == 1 || fall1 == 2 || fall1 == 3)
     {
         int currentPosition;
 
-        if (arrayW[1] == arrayO[1])
+        if (routerW[1] == routerO[1])
         {
             lineFollow(short);
             currentPosition = 1;
-            arrayW[1] = 3;
-            arrayO[1] = 3;
+            routerW[1] = 3;
+            routerO[1] = 3;
         }
-        else if (arrayW[2] == arrayO[2])
+        else if (routerW[2] == routerO[2])
         {
             lineFollow(long);
             currentPosition = 2;
-            arrayW[2] = 3;
-            arrayO[2] = 3;
+            routerW[2] = 3;
+            routerO[2] = 3;
         }
         else
         {
             move(back);
             currentPosition = 0;
-            arrayW[0] = 3;
-            arrayO[0] = 3;
+            routerW[0] = 3;
+            routerO[0] = 3;
         }
         turnLeft(back);
         lineFollow();
@@ -255,13 +268,13 @@ void main_task(intptr_t unused)
         lineFollow(); //bis node osten
         longMotor(up);
 
-        if (Fall == 1)
+        if (fall1 == 1)
         {
             move(back);
             if (currentPosition == 0)
             {
-                arrayO[0] = 2;
-                turnLeft(back) if (arrayO[1] == 0)
+                routerO[0] = 2;
+                turnLeft(back) if (routerO[1] == 0)
                 {
                     lineFollow(short);
                     currentPositon == 1;
@@ -275,8 +288,8 @@ void main_task(intptr_t unused)
             }
             else if (currentPosition == 1)
             {
-                arrayO[1] = 2;
-                if (arrayO[2] == 0)
+                routerO[1] = 2;
+                if (routerO[2] == 0)
                 {
                     turnLeft(back);
                     lineFollow();
@@ -293,9 +306,9 @@ void main_task(intptr_t unused)
             }
             else
             {
-                arrayO[2] = 2;
+                routerO[2] = 2;
                 turnRight(back);
-                if (arrayO[1] == 0)
+                if (routerO[1] == 0)
                 {
                     lineFollow(short);
                     currentPositon == 1;
@@ -329,8 +342,8 @@ void main_task(intptr_t unused)
         }
     }
     else
-    { //Fall4
-        if(arrayW[1]==1||(arrayW[0] == 1){
+    { //fall4
+        if(routerW[1]==1||(routerW[0] == 1){
             lineFollow(long); //um zu 2 zu gehen
         }else{
             lineFollow(short); //um zu 1 zu gehen
@@ -340,16 +353,16 @@ void main_task(intptr_t unused)
         longMotor(down); //um Node festzuhalten
         move(back);
         turn2(); //nach Links            
-        if(arrayW[1]==1){
+        if(routerW[1]==1){
             lineFollow(long); // um von 2 zu 0 zu gehen
-        }else{ // arrayW[2] == 0
+        }else{ // routerW[2] == 0
             lineFollow(short); // um von 1 zu 0 zu gehen oder von 2 zu 1
         }         
         turnRight(back);
         longMotor(down);
         lineFollow(); //bis Node eingesammelt ist
         longMotor(up);
-        if (arrayW[0] == 1){
+        if (routerW[0] == 1){
             turnLeft(180°);
             turnRight();
             lineFollow(bis Querlinie);
@@ -384,7 +397,7 @@ void main_task(intptr_t unused)
     lineFollow(bis Querlinie);
     move(mini);
 
-    if (Fall == 3)
+    if (fall1 == 3)
     {
         turn2(nach Rechts);
     }
@@ -398,7 +411,7 @@ void main_task(intptr_t unused)
     for (int i = 0; i < 2; i++)
     {
         int x; //Variable für Richtung der Drehungen
-        if ((Fall == 3 && i == 0) || ((Fall == 1 || Fall == 2 || Fall == 4) && i == 1))
+        if ((fall1 == 3 && i == 0) || ((fall1 == 1 || fall1 == 2 || fall1 == 4) && i == 1))
         {
             currentColor = 1;
             x = 1;
@@ -489,6 +502,37 @@ void main_task(intptr_t unused)
             }
         }
     }
+
+    lineFollow(bis kurz vor Ecke); // zum Kabel einsammeln
+    turnRight(45°); //evtl. 50/55
+    turnLeft(45°);  //evtl. 50/55
+    schwabellMotor(down);
+    lineFollow(bis Schwabell eingesammelt);
+    schwabellMotor(up);
+    move(back);
+    turn2(nach Links);
+
+    int fall2;
+    //fallunterscheidung 1-9
+
+    
+    if (fall2 == 1|| fall2 == 4){
+        if (routerW[2] == 0){
+            line2(1,3,0.1,0.18,)
+        }else if (routerW[1] == 0){
+
+        }else {
+
+        }
+    }
+
+
+
+
+
+
+
+
 
     int neededTime = run.getTime();
     std::cout << "Needed time: " << neededTime << std::endl;

@@ -161,6 +161,8 @@ bool lineDetection(std::string mode)
     return ev3_color_sensor_get_reflect(LSr) > 50;
   else if (mode == "whiteleft")
     return ev3_color_sensor_get_reflect(Lsl) > 50;
+  else if (mode == "crossline")
+    return (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
   return false;
 }
 

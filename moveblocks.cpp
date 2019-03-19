@@ -69,7 +69,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
     }
     else
     {
-      continueMove = lineDetection(mode);
+      continueMove = lineDetection(mode) == false;
     }
 
     //Turnmotor ansteuern
@@ -155,7 +155,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
     }
     else
     {
-      continueMove = lineDetection(mode);
+      continueMove = lineDetection(mode) == false;
     }
 
     cSpeed = accDec(togo, bfTurn2, afMove, move, startSpeed, maxSpeed, endSpeed, dec);
@@ -198,7 +198,7 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
     }
     else
     {
-      continueMove = lineDetection(mode);
+      continueMove = lineDetection(mode) == false;
     }
 
     cSpeed = accDec(togo, bfMove, afMove, move, startSpeed, maxSpeed, endSpeed, dec);
@@ -249,11 +249,9 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     {
       continueMove = move.getTime() < wert;
     }
-    else if (mode == "oneLine")
-    {
-      continueMove = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) > 100;
+    else{
+      continueMove = lineDetection(mode) == false;
     }
-
     cSpeed = accDec(togo, bfMove, afMove, move, startSpeed, maxSpeed, endSpeed, dec);
 
     double pCorrection = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
@@ -285,7 +283,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop)
 {
-  return line2(startSpeed, maxSpeed, pGain, dGain, mode, wert, endSpeed, stop, false, LSaussen, " ");
+  return line2(startSpeed, maxSpeed, pGain, dGain, mode, wert, endSpeed, stop, false, LS, " ");
 }
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)

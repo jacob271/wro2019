@@ -113,9 +113,9 @@ double accDec(int togo, double brakeFactor, int accFactor, Stopwatch move, doubl
 }
 
 // Am Ende einer Bewegung bei Bedarf anhalten
-void brakeAtEnd(int endSpeed)
+void brake(bool stop, int endSpeed)
 {
-  if (endSpeed == 0)
+  if (stop == true)
   {
     ev3_motor_set_power(motor_left, 0);
     ev3_motor_stop(motor_left, true);
@@ -144,15 +144,6 @@ int frequencyDistribution(int colorCounter[])
   return temp;
 }
 
-int lightSensor(sensor_port_t sensor, std::string mode)
-{
-  if (mode == "blue")
-    return getRGB(sensor, 3);
-  else if (mode == "black")
-    return ev3_color_sensor_get_reflect(sensor);
-  return 0;
-}
-
 // Meldet zurück, ob die Linie nach gewünschten Modus gesehen wurde
 bool lineDetection(std::string mode)
 {
@@ -160,18 +151,16 @@ bool lineDetection(std::string mode)
     return ev3_color_sensor_get_reflect(LSr) < 40; // 25
   else if (mode == "blackleft")
     return ev3_color_sensor_get_reflect(LSl) < 40; // 25
-  else if (mode == "green")
-    return ev3_color_sensor_get_reflect(LSl) < 40;
-  else if (mode == "blueright")
-    return getRGB(LSr, 3) < averageBlueRight;
-  else if (mode == "blueleft")
-    return getRGB(LSl, 3) < averageBlueLeft;
   else if (mode == "blackboth")
     return ev3_color_sensor_get_reflect(LSr) < 40 && ev3_color_sensor_get_reflect(LSl) < 40;
   else if (mode == "blackone")
     return ev3_color_sensor_get_reflect(LSr) < 40 || ev3_color_sensor_get_reflect(LSl) < 40;
   else if (mode == "whiteboth")
     return ev3_color_sensor_get_reflect(LSr) > 50 || ev3_color_sensor_get_reflect(LSl) > 50;
+  else if (mode == "whiteright")
+    return ev3_color_sensor_get_reflect(LSr) > 50;
+  else if (mode == "whiteleft")
+    return ev3_color_sensor_get_reflect(Lsl) > 50;
   return false;
 }
 
@@ -227,7 +216,7 @@ int colorDetection(sensor_port_t sensor)
 }
 
 // Kompliziertere Farbwerterkennung
-int colorDetection_rgb(sensor_port_t sensor)
+int colorDetection_rgb(sensor_port_t sensor, std::string mode)
 {
   rgb_raw_t rgb;
   bool_t valRgb = ht_nxt_color_sensor_measure_rgb(sensor, &rgb);
@@ -239,36 +228,79 @@ int colorDetection_rgb(sensor_port_t sensor)
 
   tslp_tsk(7);
 
-  /*  int htColor = int(color);
-  tslp_tsk(4);*/
-
-  std::cout << "C:" << rgb.r << " " << rgb.g << " " << rgb.b << " "; // << "R:" << color;
-  if (red < 5 && blue < 5 && green < 5)
-    return 0;
-  if (red > blue && red > green && red > 10)
+  std::cout << "C:" << rgb.r << " " << rgb.g << " " << rgb.b << " ";
+  if (mode == "color")
   {
-    if (red > green * 2) //1.8
-      return 5;
+    if (red < 5 && blue < 5 && green < 5)
+      return 0;
+    if (red > blue && red > green && red > 10)
+    {
+      if (red > green * 2)
+        return 5;
+      else
+      {
+        return 4;
+      }
+    }
+    if (blue > green && blue > red && blue > 10)
+      return 2;
+    if (green > blue && green > red && green > 5)
+      return 3;
+  }
+  else if (mode == "bw")
+  {
+    if (red < 10 && green < 10 && blue < 10)
+      return 0;
+    if (red > 150 && green > 150 && blue > 150)
+      return 7;
     else
     {
-      //if (blue > 10)
-      //return 6;
-      //else
-      return 4;
+      return 1;
     }
   }
-  if (blue > green && blue > red && blue > 10)
-    return 2;
-  //if ( htColor == 4 || green > blue && green > red && green > 7)
-  if (green > blue && green > red && green > 5)
-    return 3;
   return -1;
 }
 
-void initializeSpeeds(int &speed1, int &speed2, int &speed3){
-  speed1=speedLevel(speed1);
-  speed2=speedLevel(speed2);
-  speed3=speedLevel(speed3);
+//Ergänzt das Array mit der letzten verbleibenden Farbe
+int findColor(int colors[], std::string mode)
+{
+  if (mode == "positions")
+  {
+    int color = 0;
+    for (int i = 0; i < 3; i++)
+    {
+      color = color + positions[i];
+    }
+    std::cout << "lastColor: " << 14 - color << " ";
+    return 14 - color;
+  }
+  else if (mode == "router1")
+  {
+    int color = 0;
+    for (int i = 0; i < 2; i++)
+    {
+      color = color + router[i];
+    }
+    std::cout << "lastColor: " << 9 - color << " ";
+    return 9 - color;
+  }
+  else
+  {
+    int color = 0;
+    for (int i = 3; i < 5; i++)
+    {
+      color = color + router[i];
+    }
+    std::cout << "lastColor: " << 9 - color << " ";
+    return 9 - color;
+  }
+}
+
+void initializeSpeeds(int &speed1, int &speed2, int &speed3)
+{
+  speed1 = speedLevel(speed1);
+  speed2 = speedLevel(speed2);
+  speed3 = speedLevel(speed3);
 }
 
 int measureMotorRight()
@@ -280,21 +312,29 @@ int measureMotorLeft()
   return ev3_motor_get_counts(motor_left) - resetLeftDegree;
 }
 
-void resetMotors(std::string mode, int leftValue, int rightValue, int maxSpeed){
-  if (mode == "degree"){
-      if (maxSpeed > 0)
-        {
-          resetRightDegree = resetRightDegree + rightValue;
-          resetLeftDegree = resetLeftDegree - leftValue;
-        }
-        else
-        {
-          resetRightDegree = resetRightDegree - rightValue;
-          resetLeftDegree = resetLeftDegree + leftValue;
-        }
+void resetMotors(std::string mode, int leftValue, int rightValue, int maxSpeed)
+{
+  if (mode == "degree")
+  {
+    if (maxSpeed > 0)
+    {
+      resetRightDegree = resetRightDegree + rightValue;
+      resetLeftDegree = resetLeftDegree - leftValue;
+    }
+    else
+    {
+      resetRightDegree = resetRightDegree - rightValue;
+      resetLeftDegree = resetLeftDegree + leftValue;
+    }
   }
-  else{
+  else
+  {
     resetLeftDegree = ev3_motor_get_counts(motor_left);
     resetRightDegree = ev3_motor_get_counts(motor_right);
   }
+}
+
+void resetMotors()
+{
+  resetMotors("total", 0, 0, 0);
 }

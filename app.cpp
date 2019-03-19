@@ -122,10 +122,19 @@ void routerScannen(std::string mode, sensor_port_t searchSensor)
     router[i] = findColor(router, mode);
 }
 
-void routerAufnehmen()
+void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
 {
-    line2(40, 40, 0.7, 0.0, "degree", 300, 40, true, false, HTr, " ");
-    mediumMotorDeg(tool1, 60, 315, true);
+    //Position anfang: 90° versetzt vor node ohne minimove
+    moveStraight(1, 2, "degree", miniDistance, 1, true);
+    line2(1, 3, 0, 0.1, 0.18, "degree", 184, true);
+    turn1(turnMotor, 1, false, -5, "degree", 90, 1, true);
+    align(alignDuration);
+    mediumMotor(longMotor, 100, 315, true); //runter oder hoch nicht sicher !!!
+    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+    line2(3, 3, 0.1, 0.18, "degree", 92, 1, true);
+    mediumMotor(longMotor, 100, -315, true); //runter oder hoch nicht sicher !!!
+    moveStraight(1, -60, "degree", 92 - miniDistance, 1, true);
+    //Position Ende: auf Cross vor Node
 }
 
 void align(int duration)
@@ -209,21 +218,10 @@ void main_task(intptr_t unused)
     waitForButton();
     //test();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     //Paul's Scheiße
     //arrays Nodes: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
+
+    int miniDistance = 20;
 
     anfang();
 
@@ -504,35 +502,99 @@ void main_task(intptr_t unused)
     }
 
     lineFollow(bis kurz vor Ecke); // zum Kabel einsammeln
-    turnRight(45°); //evtl. 50/55
-    turnLeft(45°);  //evtl. 50/55
+    turnRight(45°);                //evtl. 50/55
+    turnLeft(45°);                 //evtl. 50/55
     schwabellMotor(down);
     lineFollow(bis Schwabell eingesammelt);
     schwabellMotor(up);
     move(back);
     turn2(nach Links);
-
-    int fall2;
-    //fallunterscheidung 1-9
-
     
-    if (fall2 == 1|| fall2 == 4){
-        if (routerW[2] == 0){
-            line2(1,3,0.1,0.18,)
-        }else if (routerW[1] == 0){
+    int fall2;
+    //fallunterscheidung 1-9 _____________________________________________________________________________________________________________________________________________
 
-        }else {
-
+    if (fall2 == 1 || fall2 == 4)
+    {
+        int currentPosition;
+        if (routerW[2] == 0)
+        {
+            currentPosition = 2;
+            routerW[2] == 3;
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 1, true);
+            routerAufnehmen(motor_right);
         }
+        else if (routerW[1] == 0)
+        {
+            currentPosition = 1;
+            routerW[1] == 3;
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            line2(3, 3, 0.1, 0.18, "degree", 40, 3, false);
+            line2(3, 3, 0.1, 0.18, "crossline", 0, 1, true);
+            routerAufnehmen(motor_right);
+        }
+        else
+        {
+            currentPosition = 0;
+            routerW[0] == 3;
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            line2(3, 3, 0.1, 0.18, "degree", 40, 3, false);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            line2(3, 3, 0.1, 0.18, "degree", 40, 3, false);
+            line2(3, 3, 0.1, 0.18, "crossline", 0, 1, true);
+            routerAufnehmen(motor_right);
+        }
+        //auf Cross vor Nodes (Westen)
+        if ((currentPosition == 1 && router0[1] == 3) || (currentPosition == 2 && router0[2] == 3) || (currentPosition == 3 && router0[3] == 3))
+        {
+            turn2(1, 4, "degree", 180, 1, true);
+            moveStraight(1, 2, "degree", miniDistance, 1, true);
+        }
+        else if ((currentPosition == 1 && routerO[2] == 3) || (currentPosition == 0 && routerO[1] == 3) || (currentPosition == 1 && routerO[0] == 3) || (currentPosition == 2 && routerO[1] == 3))
+        {
+
+            int x = 1;
+            if ((currentPosition == 1 && routerO[0] == 3) || (currentPosition == 2 && routerO[1] == 3))
+            {
+                x = -1;
+                currentPosition--;
+            }
+            else
+            {
+                currentPosition++;
+            }
+            turn2(1, 4, "degree", 90 * x, 1, true);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 1, true);
+            moveStraight(1, 2, "degree", miniDistance, 1, true);
+            turn2(1, 4, "degree", 90 * x, 1, true);
+        }
+        else
+        {
+            int x = 1;
+            if ((currentPosition == 2 && routerO[0] == 3) || (currentPosition == 0 && router0[2] == 3))
+            {
+                x = -1;
+                currentPosition = 0;
+            }
+            else
+            {
+                currentPosition = 2;
+            }
+            turn2(1, 4, "degree", 90 * x, 1, true);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            line2(3, 3, 0.1, 0.18, "degree", 30, 3, false);
+            line2(3, 3, 0.1, 0.18, "crossline", 0, 1, true);
+            moveStraight(1, 2, "degree", miniDistance, 1, true);
+            turn2(1, 4, "degree", 90 * x, 1, true);
+        }
+        line2(1,4,0.1,0.18,"degree",166,1,true); //Node zu Wechsel bringen
+        mediumMotor(longMotor, 100, 315, true); //runter 
+        moveStraight(1,-3,"crossline",166,1,true);
+        align(alignDuration);
+        
+
+
+
     }
-
-
-
-
-
-
-
-
 
     int neededTime = run.getTime();
     std::cout << "Needed time: " << neededTime << std::endl;
@@ -547,9 +609,8 @@ void main_task(intptr_t unused)
     ev3_motor_stop(motor_right, false);
     std::cout.rdbuf(coutbuf);
     ev3_speaker_play_tone(NOTE_E4, 100);
-
 }
 }
 
 //git config --global user.email "you@example.com"
-  //git config --global user.name "Your Name"
+//git config --global user.name "Your Name"

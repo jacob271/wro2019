@@ -126,6 +126,16 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
 void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop)
 {
 
+  //Dreht sich nach rechts für wert größer null
+  if (wert < 0)
+  {
+    startSpeed = startSpeed * (-1);
+    cSpeed = cSpeed * (-1);
+    endSpeed = endSpeed * (-1);
+  }
+
+  
+
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
 
@@ -151,7 +161,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
     }
     else if (mode == "time")
     {
-      continueMove = move.getTime() <= wert;
+      continueMove = move.getTime() <= abs(wert);
     }
     else
     {
@@ -249,7 +259,8 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     {
       continueMove = move.getTime() < wert;
     }
-    else{
+    else
+    {
       continueMove = lineDetection(mode) == false;
     }
     cSpeed = accDec(togo, bfMove, afMove, move, startSpeed, maxSpeed, endSpeed, dec);

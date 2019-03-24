@@ -12,6 +12,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
   //Motoren und Variablen zum Zurücksetzen und Fahren festlegen
   motor_port_t otherMotor;
   int resetOtherMotor;
+  int resetTurnMotor;
   if (turnMotor == motor_right)
   {
     resetTurnMotor = resetRightDegree;
@@ -79,9 +80,9 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
       ev3_motor_set_power(turnMotor, cSpeed * (-1));
 
     //Abbremsen otherMotor am Anfang
-    if (OMbrakeDistance - abs(ev3_motor_get_counts(othermotor) - resetOtherMotor) >= 0) //Falls die verbleibende Bremsstrecke noch größer Null ist
+    if (OMbrakeDistance - abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) >= 0) //Falls die verbleibende Bremsstrecke noch größer Null ist
     {
-      double otherSpeed = (abs(startSpeed) - (abs(ev3_motor_get_counts(othermotor) - resetOtherMotor) / OMbrakeDistance) * abs(startSpeed - endSpeed)) * (maxSpeed / abs(maxSpeed));
+      double otherSpeed = (abs(startSpeed) - (abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) / OMbrakeDistance) * abs(startSpeed - endSpeed)) * (maxSpeed / abs(maxSpeed));
       //(Startspeed - prozentual zurückgelegte Bresmstrecke * zu bremsende Geschwindidkeit) * vorwärts oder rückwärts aus maxSpeed
 
       if (otherMotor == motor_right)
@@ -91,14 +92,14 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
     }
     else if (stop == false) //Beschleunigen otherMotor am Ende
     {
-      double otherSpeed = (OMaccDistance - 0 - togo) * (maxSped / abs(maxSpeed));
+      double otherSpeed = (OMaccDistance - 0 - togo) * (maxSpeed / abs(maxSpeed));
       //Beschelunigt direkt proportional zur verbleienden Strecke des anderen Motors
       if (otherSpeed > 0)
       {
-        if (othermotor == motor_right)
-          ev3_motor_set_power(othermotor, otherSpeed);
+        if (otherMotor == motor_right)
+          ev3_motor_set_power(otherMotor, otherSpeed);
         else
-          ev3_motor_set_power(othermotor, otherSpeed * -1);
+          ev3_motor_set_power(otherMotor, otherSpeed * -1);
       }
       else
       {
@@ -118,9 +119,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
   }
   brake(stop, endSpeed); //Motoren anhalten
 
-  char buffer[10];
-  itoa(counter / (move.getTime() / 1000.), buffer, 10);
-  ev3_lcd_draw_string(buffer, 20, 50);
+  //display(counter / (move.getTime() / 1000.));
 }
 
 void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop)
@@ -133,8 +132,6 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
     cSpeed = cSpeed * (-1);
     endSpeed = endSpeed * (-1);
   }
-
-  
 
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
@@ -269,9 +266,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
     //std::cout << lLeft << " " << lRight << " " << lLeft + lRight << std::endl;
 
-    char buffer[10];
-    itoa(pCorrection, buffer, 10);
-    ev3_lcd_draw_string(buffer, 20, 50);
+    display(pCorrection);
     ev3_motor_set_power(motor_left, (cSpeed - pCorrection * pGain - (pCorrection - lastpCorrection) * dGain) * (-1));
     ev3_motor_set_power(motor_right, cSpeed + pCorrection * pGain + (pCorrection - lastpCorrection) * dGain);
     lastpCorrection = pCorrection;
@@ -294,7 +289,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop)
 {
-  return line2(startSpeed, maxSpeed, pGain, dGain, mode, wert, endSpeed, stop, false, LS, " ");
+  return line2(startSpeed, maxSpeed, pGain, dGain, mode, wert, endSpeed, stop, false, LSl, " ");
 }
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
@@ -323,9 +318,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       pCorrection = pCorrection * (-1);
     }
 
-    char buffer[10];
-    itoa(pCorrection, buffer, 10);
-    ev3_lcd_draw_string(buffer, 20, 50);
+    display(pCorrection);
 
     ev3_motor_set_power(motor_left, (cSpeed - pCorrection * pGain - (pCorrection - lastpCorrection) * dGain) * (-1));
     ev3_motor_set_power(motor_right, cSpeed + pCorrection * pGain + (pCorrection - lastpCorrection) * dGain);
@@ -356,8 +349,8 @@ void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool
 {
   ev3_motor_reset_counts(motor);
   Stopwatch move;
-  bool continuMove = true;
-  while (continuMove)
+  bool continueMove = true;
+  while (continueMove)
   {
     if (mode == "degree")
     {

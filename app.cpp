@@ -13,6 +13,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+//#include <stdio.h>
 #include "blocks.h"
 #include "timer.h"
 
@@ -26,7 +27,7 @@
 
 //Ports
 motor_port_t motor_left = EV3_PORT_A;
-motor_port_t tool1 = EV3_PORT_B;
+motor_port_t longMotor = EV3_PORT_B;
 motor_port_t tool2 = EV3_PORT_C;
 motor_port_t motor_right = EV3_PORT_D;
 sensor_port_t HTl = EV3_PORT_4;
@@ -54,88 +55,19 @@ const double afMove = 4.0;
 //const double lsDistance = 11.3; //11.7;
 const double pi = 3.14159265358979324;
 const double wheelDiameter = 6.24; //6.24;
-double wheelCircumferance = 17.6;
+const double wheelCircumferance = 17.6;
 //const double wheelConverter = 6.24 / wheelDiameter;
 //const double wheelLSdist = 3.6 * 2 * (360 / (6.24 * pi));
 
-int positions[3] = {0};
+int positions[4] = {0};
+int routerO[3] = {0};
+int routerW[3] = {0};
 int router[5] = {0};
+int alignDuration = 200;
+int miniDistance = 20;
 
-//double batteryFactor = 1;
+double batteryFactor = 1;
 
-void routerAbladen()
-{
-    resetMotors("total", 0, 0, 0);
-    line2(35, 40, 0.7, 0.0, "degree", 211, 0, true, false, HTr, " ");
-    mediumMotorDeg(tool1, -30, 242, true);
-}
-
-void kabelSammeln()
-{
-    resetMotors("total", 0, 0, 0);
-    line2(35, 40, 0.7, 0.0, "degree", 277, 0, true, false, HTr, " ");
-    mediumMotorDeg(tool2, 90, 120, true);
-}
-
-void kabelAbladen()
-{
-    resetMotors("total", 0, 0, 0);
-    line2(35, 40, 0.7, 0.0, "degree", 266, 40, false, false, HTr, " ");
-    resetMotors("total", 0, 0, 0);
-    moveStraight(cSpeed, 40, "degree", 183, 20, true, false, HTr, " ");
-    tslp_tsk(300);
-    mediumMotorDeg(tool2, -50, 120, true);
-    moveStraight(-10, -40, "degree", 400, 20, true, false, HTr, " ");
-}
-
-void positionenScannen()
-{
-    line1(60, 60, 0.9, 0.0, LSr, false, "degree", 330, 60, false, false, HTr, " "); //810
-    for (int i = 0; i < 3; i++)
-    {
-        positions[i] = line1(60, 60, 0.9, 0.0, LSr, false, "degree", 147, 60, false, true, HTr, "color");
-        char buffer[10];
-        itoa(positions[i], buffer, 10);
-        ev3_lcd_draw_string(buffer, 20, 50);
-    }
-    positions[3] = findColor(positions, "positions");
-    line1(60, 60, 0.9, 0.0, LSr, false, "degree", 500, 60, true, false, HTr, " "); //810
-}
-
-void routerScannen(std::string mode, sensor_port_t searchSensor)
-{
-    int i = 0;
-    if (mode == "router1")
-    {
-        i = 0;
-    }
-    else
-    {
-        i = 3;
-    }
-    line2(40, 40, 0.7, 0.0, "degree", 64, 40, false, false, HTr, " ");
-    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 40, false, true, searchSensor, "bw");
-    i++;
-    line2(40, 40, 0.7, 0.0, "degree", 165, 40, false, false, searchSensor, "bw");
-    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 40, true, true, searchSensor, "bw");
-    i++;
-    router[i] = findColor(router, mode);
-}
-
-void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
-{
-    //Position anfang: 90° versetzt vor node ohne minimove
-    line2(1, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
-    line2(3, 3, 0, 0.1, 0.18, "degree", 184, true);
-    turn1(turnMotor, 1, false, -5, "degree", 90, 1, true);
-    align(alignDuration);
-    mediumMotor(longMotor, 100, "degree", -315, true);
-    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
-    line2(3, 3, 0.1, 0.18, "degree", 92, 1, true);
-    mediumMotor(longMotor, 100, "degree", 315, true);
-    moveStraight(1, -6, "degree", 92 - miniDistance, 1, true);
-    //Position Ende: auf Cross vor Node
-}
 
 void align(int duration)
 {
@@ -151,10 +83,74 @@ void align(int duration)
     }
 }
 
+void routerAbladen()
+{
+    resetMotors();
+    line2(35, 40, 0.7, 0.0, "degree", 211, 0, true);
+    mediumMotor(longMotor,-30,"degree",242,true);
+}
+
+void kabelSammeln()
+{
+    resetMotors();
+    line2(35, 40, 0.7, 0.0, "degree", 277, 0, true);
+    mediumMotor(tool2, 90,"degree", 120, true);
+}
+
+void kabelAbladen()
+{
+    resetMotors();
+    line2(35, 40, 0.7, 0.0, "degree", 266, 40, false);
+    resetMotors();
+    moveStraight(cSpeed, 40, "degree", 183, 20, true);
+    tslp_tsk(300);
+    mediumMotor(tool2, -50,"degree", 120, true);
+    moveStraight(-10, -40, "degree", 400, 20, true);
+}
+
+void positionenScannen()
+{
+    line1(60, 60, 0.9, 0.0, LSr, false, "degree", 330, 60, false); //810
+    for (int i = 0; i < 3; i++)
+    {
+        positions[i] = line1(60, 60, 0.9, 0.0, LSr, false, "degree", 147, 60, false, true, HTr, "color");
+        display(positions[1]);
+    }
+    positions[3] = findColor(positions, "positions");
+    line1(60, 60, 0.9, 0.0, LSr, false, "degree", 500, 60, true); //810
+}
+
+void routerScannen(sensor_port_t searchSensor, std::string mode)
+{
+    int router[3] = {0};
+    int i = 0;
+    line2(40, 40, 0.7, 0.0, "degree", 64, 40, false);
+    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 40, false, true, searchSensor, "bw");
+    i++;
+    line2(40, 40, 0.7, 0.0, "degree", 165, 40, false, false, searchSensor, "bw");
+    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 40, true, true, searchSensor, "bw");
+    i++;
+    router[i] = findColor(router, mode);
+}
+
+void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
+{
+    //Position anfang: 90° versetzt vor node ohne minimove
+    line2(1, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
+    line2(3, 3, 0.1, 0.18, "degree", 184, 1, true);
+    turn1(turnMotor, 1, false, -5, "degree", 90, 1, true);
+    align(alignDuration);
+    mediumMotor(longMotor, 100, "degree", -315, true);
+    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+    line2(3, 3, 0.1, 0.18, "degree", 92, 1, true);
+    mediumMotor(longMotor, 100, "degree", 315,true);
+    moveStraight(1, -6, "degree", 92 - miniDistance, 1, true);
+    //Position Ende: auf Cross vor Node
+}
+
 void test()
 {
-
-    line2(0, 70, 0.1, 0.18, "oneLine", 0, 40, false, false, HTr, " ");
+    line2(0, 70, 0.1, 0.18, "crossline", 0, 40, false, false, HTr, " ");
     line2(60, 60, 0.1, 0.18, "degree", 585, 0, true, false, HTr, " ");
     resetMotors("total", 0, 0, 0);
 
@@ -170,27 +166,18 @@ void test()
     //ev3_speaker_play_tone(NOTE_C5, 100);
 
     //waitForButton();
-    resetMotors("total", 0, 0, 0);
+    resetMotors();
     line2(70, 70, 0.1, 0.18, "oneLine", 0, 0, true, false, HTr, " ");
     return;
 
     Stopwatch move;
     cSpeed = 40.0;
-
-    double pCorrection;
-    while (move.getTime() < 10000)
-    {
-        pCorrection = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
-        char buffer[10];
-        itoa(pCorrection, buffer, 10);
-        ev3_lcd_draw_string(buffer, 20, 50);
-        double speedRight = cSpeed + pCorrection * 2;
-        double speedLeft = (cSpeed - pCorrection * 2) * (-1);
-        ev3_motor_set_power(motor_left, speedLeft);
-        ev3_motor_set_power(motor_right, speedRight);
-    }
-    ev3_speaker_play_tone(NOTE_C5, 100);
 }
+
+void anfang(){
+    //routerO[] = routerScannen(LSr);
+    //routerW[] = routerScannen(LSl);
+    }
 
 void main_task(intptr_t unused)
 {
@@ -201,7 +188,7 @@ void main_task(intptr_t unused)
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
     ev3_motor_config(motor_left, UNREGULATED_MOTOR);
     ev3_motor_config(motor_right, UNREGULATED_MOTOR);
-    ev3_motor_config(tool1, UNREGULATED_MOTOR);
+    ev3_motor_config(longMotor, UNREGULATED_MOTOR);
     ev3_motor_config(tool2, UNREGULATED_MOTOR);
     ev3_sensor_config(HTl, HT_NXT_COLOR_SENSOR);
     ev3_sensor_config(HTr, HT_NXT_COLOR_SENSOR);
@@ -212,28 +199,27 @@ void main_task(intptr_t unused)
     tslp_tsk(500);
 
     std::cout << "Battery at: " << ev3_battery_voltage_mV() << "Volt" << std::endl;
-    char buffer[10];
-    itoa(ev3_battery_voltage_mV(), buffer, 10);
-    ev3_lcd_draw_string(buffer, 20, 50);
+
+    display(ev3_battery_voltage_mV());
     waitForButton();
     //test();
 
     //Paul's Scheiße
     //arrays Nodes: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
 
-    int miniDistance = 20;
     int turnBackDistance = 220; //distance um über querlinie rüber zu fahren un dann mit rechts/links zurückzudrehen
     motor_port_t temporalMotor;
     motor_port_t secondTemporalMotor;
 
     anfang();
+    /*
+    int blau = 2; //je nach kombie
+    int red = 1;
+    int green = 3;
+    int yellow = 4;
+    
 
-    int blau == 2; //je nach kombie
-    int red == 1;
-    int green == 3;
-    int yellow == 4;
-
-    int fall1;
+    int fall1 = 0;
     //fallunterscheidung
 
     // fall 1-4
@@ -872,6 +858,8 @@ void main_task(intptr_t unused)
     {
     }
 
+    */
+
     int neededTime = run.getTime();
     std::cout << "Needed time: " << neededTime << std::endl;
     char msgbuf[10];
@@ -886,7 +874,7 @@ void main_task(intptr_t unused)
     std::cout.rdbuf(coutbuf);
     ev3_speaker_play_tone(NOTE_E4, 100);
 }
-}
+
 
 //git config --global user.email "you@example.com"
 //git config --global user.name "Your Name"

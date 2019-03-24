@@ -25,6 +25,7 @@ int getRGB(sensor_port_t port, int color);
 int getHTRGB(sensor_port_t sensor, int mode);
 int speedLevel(int level);
 void waitForButton();
+void display(int inhalt);
 int colorDetection(sensor_port_t sensor);
 int colorDetection_rgb(sensor_port_t sensor, std::string mode);
 int findColor(int colors[], std::string mode);
@@ -38,6 +39,7 @@ double accDec(int togo, double brakeFactor, int accFactor, Stopwatch move, doubl
 
 void initializeSpeeds(int &speed1, int &speed2, int &speed3);
 void resetMotors(std::string mode, int leftValue, int rightValue, int maxSpeed);
+void resetMotors();
 int measureMotorRight();    
 int measureMotorLeft();
 
@@ -54,7 +56,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
 
 // Global Vars
 extern motor_port_t motor_left;
-extern motor_port_t tool1;
+extern motor_port_t longMotor;
 extern motor_port_t tool2;
 extern motor_port_t motor_right;
 extern sensor_port_t HTl;
@@ -75,10 +77,18 @@ extern const double bfTurn1;
 extern const double bfTurn2;
 extern const double afMove;
 
+extern double batteryFactor;
+
 // Constants for vertical line alignment
 extern const double pi;
 extern const double wheelDiameter;
 extern const double wheelCircumferance;
 
 extern int positions[];
+extern int routerO[];
+extern int routerW[];
 extern int router[];
+
+extern int alignDuration;
+extern int miniDistance;
+ 

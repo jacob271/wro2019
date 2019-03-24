@@ -160,7 +160,7 @@ bool lineDetection(std::string mode)
   else if (mode == "whiteright")
     return ev3_color_sensor_get_reflect(LSr) > 50;
   else if (mode == "whiteleft")
-    return ev3_color_sensor_get_reflect(Lsl) > 50;
+    return ev3_color_sensor_get_reflect(LSl) > 50;
   else if (mode == "crossline")
     return (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
   return false;
@@ -172,6 +172,13 @@ void waitForButton()
   while (!ev3_button_is_pressed(ENTER_BUTTON))
   {
   }
+}
+
+//Wert auf Display anzeigen
+void display(int inhalt){
+  char buf[10];
+  sprintf(buf, "%d", inhalt);
+  ev3_lcd_draw_string(buf, 20, 50);
 }
 
 // Konvertierung der HiTechnic Farbwerte in normale EV3 Farbwerte

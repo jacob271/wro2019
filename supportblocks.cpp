@@ -278,29 +278,21 @@ int findColor(int colors[], std::string mode)
     int color = 0;
     for (int i = 0; i < 3; i++)
     {
-      color = color + positions[i];
+      color = color + colors[i];
     }
     std::cout << "lastColor: " << 14 - color << " ";
+    //Summe der Farben ist immer 14
     return 14 - color;
   }
-  else if (mode == "router1")
+  else if (mode == "router")
   {
     int color = 0;
     for (int i = 0; i < 2; i++)
     {
-      color = color + router[i];
+      color = color + colors[i];
     }
     std::cout << "lastColor: " << 9 - color << " ";
-    return 9 - color;
-  }
-  else
-  {
-    int color = 0;
-    for (int i = 3; i < 5; i++)
-    {
-      color = color + router[i];
-    }
-    std::cout << "lastColor: " << 9 - color << " ";
+    //Summe der Farben ist immer 9
     return 9 - color;
   }
 }

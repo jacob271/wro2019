@@ -1,19 +1,10 @@
-/**
- * This sample program balances a two-wheeled Segway type robot such as Gyroboy in EV3 core set.
- *
- * References:
- * http://www.hitechnic.com/blog/gyro-sensor/htway/
- * http://www.cs.bgu.ac.il/~ami/teaching/Lejos-2013/classes/src/lejos/robotics/navigation/Segoway.java
- */
 
 #pragma once
-//#include <thread>
 #include <chrono>
 #include <cstdio>
 
 #include <string.h>
 #include <stdlib.h>
-//#include <stdio.h>
 #include "blocks.h"
 #include "timer.h"
 
@@ -27,17 +18,16 @@
 
 //Ports
 motor_port_t motor_left = EV3_PORT_A;
-motor_port_t longMotor = EV3_PORT_B;
-motor_port_t tool2 = EV3_PORT_C;
+motor_port_t longMotor = EV3_PORT_B;   //Motor für Router
+motor_port_t doubleLever = EV3_PORT_C; //Motor für Kabel
 motor_port_t motor_right = EV3_PORT_D;
-sensor_port_t HTl = EV3_PORT_4;
-sensor_port_t LSr = EV3_PORT_2;
-sensor_port_t LSl = EV3_PORT_3;
-sensor_port_t HTr = EV3_PORT_1;
+sensor_port_t HTl = EV3_PORT_1;
+sensor_port_t LSl = EV3_PORT_2;
+sensor_port_t LSr = EV3_PORT_3;
+sensor_port_t HTr = EV3_PORT_4;
 
 //Speeds
 double cSpeed = 0;
-const int minSpeed = 25;
 
 // Variables for Moves
 double pGain = 0.02; //0.017
@@ -48,26 +38,23 @@ const double bfMove = 0.2;  // 0.1   6
 const double bfTurn1 = 0.5; // 9
 const double bfTurn2 = 0.4; // 0.3
 const double afMove = 4.0;
-//const int averageBlueLeft = 1;
-//const int averageBlueRight = 1;
 
 // Constants for vertical line alignment
-//const double lsDistance = 11.3; //11.7;
 const double pi = 3.14159265358979324;
 const double wheelDiameter = 6.24; //6.24;
 const double wheelCircumferance = 17.6;
 //const double wheelConverter = 6.24 / wheelDiameter;
-//const double wheelLSdist = 3.6 * 2 * (360 / (6.24 * pi));
 
 int positions[4] = {0};
 int routerO[3] = {0};
 int routerW[3] = {0};
-int router[5] = {0};
-int alignDuration = 200;
-int miniDistance = 20;
+//int router[5] = {0};
+int alignDuration = 300;
+int miniDistance = 37;
+
+int wallDistanceE = 0;
 
 double batteryFactor = 1;
-
 
 void align(int duration)
 {
@@ -81,20 +68,36 @@ void align(int duration)
         ev3_motor_set_power(motor_left, (-1) * (cSpeed - pCorrection * pGain));
         ev3_motor_set_power(motor_right, cSpeed + pCorrection * pGain);
     }
+    brake(true,0);
+}
+
+void align1(int duration)
+{
+    double pCorrection = 0;
+    Stopwatch align;
+
+    while (align.getTime() < duration)
+    {
+        pGain = 1.5;
+        pCorrection = 50 - ev3_color_sensor_get_reflect(LSr);
+        ev3_motor_set_power(motor_left, (-1) * (cSpeed - pCorrection * pGain));
+        ev3_motor_set_power(motor_right, cSpeed + pCorrection * pGain);
+    }
+    brake(true, 0);
 }
 
 void routerAbladen()
 {
     resetMotors();
     line2(35, 40, 0.7, 0.0, "degree", 211, 0, true);
-    mediumMotor(longMotor,-30,"degree",242,true);
+    mediumMotor(longMotor, -30, "degree", 242, true);
 }
 
 void kabelSammeln()
 {
     resetMotors();
     line2(35, 40, 0.7, 0.0, "degree", 277, 0, true);
-    mediumMotor(tool2, 90,"degree", 120, true);
+    mediumMotor(doubleLever, 90, "degree", 120, true);
 }
 
 void kabelAbladen()
@@ -104,33 +107,47 @@ void kabelAbladen()
     resetMotors();
     moveStraight(cSpeed, 40, "degree", 183, 20, true);
     tslp_tsk(300);
-    mediumMotor(tool2, -50,"degree", 120, true);
+    mediumMotor(doubleLever, -50, "degree", 120, true);
     moveStraight(-10, -40, "degree", 400, 20, true);
 }
 
 void positionenScannen()
 {
-    line1(60, 60, 0.9, 0.0, LSr, false, "degree", 330, 60, false); //810
+    line1(1, 40, 0.5, 0.0, LSr, false, "degree", 315, 40, false); //810
     for (int i = 0; i < 3; i++)
     {
-        positions[i] = line1(60, 60, 0.9, 0.0, LSr, false, "degree", 147, 60, false, true, HTr, "color");
+        positions[i] = line1(50, 50, 0.5, 0.0, LSr, false, "degree", 147, 60, false, true, HTr, "color");
         display(positions[1]);
     }
     positions[3] = findColor(positions, "positions");
-    line1(60, 60, 0.9, 0.0, LSr, false, "degree", 500, 60, true); //810
+    line1(50, 50, 0.5, 0.0, LSr, false, "degree", 425, 1, true); //810
 }
 
 void routerScannen(sensor_port_t searchSensor, std::string mode)
 {
     int router[3] = {0};
     int i = 0;
-    line2(40, 40, 0.7, 0.0, "degree", 64, 40, false);
+    line2(40, 40, 0.1, 0.18, "degree", 91, 40, false);
     router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 40, false, true, searchSensor, "bw");
     i++;
-    line2(40, 40, 0.7, 0.0, "degree", 165, 40, false, false, searchSensor, "bw");
-    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 40, true, true, searchSensor, "bw");
+    line2(40, 40, 0.7, 0.0, "degree", 165, 40, false);
+    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 1, true, true, searchSensor, "bw");
     i++;
-    router[i] = findColor(router, mode);
+    router[i] = findColor(router, "router");
+    if (mode == "routerO")
+    {
+        for (int x = 0; x < 3; x++)
+        {
+            routerO[x] = router[x];
+        }
+    }
+    else
+    {
+        for (int x = 0; x < 3; x++)
+        {
+            routerW[x] = router[x];
+        }
+    }
 }
 
 void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
@@ -143,41 +160,68 @@ void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
     mediumMotor(longMotor, 100, "degree", -315, true);
     line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
     line2(3, 3, 0.1, 0.18, "degree", 92, 1, true);
-    mediumMotor(longMotor, 100, "degree", 315,true);
+    mediumMotor(longMotor, 100, "degree", 315, true);
     moveStraight(1, -6, "degree", 92 - miniDistance, 1, true);
     //Position Ende: auf Cross vor Node
 }
 
 void test()
 {
-    line2(0, 70, 0.1, 0.18, "crossline", 0, 40, false, false, HTr, " ");
-    line2(60, 60, 0.1, 0.18, "degree", 585, 0, true, false, HTr, " ");
-    resetMotors("total", 0, 0, 0);
-
-    while (abs(ev3_motor_get_counts(motor_left) - resetLeftDegree) < 505)
-    {
-        ev3_motor_set_power(motor_left, -70);
-    }
-    align(150);
-
-    // ev3_speaker_play_tone(NOTE_C5, 100);
-    //waitForButton();
-
-    //ev3_speaker_play_tone(NOTE_C5, 100);
-
-    //waitForButton();
-    resetMotors();
-    line2(70, 70, 0.1, 0.18, "oneLine", 0, 0, true, false, HTr, " ");
-    return;
-
-    Stopwatch move;
-    cSpeed = 40.0;
+    align(alignDuration);
+    line1(1,70,0.1,0.18,LSr,true,"degree",2000,1,true);
 }
 
-void anfang(){
+void anfang()
+{
+    moveStraight(20, 30, "degree", 18, 20, true);
+    turn1(motor_left, 1, false, 3, "degree", 90, 1, true);
+    moveStraight(20, 3, "degree", 55, 20, true);
+    align1(200);
+    positionenScannen();
+    turn1(motor_right,1,false,4,"degree",-90,1,true);    
+    align(alignDuration);
+    line2(1,40,0.1,0.18,"degree",91,40,false);  
+    line1(40,40,0.1,0.18,LSr,true,"degree",128,40,false);
+    line2(40,3,0.1,0.18,"degree",550,3,false);  
+    line1(3,3,0.1,0.18,LSr,true,"degree",128,3,false);
+    line2(3,3,0.1,0.18,"degree",367,3,false);  
+    line1(3,3,0.1,0.18,LSr,true,"degree",128,3,false);
+    line2(3,3,0.1,0.18,"degree",360,3,false);  
+    //ev3_speaker_play_tone(NOTE_E4, 100);
+    line1(3,3,0.1,0.18,LSr,true,"blackleft",128,3,false);
+    line1(3,3,0.1,0.18,LSr,true,"degree",70,3,false);  
+    line2(3,3,0.1,0.18,"degree",500,1, true);
+    ev3_speaker_play_tone(NOTE_E4, 200);
+    waitForButton();
+    turn1(motor_right, 1,false,3,"degree",-90,1,true);
+    align(alignDuration);
+    routerScannen(HTr,"routerO");
+
+
+    
+
+
+
+    
+    display(positions[0]);
+    waitForButton();
+    tslp_tsk(300);
+     display(positions[1]);
+    waitForButton();
+    tslp_tsk(300);
+     display(positions[2]);
+    waitForButton();
+    tslp_tsk(300);
+     display(positions[3]);
+    waitForButton();
+    tslp_tsk(300);
+
+
+
+
     //routerO[] = routerScannen(LSr);
     //routerW[] = routerScannen(LSl);
-    }
+}
 
 void main_task(intptr_t unused)
 {
@@ -189,7 +233,7 @@ void main_task(intptr_t unused)
     ev3_motor_config(motor_left, UNREGULATED_MOTOR);
     ev3_motor_config(motor_right, UNREGULATED_MOTOR);
     ev3_motor_config(longMotor, UNREGULATED_MOTOR);
-    ev3_motor_config(tool2, UNREGULATED_MOTOR);
+    ev3_motor_config(doubleLever, UNREGULATED_MOTOR);
     ev3_sensor_config(HTl, HT_NXT_COLOR_SENSOR);
     ev3_sensor_config(HTr, HT_NXT_COLOR_SENSOR);
     ev3_sensor_config(LSl, COLOR_SENSOR);
@@ -203,7 +247,7 @@ void main_task(intptr_t unused)
     display(ev3_battery_voltage_mV());
     waitForButton();
     //test();
-
+    //return;
     //Paul's Scheiße
     //arrays Nodes: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
 
@@ -211,17 +255,17 @@ void main_task(intptr_t unused)
     motor_port_t temporalMotor;
     motor_port_t secondTemporalMotor;
 
+    resetMotors();
     anfang();
-    /*
+
     int blau = 2; //je nach kombie
     int red = 1;
     int green = 3;
     int yellow = 4;
-    
 
     int fall1 = 0;
     //fallunterscheidung
-
+    /*
     // fall 1-4
     if (fall1 == 1 || fall1 == 2 || fall1 == 3)
     {
@@ -229,7 +273,7 @@ void main_task(intptr_t unused)
 
         if (routerW[1] == routerO[1])
         {
-            lineFollow(short);
+            line2(1, 3, 0.1, 0.18, "dgeree", kurz, 1, true);
             currentPosition = 1;
             routerW[1] = 3;
             routerO[1] = 3;
@@ -845,13 +889,15 @@ void main_task(intptr_t unused)
         line2(3, 3, 0.1, 0.18, "degree", 205, 1, true);
         mediumMotor(longMotor, 100, "degree", -315, true); //runter
         line2(1, 3, 0.1, 0.18, "degree", 385, 1, true);
-        if (currentPosition == 2 || currentPosition == 0){//entscheidung zu welchem router westen
+        if (currentPosition == 2 || currentPosition == 0)
+        { //entscheidung zu welchem router westen
             temporalMotor = motor_left;
-            if (currentPosition == 2){
+            if (currentPosition == 2)
+            {
                 temporalMotor = motor_ right;
             }
             if (routerW[2])
-            turn1(temporalMotor, 1,false,5,"degree",90,1,true);            
+                turn1(temporalMotor, 1, false, 5, "degree", 90, 1, true);
         }
     }
     else if (fall2 == 5 || fall2 == 6)
@@ -874,7 +920,6 @@ void main_task(intptr_t unused)
     std::cout.rdbuf(coutbuf);
     ev3_speaker_play_tone(NOTE_E4, 100);
 }
-
 
 //git config --global user.email "you@example.com"
 //git config --global user.name "Your Name"

@@ -238,6 +238,11 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 {
   Stopwatch move;
   bool dec = false;
+
+  if (mode == "degree")
+  {
+    dec = true;
+  }
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
   double lastpCorrection = 0;
@@ -297,6 +302,12 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   Stopwatch move;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
+  bool dec = false;
+  if (mode == "degree")
+  {
+    dec = true;
+  }
+
   double pCorrection = 0;
   double lastpCorrection = 0;
   bool continueMove = true;
@@ -304,6 +315,8 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
   while (continueMove)
   {
+    int togo = wert - (abs(measureMotorRight() - measureMotorLeft()) / 2);
+
     if (mode == "degree")
     {
       continueMove = (abs(measureMotorRight() - measureMotorLeft()) / 2) <= wert;
@@ -312,10 +325,22 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     {
       continueMove = move.getTime() < wert;
     }
+    else
+    {
+      continueMove = lineDetection(mode) == false;
+    }
+
     pCorrection = 50 - ev3_color_sensor_get_reflect(followSensor);
     if (rightEdge)
     {
       pCorrection = pCorrection * (-1);
+    }
+
+    cSpeed = accDec(togo, bfMove, afMove, move, startSpeed, maxSpeed, endSpeed, dec);
+
+    if (abs(pCorrection) > 8)
+    {
+      cSpeed = cSpeed - (0.4 * abs(pCorrection));
     }
 
     display(pCorrection);
@@ -327,7 +352,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     if (colorSearch)
     {
       colorCounter[colorDetection_rgb(searchSensor, searchMode)]++;
-      tslp_tsk(5);
+      //tslp_tsk(5);
     }
   }
   brake(stop, endSpeed);
@@ -392,37 +417,6 @@ void paulturn_rot(int startSpeed, int maxSpeed, double angle, double leftratio, 
 
   resetRightDegree = ev3_motor_get_counts(motor_right);
   resetLeftDegree = ev3_motor_get_counts(motor_left);
-}
-
-// Abbremsen aus einer unbestimmten Geschwindigkeit, Rückgabe der benötigten Strecke
-int brake()
-{
-  int maxSpeed = cSpeed;
-  int startpos = abs(ev3_motor_get_counts(motor_left) + (-1) * ev3_motor_get_counts(motor_right)) / 2;
-  double localPGain = pGain;
-  //int degreeright = ev3_motor_get_counts(motor_right);
-  //int degreeleft = ev3_motor_get_counts(motor_left);
-  std::cout << "Bremse ab von Geschwindigkeit " << cSpeed << std::endl;
-  int distanceToBrake = (cSpeed - minSpeed) / (bfMove * 2);
-  int togo = distanceToBrake;
-  double iCorrection = 0;
-  while (togo >= 0)
-  {
-    cSpeed = std::max(int(togo * (bfMove * 1.3) + minSpeed), minSpeed);
-    motorCorrection(pGain, cSpeed, rightreset, leftreset;
-    togo = startpos + distanceToBrake - abs(ev3_motor_get_counts(motor_left) + (-1) * ev3_motor_get_counts(motor_right)) / 2;
-  }
-
-  brakeAtEnd(0);
-
-  updateRotationSensors(distanceToBrake, maxSpeed);
-  
-  //std::cout << "distanceToBrake:  " << distanceToBrake << " " << std::endl;
-  //std::cout << "motor_left:  " << resetLeftDegree << " " << std::endl;
-  //std::cout << "motor_right:  " << resetRightDegree << " " << std::endl;
-
-  std::cout << "Needed " << (ev3_motor_get_counts(motor_left) + ev3_motor_get_counts(motor_right)) / 2 - startpos << " to brake" << std::endl;
-  return abs(ev3_motor_get_counts(motor_left) + (-1) * ev3_motor_get_counts(motor_right)) / 2 - startpos;
 }
 
 */

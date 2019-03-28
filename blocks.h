@@ -92,3 +92,4 @@ extern int router[];
 extern int alignDuration;
 extern int miniDistance;
  
+extern int wallDistanceE;

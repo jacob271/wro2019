@@ -35,7 +35,7 @@ void brake(bool stop, int endSpeed);
 int frequencyDistribution(int colorCounter[]);
 bool lineDetection(std::string mode);
 void motorCorrection(double pGain, double cSpeed, int rightreset, int leftreset);
-double accDec(int togo, double brakeFactor, int accFactor, Stopwatch move, double startSpeed, int maxSpeed, int endSpeed, bool dec);
+double accDec(int togo, double brakeFactor, double accFactor, Stopwatch move, double startSpeed, int maxSpeed, int endSpeed, bool dec);
 
 void initializeSpeeds(int &speed1, int &speed2, int &speed3);
 void resetMotors(std::string mode, int leftValue, int rightValue, int maxSpeed);
@@ -76,8 +76,11 @@ extern const double bfMove;
 extern const double bfTurn1;
 extern const double bfTurn2;
 extern const double afMove;
+extern const double afLine1;
 
 extern double batteryFactor;
+
+extern int LSrMiddle;
 
 // Constants for vertical line alignment
 extern const double pi;

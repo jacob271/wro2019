@@ -300,6 +300,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
   Stopwatch move;
+  Stopwatch slowDown;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
   bool dec = false;
@@ -308,10 +309,12 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     dec = true;
   }
 
-  double pCorrection = 0;
+  double pCorrection = 0.0;
   double lastpCorrection = 0;
   bool continueMove = true;
   int colorCounter[8] = {0};
+  bool resetSlowDown = false;
+  int temporalMaxSpeed;
 
   while (continueMove)
   {
@@ -330,17 +333,26 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       continueMove = lineDetection(mode) == false;
     }
 
-    pCorrection = 50 - ev3_color_sensor_get_reflect(followSensor);
+    pCorrection = LSrMiddle - ev3_color_sensor_get_reflect(followSensor);
     if (rightEdge)
     {
       pCorrection = pCorrection * (-1);
     }
 
-    cSpeed = accDec(togo, bfMove, afMove, move, startSpeed, maxSpeed, endSpeed, dec);
-
-    if (abs(pCorrection) > 8)
+    //Bei zu großem Fehler bremst der Roboter ab, ansonsten wird accDec ganz normal ausgeführt
+    if (abs(pCorrection) > 15 && abs(cSpeed) > abs(maxSpeed * 0.5))
     {
-      cSpeed = cSpeed - (0.4 * abs(pCorrection));
+      if (resetSlowDown){
+        slowDown.reset();
+        temporalMaxSpeed = cSpeed;
+      }
+      resetSlowDown = false;
+      cSpeed = temporalMaxSpeed - (slowDown.getTime()/1000)*0.001;
+    }
+    else
+    {
+      resetSlowDown = true;
+      cSpeed = accDec(togo, bfMove, afLine1, slowDown, startSpeed, maxSpeed, endSpeed, dec);
     }
 
     display(pCorrection);

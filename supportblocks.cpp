@@ -79,7 +79,7 @@ void motorCorrection(double pGain, double cSpeed, int rightreset, int leftreset)
   ev3_motor_set_power(motor_right, cSpeed - pCorrection);
 }
 
-double accDec(int togo, double brakeFactor, int accFactor, Stopwatch move, double startSpeed, int maxSpeed, int endSpeed, bool dec)
+double accDec(int togo, double brakeFactor, double accFactor, Stopwatch move, double startSpeed, int maxSpeed, int endSpeed, bool dec)
 {
   if (togo * brakeFactor + abs(endSpeed) <= abs(cSpeed) && dec == true)
   {
@@ -91,22 +91,22 @@ double accDec(int togo, double brakeFactor, int accFactor, Stopwatch move, doubl
   {
     if (maxSpeed < 0)
     {
-      cSpeed = std::max(maxSpeed, (int)(startSpeed - move.getTime() / accFactor));
+      cSpeed = std::max(maxSpeed, (int)(startSpeed - move.getTime() * accFactor));
     }
     else
     {
-      cSpeed = std::min(maxSpeed, (int)(startSpeed + move.getTime() / accFactor));
+      cSpeed = std::min(maxSpeed, (int)(startSpeed + move.getTime() * accFactor));
     }
   }
   else if (abs(cSpeed) > abs(maxSpeed))
   {
     if (maxSpeed < 0)
     {
-      cSpeed = std::max(maxSpeed, (int)(startSpeed + move.getTime() / accFactor));
+      cSpeed = std::max(maxSpeed, (int)(startSpeed + move.getTime() * accFactor));
     }
     else
     {
-      cSpeed = std::min(maxSpeed, (int)(startSpeed - move.getTime() / accFactor));
+      cSpeed = std::min(maxSpeed, (int)(startSpeed - move.getTime() * accFactor));
     }
   }
   return cSpeed;

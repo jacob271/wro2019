@@ -37,7 +37,8 @@ int resetLeftDegree = 0;
 const double bfMove = 0.2;  // 0.1   6
 const double bfTurn1 = 0.5; // 9
 const double bfTurn2 = 0.4; // 0.3
-const double afMove = 4.0;
+const double afMove = 0.25;
+const double afLine1 = 0.05;
 
 // Constants for vertical line alignment
 const double pi = 3.14159265358979324;
@@ -51,6 +52,9 @@ int routerW[3] = {0};
 //int router[5] = {0};
 int alignDuration = 300;
 int miniDistance = 37;
+int leverDistance = 120;
+
+int LSrMiddle = (92 + 9) / 2;
 
 int wallDistanceE = 0;
 
@@ -68,7 +72,7 @@ void align(int duration)
         ev3_motor_set_power(motor_left, (-1) * (cSpeed - pCorrection * pGain));
         ev3_motor_set_power(motor_right, cSpeed + pCorrection * pGain);
     }
-    brake(true,0);
+    brake(true, 0);
 }
 
 void align1(int duration)
@@ -86,10 +90,17 @@ void align1(int duration)
     brake(true, 0);
 }
 
-void routerAbladen()
+void routerAbladen(int vonWo) //1 von Osten oder Westen; 0 von Norden oder Süden
 {
     resetMotors();
-    line2(35, 40, 0.7, 0.0, "degree", 211, 0, true);
+    if (vonWo == 1)
+    {
+        line2(35, 40, 0.7, 0.0, "degree", 405, 0, true);
+    }
+    else
+    {
+        line2(35, 40, 0.7, 0.0, "degree", 128, 0, true);
+    }
     mediumMotor(longMotor, -30, "degree", 242, true);
 }
 
@@ -97,7 +108,7 @@ void kabelSammeln()
 {
     resetMotors();
     line2(35, 40, 0.7, 0.0, "degree", 277, 0, true);
-    mediumMotor(doubleLever, 90, "degree", 120, true);
+    mediumMotor(doubleLever, 90, "degree", leverDistance, true);
 }
 
 void kabelAbladen()
@@ -107,7 +118,7 @@ void kabelAbladen()
     resetMotors();
     moveStraight(cSpeed, 40, "degree", 183, 20, true);
     tslp_tsk(300);
-    mediumMotor(doubleLever, -50, "degree", 120, true);
+    mediumMotor(doubleLever, -50, "degree", leverDistance, true);
     moveStraight(-10, -40, "degree", 400, 20, true);
 }
 
@@ -167,8 +178,8 @@ void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
 
 void test()
 {
-    align(alignDuration);
-    line1(1,70,0.1,0.18,LSr,true,"degree",2000,1,true);
+    //align(alignDuration);
+    line1(0, 70, 1, 20.0, LSr, true, "degree", 2000, 70, true);
 }
 
 void anfang()
@@ -178,46 +189,37 @@ void anfang()
     moveStraight(20, 3, "degree", 55, 20, true);
     align1(200);
     positionenScannen();
-    turn1(motor_right,1,false,4,"degree",-90,1,true);    
+    turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
     align(alignDuration);
-    line2(1,40,0.1,0.18,"degree",91,40,false);  
-    line1(40,40,0.1,0.18,LSr,true,"degree",128,40,false);
-    line2(40,3,0.1,0.18,"degree",550,3,false);  
-    line1(3,3,0.1,0.18,LSr,true,"degree",128,3,false);
-    line2(3,3,0.1,0.18,"degree",367,3,false);  
-    line1(3,3,0.1,0.18,LSr,true,"degree",128,3,false);
-    line2(3,3,0.1,0.18,"degree",360,3,false);  
+    line2(1, 40, 0.1, 0.18, "degree", 91, 40, false);
+    line1(40, 40, 0.1, 0.18, LSr, true, "degree", 128, 40, false);
+    line2(40, 3, 0.1, 0.18, "degree", 550, 3, false);
+    line1(3, 3, 0.1, 0.18, LSr, true, "degree", 128, 3, false);
+    line2(3, 3, 0.1, 0.18, "degree", 367, 3, false);
+    line1(3, 3, 0.1, 0.18, LSr, true, "degree", 128, 3, false);
+    line2(3, 3, 0.1, 0.18, "degree", 360, 3, false);
     //ev3_speaker_play_tone(NOTE_E4, 100);
-    line1(3,3,0.1,0.18,LSr,true,"blackleft",128,3,false);
-    line1(3,3,0.1,0.18,LSr,true,"degree",70,3,false);  
-    line2(3,3,0.1,0.18,"degree",500,1, true);
+    line1(3, 3, 0.1, 0.18, LSr, true, "blackleft", 128, 3, false);
+    line1(3, 3, 0.1, 0.18, LSr, true, "degree", 70, 3, false);
+    line2(3, 3, 0.1, 0.18, "degree", 500, 1, true);
     ev3_speaker_play_tone(NOTE_E4, 200);
     waitForButton();
-    turn1(motor_right, 1,false,3,"degree",-90,1,true);
+    turn1(motor_right, 1, false, 3, "degree", -90, 1, true);
     align(alignDuration);
-    routerScannen(HTr,"routerO");
+    routerScannen(HTr, "routerO");
 
-
-    
-
-
-
-    
     display(positions[0]);
     waitForButton();
     tslp_tsk(300);
-     display(positions[1]);
+    display(positions[1]);
     waitForButton();
     tslp_tsk(300);
-     display(positions[2]);
+    display(positions[2]);
     waitForButton();
     tslp_tsk(300);
-     display(positions[3]);
+    display(positions[3]);
     waitForButton();
     tslp_tsk(300);
-
-
-
 
     //routerO[] = routerScannen(LSr);
     //routerW[] = routerScannen(LSl);
@@ -246,8 +248,8 @@ void main_task(intptr_t unused)
 
     display(ev3_battery_voltage_mV());
     waitForButton();
-    //test();
-    //return;
+    test();
+    return;
     //Paul's Scheiße
     //arrays Nodes: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
 
@@ -258,14 +260,14 @@ void main_task(intptr_t unused)
     resetMotors();
     anfang();
 
-    int blau = 2; //je nach kombie
+    int blue = 2; //je nach kombie
     int red = 1;
     int green = 3;
     int yellow = 4;
 
     int fall1 = 0;
     //fallunterscheidung
-    /*
+
     // fall 1-4
     if (fall1 == 1 || fall1 == 2 || fall1 == 3)
     {
@@ -273,173 +275,203 @@ void main_task(intptr_t unused)
 
         if (routerW[1] == routerO[1])
         {
-            line2(1, 3, 0.1, 0.18, "dgeree", kurz, 1, true);
+            moveStraight(-1, -6, "crossline", 0, -1, true);
+            line2(1, 3, 0.1, 0.18, "degree", 205, 1, true);
             currentPosition = 1;
             routerW[1] = 3;
             routerO[1] = 3;
         }
         else if (routerW[2] == routerO[2])
         {
-            lineFollow(long);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            line2(1, 3, 0.1, 0.18, "degree", 205, 1, true);
             currentPosition = 2;
             routerW[2] = 3;
             routerO[2] = 3;
         }
         else
         {
-            move(back);
+            moveStraight(-1, -3, "crossline", 0, -3, false);
+            moveStraight(-3, -3, "degree", 133, 1, true);
             currentPosition = 0;
             routerW[0] = 3;
             routerO[0] = 3;
         }
-        turnLeft(back);
-        lineFollow();
-        longMotor(down);
-        turn2(180°);
-        lineFollow(); //bis node osten
-        longMotor(up);
+        turn1(motor_left, -1, false, -5, "degree", 90, -1, true);
+        align(alignDuration);
+        line2(1, 3, 0.1, 0.18, "degree", 295, 1, true);
+        mediumMotor(longMotor, 100, "degree", -315, true); //down
+        turn2(1, 6, "degree", 180, 1, true);
+        align(alignDuration);
+        line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+        line2(3, 3, 0.1, 0.18, "degree", 240, 1, true);
+        mediumMotor(longMotor, 100, "degree", 315, true); //up
 
         if (fall1 == 1)
         {
-            move(bisschen vor um gewehhseltes node zu platzieren)
-                move(back bis querlinie);
+            line2(1, 3, 0.1, 0.18, "degree", 132, 1, true);
+            moveStraight(-1, -6, "crossline", 0, -1, true);
+            moveStraight(1, 6, "degree", miniDistance, 1, true);
             if (currentPosition == 0)
             {
                 routerO[0] = 2;
-                turnLeft(back);
+                turn2(1, 6, "degree", -90, 1, true);
+                align(alignDuration);
                 if (routerO[1] == 0)
                 {
-                    lineFollow(short);
-                    currentPositon == 1;
+                    line2(1, 3, 0.1, 0.18, "crossline", 0, 1, true);
+                    currentPosition == 1;
                 }
                 else
                 {
-                    lineFollow(long);
-                    currentPositon == 2;
+                    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    line2(3, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
+                    line2(3, 3, 0.1, 0.18, "crossline", 0, 1, true);
+                    currentPosition == 2;
                 }
-                turnLeft();
+                moveStraight(1, 6, "degree", miniDistance, 1, true);
+                turn2(1, 6, "degree", 90, 1, true);
             }
             else if (currentPosition == 1)
             {
                 routerO[1] = 2;
+                int x = 1;
+                currentPosition == 0;
                 if (routerO[2] == 0)
                 {
-                    turnLeft(back);
-                    lineFollow();
-                    turnLeft();
-                    currentPositon == 2;
+                    currentPosition == 2;
+                    x = -1;
                 }
-                else
-                {
-                    turnRight(back);
-                    lineFollow();
-                    turnRight();
-                    currentPositon == 0;
-                }
+                turn2(1, 6, "degree", 90 * x, 1, true);
+                align(alignDuration);
+                line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                line2(3, 3, 0.1, 0.18, "degree", miniDistance, 1, true);
+                turn2(1, 6, "degree", 90 * (-x), 1, true);
             }
-            else
+            else // currentPosition == 2
             {
                 routerO[2] = 2;
-                turnRight(back);
+                turn2(1, 6, "degree", 90, 1, true);
                 if (routerO[1] == 0)
                 {
-                    lineFollow(short);
-                    currentPositon == 1;
+                    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    currentPosition == 1;
                 }
                 else
                 {
-                    lineFollow(long);
-                    currentPositon == 0;
+                    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    line2(3, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
+                    line2(3, 3, 0.1, 0.18, "crossline", 0, 1, true);
+                    currentPosition == 0;
                 }
-                turnRight();
+                moveStraight(3, 6, "degree", miniDistance, 1, true);
+                turn2(1, 6, "degree", -90, 1, true);
             }
+            align(alignDuration);
+            line2(1, 3, 0.1, 0.18, "degree", 240, 1, true);
         }
-        lineFollow();
-        if (currentPosition == 0)
+
+        moveStraight(1, 3, "degree", 125, 3, false);
+        line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+        moveStraight(3, 3, "degree", miniDistance, 1, true);
+        if (currentPosition == 0 && currentPosition == 2)
         {
-            turnRight();
-            lineFollow();
-            turnLeft();
-            lineFollow(); //bevor Schwabell absetzen
-        }
-        else if (currentPosition == 1)
-        {
-            lineFollow(); //bevor Schwabell absetzen
-        }
-        else
-        {
-            turnLeft();
-            lineFollow();
-            turnRight();
-            lineFollow(); //bevor Schwabell absetzen
+            int x = 1;
+            if (currentPosition == 2)
+            {
+                x = -1;
+            }
+            turn2(1, 6, "degree", 90 * (-x), 1, true);
+            line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 1, true);
+            turn2(1, 6, "degree", 90 * x, 1, true);
         }
     }
     else
     { //fall4
-        if(routerW[1]==1||(routerW[0] == 1){
-            lineFollow(long); //um zu 2 zu gehen
-        }else{
-            lineFollow(short); //um zu 1 zu gehen
-        }            
-        turnLeft(back);            
-        lineFollow(); //bis Node unten im Robotor ist
-        longMotor(down); //um Node festzuhalten
-        move(back);
-        turn2(); //nach Links            
-        if(routerW[1]==1){
-            lineFollow(long); // um von 2 zu 0 zu gehen
-        }else{ // routerW[2] == 0
-            lineFollow(short); // um von 1 zu 0 zu gehen oder von 2 zu 1
-        }         
-        turnRight(back);
-        longMotor(down);
-        lineFollow(); //bis Node eingesammelt ist
-        longMotor(up);
-        if (routerW[0] == 1){
-            turnLeft(180°);
-            turnRight();
-            lineFollow(bis Querlinie);
-            move(mini);
-            turnLeft();
-            lineFollow(bis fakeQuerlinie);
-            move(mini);
-            turn2(nach Rechts);
-            lineFollow(bis zweiteQuerlinie);
-            move(mini);
-            turn2(nach Links);
-            lineFollow(); //bevor Schwabell absetzen
-        }else {
-            turnLeft();
-            move(); //kleines Stückchen damit bei der nächsten Drehung auf Linie ist
-            turLeft();
-            move(); // bis auf linie um Linie zu folgen
-            lineFollow(bis fakeQuerlinie);
-            move(mini);
-            turn2(nach Links);
-            lineFollow(bis zweiteQuerlinie);
-            move(mini);
-            turn2(nach Rechts);
-            lineFollow(); //bevor Schwabell absetzen
+        if (routerW[1] == 1 || (routerW[0] == 1))
+        {
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            line2(1, 3, 0.1, 0.18, "degree", 205, 1, true); //um zu 2 zu gehen
+        }
+        else
+        {
+            moveStraight(-1, -6, "crossline", 0, -1, true);
+            line2(1, 3, 0.1, 0.18, "degree", 205, 1, true); //um zu 1 zu gehen
+        }
+        turn1(motor_left, -1, false, -5, "degree", 90, -1, true);
+        align(alignDuration);
+        line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+        line2(3, 3, 0.1, 0.18, "degree", 202, 1, true);
+        mediumMotor(longMotor, 100, "degree", -315, true); //down
+        moveStraight(-1, -6, "crossline", 0, -1, true);
+        moveStraight(1, 3, "degree", miniDistance, 1, true);
+        turn2(1, 6, "degree", -90, 1, true);
+        if (routerW[1] == 1)
+        {
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 3, false);
+            line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false); // um von 2 zu 0 zu gehen
+        }
+        else
+        {                                                     // routerW[2] == 0
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false); // um von 1 zu 0 zu gehen oder von 2 zu 1
+        }
+        moveStraight(3, 3, "degree", miniDistance, 3, false);
+        line2(3, 3, 0.1, 0.18, "degree", 184, 1, true); //moveBackDistance
+        turn1(motor_right, -1, false, -5, "degree", 90, -1, true);
+        align(alignDuration);
+        line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+        line2(3, 3, 0.1, 0.18, "degree", miniDistance, 1, true); //bis Node eingesammelt ist
+        mediumMotor(longMotor, 100, "degree", 315, true);        //up
+        if (routerW[0] == 1)
+        {
+            turn1(motor_left, 1, false, 5, "degree", 180, 1, true);
+            turn1(motor_right, 1, false, 5, "degree", 90, 1, true);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 3, false);
+            line2(3, 3, 0.1, 0.18, "crossline", 0, 1, true);
+            for (int i = 0; i < 2; i++)
+            {
+                turn2(1, 6, "degree", 90, 1, true);
+                line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 1, true);
+            }
+            turn2(1, 6, "degree", -90, 1, true); //bevor Schwabell absetzen
+        }
+        else
+        {
+            turn1(motor_left, 1, false, 5, "degree", 90, 1, true);
+            moveStraight(1, 6, "degree", 120, 1, true);
+            turn1(motor_left, 1, false, 5, "degree", 90, 1, true);
+            moveStraight(1, 6, "degree", 40, 1, true);
+            align(alignDuration);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 1, true);
+            turn2(1, 6, "degree", -90, 1, true);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 1, true);
+            turn2(1, 6, "degree", 90, 1, true); //bevor Schwabell absetzen
         }
     }
-
-    move();
-    schwabellMotor(down); //schwabell absetzen
-    move(back);
-    turn2(180°);
-    lineFollow(bis Querlinie);
-    move(mini);
-
+    line2(1, 3, 0.1, 0.18, "degree", 459, 1, true);
+    moveStraight(1, 6, "degree", 174, 1, true);
+    mediumMotor(doubleLever, -50, "degree", leverDistance, true); //down
+    moveStraight(-1, -6, "degree", 120, -1, true);
+    turn2(1, 6, "degree", 180, 1, true);
+    line2(1, 3, 0.1, 0.18, "crossline", 0, 1, true);
+    moveStraight(1, 6, "degree", miniDistance, 1, true);
     if (fall1 == 3)
     {
-        turn2(nach Rechts);
+        turn2(1, 6, "degree", 90, 1, true);
     }
     else
     {
-        turn2(nach Links);
+        turn2(1, 6, "degree", -90, 1, true);
     }
-    lineFollow(bis Querlinie);
-    move(mini);
+    align(alignDuration);
+    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+    line2(3, 3, 0.1, 0.18, "degree", miniDistance, 1, true);
     int currentColor; // 1 = red, 2 = blue
     for (int i = 0; i < 2; i++)
     {
@@ -455,109 +487,125 @@ void main_task(intptr_t unused)
             x = -1;
         }
 
-        if ((currentColor == 1 && (rot == 1 || rot == 3)) || (currentColor == 2 && (blau == 1 || blau == 3)))
+        if ((currentColor == 1 && (red == 1 || red == 3)) || (currentColor == 2 && (blue == 1 || blue == 3)))
         {
-            turn2(nachRechts, x);
-            lineFollow();
-            longMotor(halfDown); //node absetzen
-            move(back);
+            turn2(1, 6, "degree", 90 * x, 1, true);
+            routerAbladen(1); //node absetzen
+            moveStraight(-1, -6, "degree", 128, -1, true);
             if (i == 0)
             {
-                schwabellMotor(up);
-                longMotor(up);
-                move(back); //bis kurz vor Node
-                longMotor(down);
-                move();        //evt. Linefollow!!
-                longMotor(up); //node von unten nach oben getauscht
+                mediumMotor(doubleLever, 90, "degree", leverDistance, true); //up
+                mediumMotor(longMotor, 100, "degree", 242, true);            //up
+                moveStraight(-1, -6, "degree", 257, -1, true);               //bis kurz vor Node
+                mediumMotor(longMotor, 100, "degree", -315, true);           //down
+                moveStraight(1, 6, "degree", 184, 1, true);                  //evt. Linefollow!!
+                mediumMotor(longMotor, 100, "degree", 315, true);            //up//node von unten nach oben getauscht
             }
-            turn2(180°); // (x)
-            lineFollow(bis Querlinie);
-            move(mini);
+            turn2(1, 6, "degree", 180, 1, true);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 1, true);
             if (i == 0)
             {
-                turn2(nach Links, x);
-                lineFollow(bis zweite Querlinie);
+                turn2(1, 6, "degree", 90 * (-x), 1, true);
+                line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 3, false);
+                line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 1, true);
             }
             else if (i == 1)
             {
-                turn2(nach rechts);
+                turn2(1, 6, "degree", 90, 1, true);
                 if (currentColor == 1)
                 {
-                    lineFollow(bis Querlinie);
+                    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
                 }
                 else
                 {
-                    lineFollow(bis dritte Querlinie);
+                    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    moveStraight(3, 3, "degree", miniDistance, 3, false);
+                    line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    moveStraight(3, 3, "degree", miniDistance, 3, false);
+                    line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
                 }
-                move(mini);
-                turn2(nach Links); // eher turn1 nach links, macht aber eventuell Probleme mit der Positionierung
+                moveStraight(3, 3, "degree", miniDistance, 1, true);
+                turn2(1, 6, "degree", 90, 1, true);
             }
         }
         else
         {
-            lineFollow(bis Querlinie);
-            move(mini);
-            turn2(nach rechts, x);
-            lineFollow(bis Fakequerlinie);
-            move(mini);
-            turn2(nach rechts, x);
-            lineFollow();        //bis zum Nodeabsetzen
-            longMotor(halfDown); //node absetzen
-            move(back);          //darf nicht zu lang sein
-            turn2(180°);
-            lineFollow(bis Querlinie);
-            move(mini);
-            turn2(nach links, x);
-            lineFollow(bis Fakequerlinie);
+            moveStraight(1, 6, "degree", miniDistance, 1, true); // da er sonst auf der Linie anfängt
+            for (int i = 0; i < 2; i++)
+            {
+                line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 1, true);
+                turn2(1, 6, "degree", 90 * x, 1, true);
+            }
+            routerAbladen(0); //node absetzen
+            moveStraight(-1, -6, "degree", 128, -1, true);
+            mediumMotor(longMotor, 30, "degree", 242, true); //Up
+            turn2(1, 6, "degree", 90 * x, 1, true);
+            align(alignDuration);
+            line2(1, 3, 0.1, 0.18, "crossline", 0, 1, true);
             if (i == 0)
             {
-                schwabellMotor(up);
-                longMotor(up);
-                move(back); //bis kurz vor Node
-                longMotor(down);
-                lineFollow();  //bis node eingesammelt
-                longMotor(up); //node von unten nach oben getauscht
-                lineFollow(bis Fakequerlinie);
-                move(mini);
-                turn2(nach Links, x);
-                lineFollow(bis dritte Querlinie);
+                mediumMotor(doubleLever, 50, "degree", leverDistance, true); //up
+                moveStraight(-1, -6, "degree", 257, -1, true);               //bis kurz vor Node
+                mediumMotor(longMotor, 100, "degree", -315, true);           //down
+                moveStraight(1, 6, "degree", 184, 1, true);                  //evt. Linefollow!!
+                mediumMotor(longMotor, 100, "degree", 315, true);            //down//node von unten nach oben getauscht
+                line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 1, true);
+                turn2(1, 6, "degree", 90 * (-x), 1, true);
+
+                line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 3, false);
+                line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 3, false);
+                line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                moveStraight(3, 3, "degree", miniDistance, 1, true);
             }
             else if (i == 1)
             {
-                move(mini);
+                moveStraight(1, 3, "degree", miniDistance, 1, true);
                 if (currentColor == 2)
                 {
-                    turn2(nach rechts);
-                    lineFollow(bis vierte Querlinie);
-                    move(mini);
-                    turn2(nach Links);
+                    turn2(1, 6, "degree", 90, 1, true);
+                    align(alignDuration);
+                    line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    moveStraight(3, 3, "degree", miniDistance, 3, false);
+                    line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    moveStraight(3, 3, "degree", miniDistance, 3, false);
+                    line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    moveStraight(3, 3, "degree", miniDistance, 3, false);
+                    line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                    moveStraight(3, 3, "degree", miniDistance, 1, true);
+                    turn2(1, 6, "degree", -90, 1, true);
                 }
             }
         }
     }
-
-    lineFollow(bis kurz vor Ecke); // zum Kabel einsammeln
-    turnRight(45°);                //evtl. 50/55
-    turnLeft(45°);                 //evtl. 50/55
-    schwabellMotor(down);
-    lineFollow(bis Schwabell eingesammelt);
-    schwabellMotor(up);
-    move(back);
-    turn2(nach Links);
-
-    mediumMotor(longMotor, 100, "time", 300, true); //oben
+    line2(1, 3, 0.1, 0.18, "degree", 550, 1, true);
+    turn1(motor_right, 1, false, 5, "degree", 50, 1, true);       //evtl. größerer winkel
+    turn1(motor_left, 1, false, 5, "degree", 50, 1, true);        //evtl. größerer winkel
+    mediumMotor(doubleLever, -90, "degree", leverDistance, true); //schwabell down
+    line2(1, 3, 0.1, 0.18, "degree", 165, 1, true);
+    mediumMotor(doubleLever, 90, "degree", leverDistance, true); //schwabell up
+    moveStraight(-1, -6, "crossline", 0, -1, true);
+    moveStraight(1, 6, "degree", miniDistance, 1, true);
+    turn2(1, 6, "degree", -90, 1, true);
 
     int fall2;
     //fallunterscheidung 1-10_____________________________________________________________________________________________________________________________________________
 
     int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
+    int currentPosition;
+    int currentPosition1 = 5;
 
     if (fall2 == 1 || fall2 == 4 || fall2 == 10) //Fall 1 und 4 und 10
     {
         if (fall2 == 1 || fall2 == 4)
         {
-            int currentPosition;
-            int currentPosition1 = 5;
+
             if (routerW[2] == 0)
             {
                 currentPosition = 2;
@@ -586,7 +634,7 @@ void main_task(intptr_t unused)
                 routerAufnehmen(motor_right);
             }
             //auf Cross vor Nodes (Westen)
-            if ((currentPosition == 1 && router0[1] == 3) || (currentPosition == 2 && router0[2] == 3) || (currentPosition == 3 && router0[3] == 3))
+            if ((currentPosition == 1 && routerO[1] == 3) || (currentPosition == 2 && routerO[2] == 3) || (currentPosition == 3 && routerO[3] == 3))
             {
                 turn2(1, 4, "degree", 180, 1, true);
             }
@@ -611,7 +659,7 @@ void main_task(intptr_t unused)
             else
             {
                 int x = 1;
-                if ((currentPosition == 2 && routerO[0] == 3) || (currentPosition == 0 && router0[2] == 3))
+                if ((currentPosition == 2 && routerO[0] == 3) || (currentPosition == 0 && routerO[2] == 3))
                 {
                     x = -1;
                     currentPosition = 0;
@@ -644,8 +692,8 @@ void main_task(intptr_t unused)
                     turn2(1, 4, "degree", 90 * x, 1, true);
                     if (routerO[1] == 0)
                     {
-                        line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false)
-                            currentPosition1 = 1;
+                        line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
+                        currentPosition1 = 1;
                     }
                     else
                     {
@@ -729,7 +777,7 @@ void main_task(intptr_t unused)
         else
         { //fall 10
             turn2(1, 4, "degree", 180, 1, true);
-            for (int i = 0, i < 2, i++)
+            for (int i = 0; i < 2; i++)
             {
                 line2(1, 3, 0.1, 0.18, "crossline", 0, 1, true);
                 moveStraight(1, 3, "degree", miniDistance, 1, true);
@@ -761,7 +809,7 @@ void main_task(intptr_t unused)
             }
         }
         line2(3, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
-        line2(3, 3, 0, 0.1, 0.18, "degree", 184, true); //moveBackDistance
+        line2(3, 3, 0.1, 0.18, "degree", 184, 1, true); //moveBackDistance
         turn1(secondTemporalMotor, 1, false, -5, "degree", 90, 1, true);
         align(alignDuration);
         if (fall2 == 1) //Ausgangsposition long oben
@@ -796,7 +844,7 @@ void main_task(intptr_t unused)
                     line2(3, 3, 0.1, 0.18, "crossline", 0, 1, true);
                 }
                 line2(3, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
-                line2(3, 3, 0, 0.1, 0.18, "degree", 184, true); //moveBackDistance
+                line2(3, 3, 0.1, 0.18, "degree", 184, 1, true); //moveBackDistance
                 temporalMotor = motor_right;
                 if (x == 1)
                 {
@@ -815,7 +863,7 @@ void main_task(intptr_t unused)
                 turn2(1, 4, "degree", 90 * x, 1, true);
                 line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
                 line2(3, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
-                line2(3, 3, 0, 0.1, 0.18, "degree", 184, true); //moveBackDistance
+                line2(3, 3, 0.1, 0.18, "degree", 184, 1, true); //moveBackDistance
                 temporalMotor = motor_right;
                 if (currentPosition == 2)
                 {
@@ -851,7 +899,7 @@ void main_task(intptr_t unused)
     else if (fall2 == 2 || fall2 == 3) //Fall 2 und 3
     {
         turn2(1, 4, "degree", 180, 1, true);
-        for (int i = 0, i < 2, i++)
+        for (int i = 0; i < 2; i++)
         {
             line2(1, 3, 0.1, 0.18, "crossline", 0, 1, true);
             moveStraight(1, 3, "degree", miniDistance, 1, true);
@@ -882,7 +930,7 @@ void main_task(intptr_t unused)
             line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
         }
         line2(3, 3, 0.1, 0.18, "degree", miniDistance, 3, false);
-        line2(3, 3, 0, 0.1, 0.18, "degree", 184, true); //moveBackDistance
+        line2(3, 3, 0.1, 0.18, "degree", 184, 1, true); //moveBackDistance
         turn1(secondTemporalMotor, 1, false, -5, "degree", 90, 1, true);
         align(alignDuration);
         line2(1, 3, 0.1, 0.18, "crossline", 0, 3, false);
@@ -894,7 +942,7 @@ void main_task(intptr_t unused)
             temporalMotor = motor_left;
             if (currentPosition == 2)
             {
-                temporalMotor = motor_ right;
+                temporalMotor = motor_right;
             }
             if (routerW[2])
                 turn1(temporalMotor, 1, false, 5, "degree", 90, 1, true);
@@ -903,8 +951,6 @@ void main_task(intptr_t unused)
     else if (fall2 == 5 || fall2 == 6)
     {
     }
-
-    */
 
     int neededTime = run.getTime();
     std::cout << "Needed time: " << neededTime << std::endl;

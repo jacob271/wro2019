@@ -38,7 +38,7 @@ const double bfMove = 0.2;  // 0.1   6
 const double bfTurn1 = 0.5; // 9
 const double bfTurn2 = 0.4; // 0.3
 const double afMove = 0.25;
-const double afLine1 = 0.05;
+const double afLine1 = 0.18;
 
 // Constants for vertical line alignment
 const double pi = 3.14159265358979324;
@@ -178,8 +178,19 @@ void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
 
 void test()
 {
+   /* while(abs(measureMotorRight()) < 10000){
+        ev3_motor_set_power(motor_left, -100);
+    ev3_motor_set_power(motor_right, 100);
+        std::cout << "R: "  << abs(measureMotorRight()) << " " << "L: "<< abs(measureMotorLeft()) << std::endl;
+
+    }
+return;
+*/
     //align(alignDuration);
-    line1(0, 70, 1, 20.0, LSr, true, "degree", 2000, 70, true);
+    line1(20, 100, 0.5, 10, LSr, true, "degree", 2500, 100, true);
+    waitForButton();
+    line1(15, 100, 1, 25, LSr, true, "degree", 2500, 80, true);
+return;
 }
 
 void anfang()
@@ -249,6 +260,7 @@ void main_task(intptr_t unused)
     display(ev3_battery_voltage_mV());
     waitForButton();
     test();
+    std::cout.rdbuf(coutbuf);
     return;
     //Paul's Scheiße
     //arrays Nodes: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
@@ -374,7 +386,7 @@ void main_task(intptr_t unused)
         moveStraight(1, 3, "degree", 125, 3, false);
         line2(3, 3, 0.1, 0.18, "crossline", 0, 3, false);
         moveStraight(3, 3, "degree", miniDistance, 1, true);
-        if (currentPosition == 0 && currentPosition == 2)
+        if (currentPosition == 0 || currentPosition == 2)
         {
             int x = 1;
             if (currentPosition == 2)

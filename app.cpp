@@ -34,11 +34,12 @@ double pGain = 0.02; //0.017
 double pGainTurn2 = 1.5;
 int resetRightDegree = 0;
 int resetLeftDegree = 0;
-const double bfMove = 0.2;  // 0.1   6
-const double bfTurn1 = 0.5; // 9
-const double bfTurn2 = 0.4; // 0.3
-const double afMove = 0.25;
-const double afLine1 = 0.18;
+const double bfMove = 0.2; // Je höher, desto früher wird gebremst
+const double bfTurn1 = 0.5;
+const double bfTurn2 = 0.4;
+const double bfLine1 = 1;
+const double afMove = 0.25; //Beschleunigung in Einheiten pro Millisekunde
+const double afLine1 = 0.25;
 
 // Constants for vertical line alignment
 const double pi = 3.14159265358979324;
@@ -124,14 +125,17 @@ void kabelAbladen()
 
 void positionenScannen()
 {
-    line1(1, 40, 0.5, 0.0, LSr, false, "degree", 315, 40, false); //810
+    line1(1, 90, 0.4, 8, LSr, false, "degree", 315, 40, false); //810
     for (int i = 0; i < 3; i++)
     {
-        positions[i] = line1(50, 50, 0.5, 0.0, LSr, false, "degree", 147, 60, false, true, HTr, "color");
-        display(positions[1]);
+        ev3_speaker_play_tone(NOTE_E4, 10);
+        positions[i] = line1(cSpeed, 90, 0.4, 4, LSr, false, "degree", 146, 60, false, true, HTr, "color");
+        //display(positions[i]);
     }
+    ev3_speaker_play_tone(NOTE_E4, 10);
+
     positions[3] = findColor(positions, "positions");
-    line1(50, 50, 0.5, 0.0, LSr, false, "degree", 425, 1, true); //810
+    line1(cSpeed, 100, 0.4, 8, LSr, false, "degree", 425, 1, true); //810
 }
 
 void routerScannen(sensor_port_t searchSensor, std::string mode)
@@ -178,7 +182,9 @@ void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
 
 void test()
 {
-   /* while(abs(measureMotorRight()) < 10000){
+    //turn2(10,40,"degree",90,10,true);
+    //waitForButton();
+    /* while(abs(measureMotorRight()) < 10000){
         ev3_motor_set_power(motor_left, -100);
     ev3_motor_set_power(motor_right, 100);
         std::cout << "R: "  << abs(measureMotorRight()) << " " << "L: "<< abs(measureMotorLeft()) << std::endl;
@@ -187,38 +193,24 @@ void test()
 return;
 */
     //align(alignDuration);
-    line1(20, 100, 0.5, 10, LSr, true, "degree", 2500, 100, true);
+    line1(20, 100, 0.4, 8, LSr, true, "degree", 2500, 10, true, true, HTr, "color");
     waitForButton();
     line1(15, 100, 1, 25, LSr, true, "degree", 2500, 80, true);
-return;
+    return;
 }
 
 void anfang()
 {
     moveStraight(20, 30, "degree", 18, 20, true);
-    turn1(motor_left, 1, false, 3, "degree", 90, 1, true);
-    moveStraight(20, 3, "degree", 55, 20, true);
-    align1(200);
+    turn1(motor_left, 1, false, 4, "degree", 90, 1, true);
+    moveStraight(20, 3, "degree", 55, 3, false);
     positionenScannen();
     turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
-    align(alignDuration);
-    line2(1, 40, 0.1, 0.18, "degree", 91, 40, false);
-    line1(40, 40, 0.1, 0.18, LSr, true, "degree", 128, 40, false);
-    line2(40, 3, 0.1, 0.18, "degree", 550, 3, false);
-    line1(3, 3, 0.1, 0.18, LSr, true, "degree", 128, 3, false);
-    line2(3, 3, 0.1, 0.18, "degree", 367, 3, false);
-    line1(3, 3, 0.1, 0.18, LSr, true, "degree", 128, 3, false);
-    line2(3, 3, 0.1, 0.18, "degree", 360, 3, false);
-    //ev3_speaker_play_tone(NOTE_E4, 100);
-    line1(3, 3, 0.1, 0.18, LSr, true, "blackleft", 128, 3, false);
-    line1(3, 3, 0.1, 0.18, LSr, true, "degree", 70, 3, false);
-    line2(3, 3, 0.1, 0.18, "degree", 500, 1, true);
-    ev3_speaker_play_tone(NOTE_E4, 200);
-    waitForButton();
-    turn1(motor_right, 1, false, 3, "degree", -90, 1, true);
-    align(alignDuration);
+    line1(20, 4, 0.4, 8, LSr, true, "degree", 1653, 4, false);
+    line1(cSpeed, 4, 0.4, 8, LSr, true, "crossline", 1653, 4, false);
+    line1(cSpeed, 4, 0.4, 8, LSr, true, "degree", 569, 10, true);
+    turn1(motor_right,1,false,4,"degree",90,1,true);
     routerScannen(HTr, "routerO");
-
     display(positions[0]);
     waitForButton();
     tslp_tsk(300);
@@ -259,9 +251,9 @@ void main_task(intptr_t unused)
 
     display(ev3_battery_voltage_mV());
     waitForButton();
-    test();
-    std::cout.rdbuf(coutbuf);
-    return;
+    //test();
+    //std::cout.rdbuf(coutbuf);
+    //return;
     //Paul's Scheiße
     //arrays Nodes: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
 
@@ -272,6 +264,7 @@ void main_task(intptr_t unused)
     resetMotors();
     anfang();
 
+    return;
     int blue = 2; //je nach kombie
     int red = 1;
     int green = 3;

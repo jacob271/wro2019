@@ -313,17 +313,16 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   int colorCounter[8] = {0};
   bool resetSlowDown = false;
   int temporalMaxSpeed;
-  double lastpErrors[3] = {0};
+  double lastpErrors[4] = {0};
   int i = 0;
   double slowDownReset = 0;
 
+  int counter = 0;
   while (continueMove)
   {
+    counter++;   //Überprüfen der Schleifendurchläufe
     tslp_tsk(1); //Reduziert Schleifendurchläufe auf 500 pro Sekunde
     int togo = wert - (abs(measureMotorRight() - measureMotorLeft()) / 2);
-
-    //double localpGain = (abs(cSpeed)/100)*pGain + pGain/2;
-    //double localdGain = (abs(cSpeed)/100)*dGain + dGain/2;
 
     if (mode == "degree")
     {
@@ -353,13 +352,13 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
         temporalMaxSpeed = cSpeed;
       }
       resetSlowDown = false;
-      cSpeed = temporalMaxSpeed - (slowDown.getTime() - slowDownReset) * 0.7 - 1;
+      cSpeed = temporalMaxSpeed - (slowDown.getTime() - slowDownReset) * 0.25 - 0.5;
       startSpeed = cSpeed;
     }
     else
     {
       resetSlowDown = true;
-      cSpeed = accDec(togo, bfMove, afLine1, slowDown.getTime() - slowDownReset, startSpeed, maxSpeed, endSpeed, dec);
+      cSpeed = accDec(togo, bfLine1, afLine1, slowDown.getTime() - slowDownReset, startSpeed, maxSpeed, endSpeed, dec);
     }
 
     //display(pError);
@@ -372,24 +371,24 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     lastpErrors[i] = pError;
 
     i++;
-    if (i > 2)
+    if (i > 3)
     {
       i = 0;
+      if (colorSearch)
+      {
+        colorCounter[colorDetection_rgb(searchSensor, searchMode)]++;
+        //tslp_tsk(5);
+      }
     }
     lastpError = lastpErrors[i];
 
-    
-
     std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;
 
-    if (colorSearch)
-    {
-      colorCounter[colorDetection_rgb(searchSensor, searchMode)]++;
-      //tslp_tsk(5);
-    }
+    
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
+  std::cout << "Schleifendurchläufe: " << counter / (move.getTime() / 1000) << std::endl;
 
   if (colorSearch)
   {

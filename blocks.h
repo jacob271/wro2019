@@ -75,6 +75,8 @@ extern int resetLeftDegree;
 extern const double bfMove;
 extern const double bfTurn1;
 extern const double bfTurn2;
+extern const double bfLine1;
+
 extern const double afMove;
 extern const double afLine1;
 

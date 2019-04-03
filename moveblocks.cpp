@@ -232,7 +232,7 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
 //Geradeaus ohne Farbscan-Option
 int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop)
 {
-  moveStraight(startSpeed, maxSpeed, mode, wert, endSpeed, stop, false, HTr, " ");
+  return moveStraight(startSpeed, maxSpeed, mode, wert, endSpeed, stop, false, HTr, " ");
 }
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)

@@ -125,7 +125,9 @@ void brake(bool stop, int endSpeed)
   }
   else
   {
-    cSpeed;
+    if (abs(cSpeed) < abs(endSpeed)){
+      cSpeed = endSpeed;
+    }
   }
 }
 

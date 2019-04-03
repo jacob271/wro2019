@@ -56,7 +56,7 @@ int speedLevel(int level)
   switch (abs(level))
   {
   case 1:
-    return (10 * batteryFactor * (level / abs(level))); //Anfahren speed
+    return (20 * batteryFactor * (level / abs(level))); //Anfahren speed
   case 2:
     return (50 * batteryFactor * (level / abs(level)));
   case 3:
@@ -125,7 +125,7 @@ void brake(bool stop, int endSpeed)
   }
   else
   {
-    cSpeed = endSpeed;
+    cSpeed;
   }
 }
 
@@ -280,7 +280,7 @@ int findColor(int colors[], std::string mode)
     {
       color = color + colors[i];
     }
-    std::cout << "lastColor: " << 14 - color << " ";
+    std::cout << "lastColor: " << 14 - color << std::endl;
     //Summe der Farben ist immer 14
     return 14 - color;
   }
@@ -291,7 +291,7 @@ int findColor(int colors[], std::string mode)
     {
       color = color + colors[i];
     }
-    std::cout << "lastColor: " << 9 - color << " ";
+    std::cout << "lastColor: " << 9 - color << std::endl;
     //Summe der Farben ist immer 9
     return 9 - color;
   }

@@ -126,9 +126,10 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
 {
 
   //Dreht sich nach rechts für wert größer null
-  if (wert < 0)
+  if (wert > 0)
   {
     startSpeed = startSpeed * (-1);
+    maxSpeed = maxSpeed * (-1);
     cSpeed = cSpeed * (-1);
     endSpeed = endSpeed * (-1);
   }
@@ -236,21 +237,32 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
-  Stopwatch move;
-  bool dec = false;
 
+  resetMotors();
+  
+  Stopwatch move;
+  Stopwatch slowDown;
+  initializeSpeeds(startSpeed, maxSpeed, endSpeed);
+  cSpeed = startSpeed;
+  bool dec = false;
   if (mode == "degree")
   {
     dec = true;
   }
-  initializeSpeeds(startSpeed, maxSpeed, endSpeed);
-  cSpeed = startSpeed;
-  double lastpCorrection = 0;
+  double lastpError = 0.0;
   bool continueMove = true;
   int colorCounter[8] = {0};
+  bool resetSlowDown = false;
+  int temporalMaxSpeed;
+  double lastpErrors[4] = {0};
+  int i = 0;
+  double slowDownReset = 0;
 
+  int counter = 0;
   while (continueMove)
   {
+    counter++;   //Überprüfen der Schleifendurchläufe
+    tslp_tsk(1); //Reduziert Schleifendurchläufe auf 500 pro Sekunde
     int togo = wert - (abs(measureMotorRight() - measureMotorLeft()) / 2);
 
     if (mode == "degree")
@@ -265,25 +277,52 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     {
       continueMove = lineDetection(mode) == false;
     }
-    cSpeed = accDec(togo, bfMove, afMove, move.getTime(), startSpeed, maxSpeed, endSpeed, dec);
 
-    double pCorrection = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
+    double pError = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
 
-    //std::cout << lLeft << " " << lRight << " " << lLeft + lRight << std::endl;
-
-    display(pCorrection);
-    ev3_motor_set_power(motor_left, (cSpeed - pCorrection * pGain - (pCorrection - lastpCorrection) * dGain) * (-1));
-    ev3_motor_set_power(motor_right, cSpeed + pCorrection * pGain + (pCorrection - lastpCorrection) * dGain);
-    lastpCorrection = pCorrection;
-
-    if (colorSearch)
+    //Bei zu großem Fehler bremst der Roboter ab, ansonsten wird accDec ganz normal ausgeführt
+    if (abs(pError) > 20 && abs(cSpeed) > 30)
     {
-      colorCounter[colorDetection_rgb(searchSensor, searchMode)]++;
-      tslp_tsk(5);
+      if (resetSlowDown)
+      {
+        slowDownReset = slowDown.getTime();
+        temporalMaxSpeed = cSpeed;
+      }
+      resetSlowDown = false;
+      cSpeed = temporalMaxSpeed - (slowDown.getTime() - slowDownReset) * 0.25 - 0.5;
+      startSpeed = cSpeed;
     }
+    else
+    {
+      resetSlowDown = true;
+      cSpeed = accDec(togo, bfLine, afLine, slowDown.getTime() - slowDownReset, startSpeed, maxSpeed, endSpeed, dec);
+    }
+
+    //display(pError);
+
+    double pCorrection = pError * pGain;
+    double dCorrection = (pError - lastpError) * dGain;
+
+    ev3_motor_set_power(motor_left, (cSpeed - pCorrection - dCorrection) * (-1));
+    ev3_motor_set_power(motor_right, cSpeed + pCorrection + dCorrection);
+    lastpErrors[i] = pError;
+
+    i++;
+    if (i > 3)
+    {
+      i = 0;
+      if (colorSearch)
+      {
+        colorCounter[colorDetection_rgb(searchSensor, searchMode)]++;
+      }
+    }
+    lastpError = lastpErrors[i];
+
+    std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;    
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
+  std::cout << "Schleifendurchläufe: " << counter / (move.getTime() / 1000) << std::endl;    
 
   if (colorSearch)
   {
@@ -344,7 +383,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     }
 
     //Bei zu großem Fehler bremst der Roboter ab, ansonsten wird accDec ganz normal ausgeführt
-    if (abs(pError) > 15 && abs(cSpeed) > abs(maxSpeed * 0.3))
+    if (abs(pError) > 15 && abs(cSpeed) > 30)
     {
       if (resetSlowDown)
       {
@@ -358,7 +397,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     else
     {
       resetSlowDown = true;
-      cSpeed = accDec(togo, bfLine1, afLine1, slowDown.getTime() - slowDownReset, startSpeed, maxSpeed, endSpeed, dec);
+      cSpeed = accDec(togo, bfLine, afLine, slowDown.getTime() - slowDownReset, startSpeed, maxSpeed, endSpeed, dec);
     }
 
     //display(pError);
@@ -382,9 +421,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     }
     lastpError = lastpErrors[i];
 
-    std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;
-
-    
+    std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;    
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);

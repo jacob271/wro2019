@@ -37,9 +37,9 @@ int resetLeftDegree = 0;
 const double bfMove = 0.2; // Je höher, desto früher wird gebremst
 const double bfTurn1 = 0.5;
 const double bfTurn2 = 0.4;
-const double bfLine1 = 1;
+const double bfLine = 1;
 const double afMove = 0.25; //Beschleunigung in Einheiten pro Millisekunde
-const double afLine1 = 0.25;
+const double afLine = 0.25;
 
 // Constants for vertical line alignment
 const double pi = 3.14159265358979324;
@@ -52,8 +52,8 @@ int routerO[3] = {0};
 int routerW[3] = {0};
 //int router[5] = {0};
 int alignDuration = 300;
-int miniDistance = 37;
-int leverDistance = 120;
+int miniDistance = 55;
+int leverDistance = 110;
 
 int LSrMiddle = (92 + 9) / 2;
 
@@ -105,11 +105,25 @@ void routerAbladen(int vonWo) //1 von Osten oder Westen; 0 von Norden oder Süde
     mediumMotor(longMotor, -30, "degree", 242, true);
 }
 
-void kabelSammeln()
-{
-    resetMotors();
-    line2(35, 40, 0.7, 0.0, "degree", 277, 0, true);
-    mediumMotor(doubleLever, 90, "degree", leverDistance, true);
+void kabelSammeln(bool south)
+{   int richtung = 1;
+    if(south){
+        richtung = -1;
+    }
+    line2(cSpeed, 70, 0.2, 4, "crossline", 277, 70, false);
+    moveStraight(70,70,"degree",miniDistance,1,true);
+    turn2(1,60,"degree",-90 * richtung,1,true);
+    line2(cSpeed, 70, 0.2, 4, "crossline", 277, 70, false);
+    moveStraight(70,70,"degree",miniDistance,1,true);
+    turn2(1,60,"degree",90 * richtung,1,true);
+    mediumMotor(doubleLever, -60, "degree", leverDistance, false);
+    line2(1, 70, 0.2, 4, "degree", 275, 1, true);
+    mediumMotor(doubleLever,90,"degree",leverDistance+15,true);
+    moveStraight(-1,-3,"crossline",0,-1,true);
+    moveStraight(1,70,"degree",miniDistance,1,true);
+    turn2(1,60,"degree",-90 * richtung,1,true);
+
+
 }
 
 void kabelAbladen()
@@ -142,13 +156,30 @@ void routerScannen(sensor_port_t searchSensor, std::string mode)
 {
     int router[3] = {0};
     int i = 0;
-    line2(40, 40, 0.1, 0.18, "degree", 91, 40, false);
-    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 40, false, true, searchSensor, "bw");
+    if(mode == "routerO"){
+        line2(20, 4, 0.2,4, "degree", 240,4, false);
+    }
+    else{
+        line2(20, 4, 0.2,4, "degree", 150,4, false);    
+    }
+    router[i] = line2(4, 4, 0.2, 2,"degree", 183, 4, false, true, searchSensor, "bw");
     i++;
-    line2(40, 40, 0.7, 0.0, "degree", 165, 40, false);
-    router[i] = line2(40, 40, 0.7, 0.0, "degree", 183, 1, true, true, searchSensor, "bw");
+    line2(4, 4, 0.2, 4, "degree", 165, 4, false);
+    if(mode == "routerO"){
+        router[i] = line2(4, 4,0.2, 2, "degree", 240, 4, false, true, searchSensor, "bw");
+        line2(4, 4, 0.2, 4, "degree", 300, 4, false);
+        line2(4, 70, 0.2, 4, "crossline", 0, 70, false);
+        moveStraight(70,70,"degree",miniDistance,1,true);
+        //line2(cSpeed, 4, 0.2, 4, "degree", 305, 1, true);
+    }else{
+        router[i] = line2(cSpeed, 4,0.2, 2, "degree", 230, 1, true, true, searchSensor, "bw");
+    }
     i++;
     router[i] = findColor(router, "router");
+    std::cout << "Router1: " << router[0] << std::endl;
+    std::cout << "Router2: " << router[1] << std::endl;
+    std::cout << "Router3: " << router[2] << std::endl;
+
     if (mode == "routerO")
     {
         for (int x = 0; x < 3; x++)
@@ -182,18 +213,7 @@ void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
 
 void test()
 {
-    //turn2(10,40,"degree",90,10,true);
-    //waitForButton();
-    /* while(abs(measureMotorRight()) < 10000){
-        ev3_motor_set_power(motor_left, -100);
-    ev3_motor_set_power(motor_right, 100);
-        std::cout << "R: "  << abs(measureMotorRight()) << " " << "L: "<< abs(measureMotorLeft()) << std::endl;
-
-    }
-return;
-*/
-    //align(alignDuration);
-    line1(20, 100, 0.4, 8, LSr, true, "degree", 2500, 10, true, true, HTr, "color");
+    line2(20, 100, 0.2, 2, "degree", 1150, 1, true, true,HTr,"bw");
     waitForButton();
     line1(15, 100, 1, 25, LSr, true, "degree", 2500, 80, true);
     return;
@@ -202,15 +222,22 @@ return;
 void anfang()
 {
     moveStraight(20, 30, "degree", 18, 20, true);
-    turn1(motor_left, 1, false, 4, "degree", 90, 1, true);
-    moveStraight(20, 3, "degree", 55, 3, false);
+    turn1(motor_left, 1, false, 4, "degree", -90, 1, true);
+    moveStraight(20, 3, "degree", miniDistance, 3, false);
     positionenScannen();
     turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
-    line1(20, 4, 0.4, 8, LSr, true, "degree", 1653, 4, false);
-    line1(cSpeed, 4, 0.4, 8, LSr, true, "crossline", 1653, 4, false);
-    line1(cSpeed, 4, 0.4, 8, LSr, true, "degree", 569, 10, true);
-    turn1(motor_right,1,false,4,"degree",90,1,true);
+    line1(cSpeed, 4, 0.4, 8, LSr, true, "degree", 2296, 4, false);
+    line1(cSpeed, 70, 0.3, 5, LSr, true, "crossline", 0, 70, false);
+    moveStraight(70,70,"degree",58,1,true);
+    turn2(1,60,"degree",-90,1,true);
     routerScannen(HTr, "routerO");
+
+    turn2(1, 4, "degree", 90, 1, true);
+    line2(1,4,0.2,4,"degree",300,4,false);
+    kabelSammeln(true);
+    routerScannen(HTl,"routerW");
+
+
     display(positions[0]);
     waitForButton();
     tslp_tsk(300);

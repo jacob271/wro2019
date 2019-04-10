@@ -34,8 +34,8 @@ int findColor(int colors[], std::string mode);
 void brake(bool stop, int endSpeed);
 int frequencyDistribution(int colorCounter[]);
 bool lineDetection(std::string mode);
-void motorCorrection(double pGain, double cSpeed, int rightreset, int leftreset);
-double accDec(int togo, double brakeFactor, double accFactor, double zeit, double startSpeed, int maxSpeed, int endSpeed, bool dec);
+void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset);
+double accDec(int togo, double brakeFactor, double accFactor, double zeit, int startSpeed, int maxSpeed, int endSpeed, bool dec);
 
 void initializeSpeeds(int &speed1, int &speed2, int &speed3);
 void resetMotors(std::string mode, int leftValue, int rightValue, int maxSpeed);
@@ -64,8 +64,12 @@ extern sensor_port_t LSr;
 extern sensor_port_t LSl;
 extern sensor_port_t HTr;
 
+extern motor_port_t temporalMotor;
+extern motor_port_t secondTemporalMotor;
+extern sensor_port_t temporalSensor;
+
 //Speeds
-extern double cSpeed;
+extern int cSpeed;
 
 // Variables for Moves
 extern double pGain;
@@ -92,9 +96,16 @@ extern const double wheelCircumferance;
 extern int positions[];
 extern int routerO[];
 extern int routerW[];
-extern int router[];
+extern int blue;
+extern int red;
+extern int green;
+extern int yellow;
+extern int fall1;
+extern int fall2;
 
-extern int alignDuration;
+
 extern int miniDistance;
+extern int turnBackDistance;
+
  
 extern int wallDistanceE;

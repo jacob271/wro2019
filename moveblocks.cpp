@@ -106,6 +106,10 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
         ev3_motor_stop(otherMotor, true);
       }
     }
+    else
+    {
+      ev3_motor_stop(otherMotor, true);
+    }
   }
 
   //Motoren entsprechend der Sollwerte zurücksetzen
@@ -237,9 +241,8 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
-
   resetMotors();
-  
+
   Stopwatch move;
   Stopwatch slowDown;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
@@ -253,7 +256,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
   bool continueMove = true;
   int colorCounter[8] = {0};
   bool resetSlowDown = false;
-  int temporalMaxSpeed;
+  double temporalMaxSpeed = cSpeed;
   double lastpErrors[4] = {0};
   int i = 0;
   double slowDownReset = 0;
@@ -262,7 +265,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
   while (continueMove)
   {
     counter++;   //Überprüfen der Schleifendurchläufe
-    tslp_tsk(1); //Reduziert Schleifendurchläufe auf 500 pro Sekunde
+    tslp_tsk(1); //Reduziert Schleifendurchläufe auf ca. 500 pro Sekunde
     int togo = wert - (abs(measureMotorRight() - measureMotorLeft()) / 2);
 
     if (mode == "degree")
@@ -286,11 +289,11 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
       if (resetSlowDown)
       {
         slowDownReset = slowDown.getTime();
-        temporalMaxSpeed = cSpeed;
+        temporalMaxSpeed = (int)(cSpeed);
       }
       resetSlowDown = false;
-      cSpeed = temporalMaxSpeed - (slowDown.getTime() - slowDownReset) * 0.25 - 0.5;
-      startSpeed = cSpeed;
+      cSpeed = (int)(temporalMaxSpeed - (slowDown.getTime() - slowDownReset) * 0.25 - 0.5);
+      startSpeed = (int)(cSpeed);
     }
     else
     {
@@ -318,11 +321,11 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     }
     lastpError = lastpErrors[i];
 
-    std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;    
+    //std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
-  std::cout << "Schleifendurchläufe: " << counter / (move.getTime() / 1000) << std::endl;    
+  std::cout << "Schleifendurchläufe: " << counter / (move.getTime() / 1000) << std::endl;
 
   if (colorSearch)
   {
@@ -351,7 +354,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   bool continueMove = true;
   int colorCounter[8] = {0};
   bool resetSlowDown = false;
-  int temporalMaxSpeed;
+  double temporalMaxSpeed;
   double lastpErrors[4] = {0};
   int i = 0;
   double slowDownReset = 0;
@@ -388,10 +391,10 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       if (resetSlowDown)
       {
         slowDownReset = slowDown.getTime();
-        temporalMaxSpeed = cSpeed;
+        temporalMaxSpeed = (int)(cSpeed);
       }
       resetSlowDown = false;
-      cSpeed = temporalMaxSpeed - (slowDown.getTime() - slowDownReset) * 0.25 - 0.5;
+      cSpeed = (int)(temporalMaxSpeed - (slowDown.getTime() - slowDownReset) * 0.25 - 0.5);
       startSpeed = cSpeed;
     }
     else
@@ -421,7 +424,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     }
     lastpError = lastpErrors[i];
 
-    std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;    
+    //std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
@@ -458,34 +461,3 @@ void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool
   }
   ev3_motor_stop(motor, stop);
 }
-
-/*
-//Paulturn mit Rotationssensoren
-void paulturn_rot(int startSpeed, int maxSpeed, double angle, double leftratio, double rightratio, int endSpeed)
-{
-  angle = angle * (17.6) / wheelDiameter;
-  double togo = abs(angle);
-  initializeSpeeds(startSpeed,maxSpeed,endSpeed);
-  cSpeed = startSpeed;
-  StallDetection stall;
-
-  int pCorrection = 0;
-  Stopwatch move;
-  bool bremst = false;
-
-  while (togo > 0)
-  {
-    togo = abs(angle) - (abs(ev3_motor_get_counts(motor_left) - resetLeftDegree) + abs(ev3_motor_get_counts(motor_right) - resetRightDegree)) / 2;
-    cSpeed = accDec(togo, bfTurn2, move, startSpeed, 35, maxSpeed, endSpeed, stall, bremst); //9
-    stall.measure(abs(ev3_motor_get_counts(motor_left)));
-    pCorrection = 1.5 * ((ev3_motor_get_counts(motor_right) - resetRightDegree) / rightratio - (ev3_motor_get_counts(motor_left) - resetLeftDegree) / leftratio);
-    ev3_motor_set_power(motor_left, cSpeed * leftratio + pCorrection);
-    ev3_motor_set_power(motor_right, cSpeed * rightratio - pCorrection);
-  }
-  brakeAtEnd(endSpeed); // Motoren anhalten
-
-  resetRightDegree = ev3_motor_get_counts(motor_right);
-  resetLeftDegree = ev3_motor_get_counts(motor_left);
-}
-
-*/

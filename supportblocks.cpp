@@ -56,22 +56,22 @@ int speedLevel(int level)
   switch (abs(level))
   {
   case 1:
-    return (20 * batteryFactor * (level / abs(level))); //Anfahren speed
+    return (25 * batteryFactor * (level / abs(level))); //Start und EndSpeed
   case 2:
     return (50 * batteryFactor * (level / abs(level)));
   case 3:
-    return (70 * batteryFactor * (level / abs(level))); //Standard Drive Speed
+    return (70 * batteryFactor * (level / abs(level))); //Standard Drive Speed (kurze move Straight/line follows)
   case 4:
-    return (100 * batteryFactor * (level / abs(level))); //fast drive speed
+    return (80 * batteryFactor * (level / abs(level))); //fast drive speed and turn1
   case 5:
-    return (80 * batteryFactor * (level / abs(level))); //turn2 speed
+    return (50 * batteryFactor * (level / abs(level))); //turn2 speed
   default:
-    return (level * batteryFactor);
+    return (int)(level * batteryFactor);
   }
 }
 
 // Rotationsssensorkorrektur für movees
-void motorCorrection(double pGain, double cSpeed, int rightreset, int leftreset)
+void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset)
 {
   double pCorrection;
   pCorrection = ((ev3_motor_get_counts(motor_left) - leftreset) + (ev3_motor_get_counts(motor_right) - rightreset)) * (abs(pGain * cSpeed) + 0.4);
@@ -79,7 +79,7 @@ void motorCorrection(double pGain, double cSpeed, int rightreset, int leftreset)
   ev3_motor_set_power(motor_right, cSpeed - pCorrection);
 }
 
-double accDec(int togo, double brakeFactor, double accFactor, double zeit, double startSpeed, int maxSpeed, int endSpeed, bool dec)
+double accDec(int togo, double brakeFactor, double accFactor, double zeit, int startSpeed, int maxSpeed, int endSpeed, bool dec)
 {
   if (togo * brakeFactor + abs(endSpeed) <= abs(cSpeed) && dec == true)
   {
@@ -106,7 +106,7 @@ double accDec(int togo, double brakeFactor, double accFactor, double zeit, doubl
     }
     else
     {
-      cSpeed = std::min(maxSpeed, (int)(startSpeed - zeit * accFactor));
+      //cSpeed = std::min(maxSpeed, (int)(startSpeed - zeit * accFactor));
     }
   }
   return cSpeed;
@@ -128,6 +128,7 @@ void brake(bool stop, int endSpeed)
     if (abs(cSpeed) < abs(endSpeed)){
       cSpeed = endSpeed;
     }
+      cSpeed = (int) (cSpeed);
   }
 }
 
@@ -237,7 +238,7 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
   int green = rgb.g;
   int blue = rgb.b;
 
-  tslp_tsk(7);
+  tslp_tsk(6);
 
   std::cout << "C:" << rgb.r << " " << rgb.g << " " << rgb.b << " ";
   if (mode == "color")
@@ -260,14 +261,12 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
   }
   else if (mode == "bw")
   {
+    //Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
     if (red < 10 && green < 10 && blue < 10)
-      return 0;
+      return -1;  
     if (red > 150 && green > 150 && blue > 150)
-      return 7;
-    else
-    {
       return 1;
-    }
+    return 0;
   }
   return -1;
 }
@@ -293,9 +292,9 @@ int findColor(int colors[], std::string mode)
     {
       color = color + colors[i];
     }
-    std::cout << "lastColor: " << 9 - color << std::endl;
-    //Summe der Farben ist immer 9
-    return 9 - color;
+    std::cout << "lastColor: " << 1 - color << std::endl;
+    //Summe der Farben ist immer 1
+    return 1 - color;
   }
 }
 

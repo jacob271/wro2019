@@ -9,6 +9,8 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
 {
   bool dec = false;
 
+  resetMotors();
+
   //Motoren und Variablen zum Zurücksetzen und Fahren festlegen
   motor_port_t otherMotor;
   int resetOtherMotor;
@@ -37,7 +39,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
 
   if (mode == "degree")
   {
-    wert = abs(1 * wert * (wheelCircumferance * 2) / wheelDiameter); //0.99
+    wert = abs(0.96* wert * (wheelCircumferance * 2) / wheelDiameter); //0.99
 
     if (stop == false)
     {
@@ -148,7 +150,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
   double togo;
   if (mode == "degree")
   {
-    wert = 1 * wert * (wheelCircumferance) / wheelDiameter; //0.98
+    wert = 0.98 * wert * (wheelCircumferance) / wheelDiameter; //0.98
     togo = abs(wert);
     dec = true;
   }
@@ -193,6 +195,7 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
   Stopwatch move;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
+  resetMotors();
 
   int colorCounter[8] = {0};
 
@@ -247,6 +250,9 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
   Stopwatch slowDown;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
+  if (startSpeed <= speedLevel(1)){
+    //align(100);
+  }
   bool dec = false;
   if (mode == "degree")
   {

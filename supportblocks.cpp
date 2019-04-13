@@ -56,11 +56,11 @@ int speedLevel(int level)
   switch (abs(level))
   {
   case 1:
-    return (25 * batteryFactor * (level / abs(level))); //Start und EndSpeed
+    return (20 * batteryFactor * (level / abs(level))); //Start und EndSpeed
   case 2:
     return (50 * batteryFactor * (level / abs(level)));
   case 3:
-    return (70 * batteryFactor * (level / abs(level))); //Standard Drive Speed (kurze move Straight/line follows)
+    return (60 * batteryFactor * (level / abs(level))); //Standard Drive Speed (kurze move Straight/line follows)
   case 4:
     return (80 * batteryFactor * (level / abs(level))); //fast drive speed and turn1
   case 5:
@@ -165,7 +165,7 @@ bool lineDetection(std::string mode)
   else if (mode == "whiteleft")
     return ev3_color_sensor_get_reflect(LSl) > 50;
   else if (mode == "crossline")
-    return (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
+    return (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 90;
   return false;
 }
 
@@ -339,4 +339,22 @@ void resetMotors(std::string mode, int leftValue, int rightValue, int maxSpeed)
 void resetMotors()
 {
   resetMotors("total", 0, 0, 0);
+}
+
+
+//Richtet sich mit beiden Sensoren kurz an der Linie aus, damit er zu Beginn des Linienfolgers schon richtig steht.
+void align(int duration)
+{
+    double pCorrection = 0;
+    Stopwatch align;
+    double alignpGain = 1.0;
+
+
+    while (align.getTime() < duration)
+    {
+        pCorrection = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
+        ev3_motor_set_power(motor_left, (-1) * (cSpeed - pCorrection * alignpGain));
+        ev3_motor_set_power(motor_right, cSpeed + pCorrection * alignpGain);
+    }
+    brake(true, 0);
 }

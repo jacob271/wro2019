@@ -29,6 +29,7 @@ void display(int inhalt);
 int colorDetection(sensor_port_t sensor);
 int colorDetection_rgb(sensor_port_t sensor, std::string mode);
 int findColor(int colors[], std::string mode);
+void align(int duration);
 
 //void logColor();
 void brake(bool stop, int endSpeed);

@@ -39,27 +39,27 @@ double pGain = 0.02; //0.017
 double pGainTurn2 = 1.5;
 int resetRightDegree = 0;
 int resetLeftDegree = 0;
-const double bfMove = 0.2; // Je höher, desto früher wird gebremst
-const double bfTurn1 = 0.5;
+const double bfMove = 0.22; // Je höher, desto früher wird gebremst
+const double bfTurn1 = 0.8;
 const double bfTurn2 = 0.6; //0.4
 const double bfLine = 1;
-const double afMove = 0.25; //Beschleunigung in Einheiten pro Millisekunde
-const double afLine = 0.25;
+const double afMove = 0.2; //Beschleunigung in Einheiten pro Millisekunde
+const double afLine = 0.2;
 
 const double pGL1 = 0.4;
 const double dGL1 = 8;
 
-const double pGL2 = 0.17;
-const double dGL2 = 3.5;
+const double pGL2 = 0.14;
+const double dGL2 = 3.1;
 
 // Constants for vertical line alignment
-const double pi = 3.14159265358979324;
+const double pi = 3.1415926535897932384626433832795029;
 const double wheelDiameter = 6.24; //6.24;
 const double wheelCircumferance = 17.6;
 //const double wheelConverter = 6.24 / wheelDiameter;
 
 //Distances for main
-int miniDistance = 50;      //55     //Distanz um direkt wieder perfekt auf Linie zu stehen
+int miniDistance = 55;      //55     //Distanz um direkt wieder perfekt auf Linie zu stehen
 int turnBackDistance = 220; //Distanz vor einer Drehung zum Router
 int leverDistance = 110;
 int wallDistanceE = 0;
@@ -83,20 +83,19 @@ int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == 
 int currentPosition;
 int currentPosition1 = 5;
 int currentColor;
+Stopwatch run;
 
-void align(int duration)
+void updateLogDatei()
 {
-    double pCorrection = 0;
-    Stopwatch align;
-
-    while (align.getTime() < duration)
-    {
-        pGain = 1.5;
-        pCorrection = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
-        ev3_motor_set_power(motor_left, (-1) * (cSpeed - pCorrection * pGain));
-        ev3_motor_set_power(motor_right, cSpeed + pCorrection * pGain);
-    }
-    brake(true, 0);
+    std::cout << "time: " << run.getTime() << std::endl;
+    std::cout << "fall1: " << fall1 << std::endl;
+    std::cout << "fall2: " << fall2 << std::endl;
+    std::cout << "routerO 0: " << routerO[0] << std::endl;
+    std::cout << "routerO 1: " << routerO[1] << std::endl;
+    std::cout << "routerO 2: " << routerO[2] << std::endl;
+    std::cout << "routerW 0: " << routerW[0] << std::endl;
+    std::cout << "routerW 1: " << routerW[1] << std::endl;
+    std::cout << "routerW 2: " << routerW[2] << std::endl;
 }
 
 void routerAbladen(int vonWo) //1 von Osten oder Westen; 0 von Norden oder Süden
@@ -111,6 +110,9 @@ void routerAbladen(int vonWo) //1 von Osten oder Westen; 0 von Norden oder Süde
         line2(35, 40, 0.7, dGL2, "degree", 128, 0, true);
     }
     mediumMotor(longMotor, -30, "degree", 242, true);
+    turn2(1,5,"degree",2,25,true);
+    turn2(1,5,"degree",-4,25,true);
+    turn2(1,5,"degree",2,25,true);
 }
 
 void kabelSammeln(bool south)
@@ -138,7 +140,8 @@ void kabelSammeln(bool south)
 void kabelAbladen()
 {
     resetMotors();
-    line2(35, 40, 0.7, dGL2, "degree", 440, 40, false);
+    line2(35, 4, 0.7, dGL2, "degree", 300, 3, false);
+    line2(cSpeed, 40, 0.7, dGL2, "degree", 140, 40, false);
     resetMotors();
     moveStraight(cSpeed, 40, "degree", 180, 20, true);
     tslp_tsk(300);
@@ -218,8 +221,7 @@ void routerScannen(sensor_port_t searchSensor, std::string mode)
 void routerAufnehmen(motor_port_t turnMotor) // mit welchem Rad zurück
 {
     //Position anfang: 90° versetzt vor node ohne minimove
-    line2(1, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
-    line2(3, 3, pGL2, dGL2, "degree", 150, 1, true);
+    line2(cSpeed, 3, pGL2, dGL2, "degree", 180, 1, true);
     resetMotors();
     turn1(turnMotor, -1, false, -4, "degree", 90, -1, true);
     mediumMotor(longMotor, -50, "degree", 315, true);
@@ -249,7 +251,13 @@ void test()
     waitForButton();
     line1(15, 100, 1, 25, LSr, true, "degree", 2500, 80, true);
     */
-    turn1(motor_left, 1, false, 4, "degree", 90, 1, true);
+
+    resetMotors();
+    turn1(motor_right, -1, false, -3, "degree", 720, -10, true);
+    return;
+    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+    moveStraight(3, 3, "degree", miniDistance, 1, true);
+
     return;
 }
 
@@ -272,10 +280,13 @@ void start() //Konfiguration für den Start
     display(ev3_battery_voltage_mV());
 
     waitForButton();
+    run.reset();
+    resetMotors();
 }
 
 void fallunterscheidung()
 {
+    /*
     //Schreibt Werte aus Positionsarray in passende Variablen
     for (int i = 0; i < 4; i++)
     {
@@ -297,6 +308,7 @@ void fallunterscheidung()
             break;
         }
     }
+    */
 
     //Weist den Kombinationen die passenden Fälle zu
     if ((blue == 4 && red == 1 && green == 2 && yellow == 3) || (blue == 1 && red == 2 && green == 3 && yellow == 4))
@@ -365,14 +377,20 @@ void fallunterscheidung()
 }
 void task1()
 {
+    std::cout << "task1" << std::endl;
+    updateLogDatei();
+
     if (fall1 == 1 || fall1 == 2 || fall1 == 3)
     {
         int currentPosition;
 
         if (routerW[1] == 0 && routerO[1] == 0)
         {
-            moveStraight(-1, -3, "crossline", 0, -1, true);
-            line2(1, 3, pGL2, dGL2, "degree", 205, 1, true);
+            turn2(1, 5, "degree", 180, 1, true);
+            line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            line2(3, 3, pGL2, dGL2, "degree", 180, 1, true);
+            resetMotors();
+            turn1(motor_right, -1, false, -4, "degree", 90, -1, true);
             currentPosition = 1;
             routerW[1] = 3;
             routerO[1] = 3;
@@ -380,32 +398,46 @@ void task1()
         else if (routerW[2] == 0 && routerO[2] == 0)
         {
             line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-            line2(1, 3, pGL2, dGL2, "degree", 205, 1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 180, 1, true);
+            resetMotors();
+            turn1(motor_left, -1, false, -4, "degree", 90, -1, true);
             currentPosition = 2;
             routerW[2] = 3;
             routerO[2] = 3;
         }
         else
         {
-            moveStraight(-1, -3, "crossline", 0, -3, false);
-            moveStraight(-3, -3, "degree", 133, 1, true);
+            turn2(1, 5, "degree", 180, 1, true);
+            line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
+            line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            line2(3, 3, pGL2, dGL2, "degree", 180, 1, true);
+            resetMotors();
+            turn1(motor_right, -1, false, -4, "degree", 90, -1, true);
             currentPosition = 0;
             routerW[0] = 3;
             routerO[0] = 3;
         }
-        turn1(motor_left, -1, false, -4, "degree", 90, -1, true);
         line2(1, 3, pGL2, dGL2, "degree", 295, 1, true);
         mediumMotor(longMotor, -50, "degree", 315, true); //down
-        turn2(1, 5, "degree", 180, 1, true);
+        if (currentPosition == 2)
+        {
+            turn2(-1, -5, "degree", 180, -1, true);
+        }
+        else
+        {
+            turn2(1, 5, "degree", 180, 1, true);
+        }
         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-        line2(3, 3, pGL2, dGL2, "degree", 260, 1, true);
+        line2(3, 50, pGL2, dGL2, "degree", 300, 1, true);
         mediumMotor(longMotor, 50, "degree", 315, true); //up
 
         if (fall1 == 1)
         {
-            line2(1, 3, pGL2, dGL2, "degree", 112, 1, true);
-            moveStraight(-1, -3, "crossline", 0, -1, true);
-            moveStraight(1, 3, "degree", miniDistance, 1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 72, 1, true);
+            tslp_tsk(5);
+            moveStraight(-1, -2, "crossline", 0, -1, true);
+            moveStraight(1, 2, "degree", miniDistance, 1, true);
             if (currentPosition == 0)
             {
                 turn2(1, 5, "degree", -90, 1, true);
@@ -437,7 +469,9 @@ void task1()
                     currentPosition = 2;
                     x = -1;
                     routerO[2] = 3;
-                }else {
+                }
+                else
+                {
                     routerO[0] = 3;
                 }
                 turn2(1, 5, "degree", 90 * x, 1, true);
@@ -459,7 +493,7 @@ void task1()
                 else
                 {
                     currentPosition = 0;
-                    routerO[2] = 3;
+                    routerO[0] = 3;
                     line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
                     line2(50, 50, pGL2, dGL2, "degree", miniDistance, 3, false);
                     line2(3, 3, pGL2, dGL2, "crossline", 0, 50, false);
@@ -471,7 +505,7 @@ void task1()
             line2(1, 3, pGL2, dGL2, "degree", 240, 1, true);
         }
 
-        moveStraight(1, 3, "degree", 145, 3, false);
+        moveStraight(1, 3, "degree", 185, 3, false);
         line2(3, 3, pGL2, dGL2, "crossline", 0, 50, false);
         moveStraight(50, 50, "degree", miniDistance, 1, true);
         if (currentPosition == 0 || currentPosition == 2)
@@ -492,15 +526,18 @@ void task1()
         if (routerW[1] == 1 || (routerW[0] == 1))
         {
             line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-            line2(1, 3, pGL2, dGL2, "degree", 205, 1, true); //um zu 2 zu gehen
+            line2(1, 3, pGL2, dGL2, "degree", 180, 1, true); //um zu 2 zu gehen
+            resetMotors();
+            turn1(motor_left, -1, false, -4, "degree", 90, -1, true);
         }
         else
         {
-            moveStraight(-1, -3, "crossline", 0, -1, true);
-            line2(1, 3, pGL2, dGL2, "degree", 205, 1, true); //um zu 1 zu gehen
+            turn2(1, 5, "degree", 180, 1, true);
+            line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            line2(3, 3, pGL2, dGL2, "degree", 180, 1, true); //um zu 1 zu gehen
+            resetMotors();
+            turn1(motor_right, -1, false, -4, "degree", 90, -1, true);
         }
-        turn1(motor_left, -1, false, -4, "degree", 90, -1, true);
-
         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
         line2(3, 3, pGL2, dGL2, "degree", 202, 1, true);
         mediumMotor(longMotor, -50, "degree", 315, true); //down
@@ -516,11 +553,9 @@ void task1()
         else
         {                                                      // routerW[2] == 0
             line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false); // um von 1 zu 0 zu gehen oder von 2 zu 1
-        }
-        moveStraight(3, 3, "degree", miniDistance, 3, false);
-        line2(3, 3, pGL2, dGL2, "degree", 184, 1, true); //moveBackDistance
+        }        
+        line2(3, 3, pGL2, dGL2, "degree", 180, 1, true); //moveBackDistance
         turn1(motor_right, -1, false, -4, "degree", 90, -1, true);
-
         line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
         line2(50, 50, pGL2, dGL2, "degree", miniDistance, 1, true); //bis Node eingesammelt ist
         mediumMotor(longMotor, 50, "degree", 315, true);            //up
@@ -541,15 +576,17 @@ void task1()
         }
         else
         {
-            turn1(motor_left, 1, false, 4, "degree", 90, 1, true);
-            moveStraight(1, 3, "degree", 120, 1, true);
-            turn1(motor_left, 1, false, 4, "degree", 90, 1, true);
+            turn1(motor_right, 1, false, 4, "degree", 90, 1, true);
+            moveStraight(1, 3, "degree", 110, 1, true);
+            turn1(motor_right, 1, false, 4, "degree", 90, 1, true);
             moveStraight(1, 3, "degree", 40, 1, true);
             line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
             moveStraight(50, 50, "degree", miniDistance, 1, true);
             turn2(1, 5, "degree", -90, 1, true);
-            line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
-            moveStraight(50, 50, "degree", miniDistance, 1, true);
+            line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 3, false);
+            line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 1, true);
             turn2(1, 5, "degree", 90, 1, true); //bevor Schwabell absetzen
         }
     }
@@ -557,6 +594,8 @@ void task1()
 
 void wegbringen1()
 {
+    std::cout << "wegbringen1:" << std::endl;
+    updateLogDatei();
     if (fall1 == 3)
     {
         turn2(1, 5, "degree", 90, 1, true);
@@ -590,7 +629,7 @@ void wegbringen1()
             moveStraight(-1, -3, "degree", 128, -1, true);
             mediumMotor(longMotor, 50, "degree", 242, true); //up
             if (i == 0)
-            {                
+            {
                 mediumMotor(doubleLever, 90, "degree", leverDistance, true); //up
                 moveStraight(-1, -40, "degree", 260, -1, true);              //bis kurz vor Node
                 mediumMotor(longMotor, -50, "degree", 315, true);            //down
@@ -639,7 +678,7 @@ void wegbringen1()
             routerAbladen(0); //node absetzen
             moveStraight(-1, -3, "degree", 128, -1, true);
             mediumMotor(longMotor, 50, "degree", 242, true); //Up
-            turn2(1, 5, "degree", 90 * x, 1, true);            
+            turn2(1, 5, "degree", 90 * x, 1, true);
             if (i == 0)
             {
                 line2(1, 3, pGL2, dGL2, "degree", 230, 1, true);
@@ -676,7 +715,9 @@ void wegbringen1()
                     moveStraight(50, 50, "degree", miniDistance, 1, true);
                     turn2(1, 5, "degree", -90, 1, true);
                 }
-            }else {
+            }
+            else
+            {
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
             }
         }
@@ -685,6 +726,9 @@ void wegbringen1()
 
 void task2()
 {
+    std::cout << "task2:" << std::endl;
+    updateLogDatei();
+
     //Runde 2 - fall2: 1-10________________________________________________________________________________________________
     if (fall2 == 1 || fall2 == 4 || fall2 == 10) //Fall 1 und 4 und 10-----------------------------------------------------
     {
@@ -694,39 +738,44 @@ void task2()
             {
                 currentPosition = 2;
                 routerW[2] = 3;
+                std::cout << "Neuer Wert routerW 2: " << routerW[2] << std::endl;
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
             }
             else if (routerW[1] == 0)
             {
+                ev3_speaker_play_tone(NOTE_E4, 500);
+                std::cout << "juhhhhhhhhhhhhhhhuuuuuuu " << std::endl;
                 currentPosition = 1;
                 routerW[1] = 3;
-                line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                line2(3, 3, pGL2, dGL2, "degree", 40, 3, false);
-                line2(3, 3, pGL2, dGL2, "crossline", 0, 1, true);
+                std::cout << "Neuer Wert routerW 1: " << routerW[1] << std::endl;
+                line2(1, 3, pGL2, dGL2, "degree", 60, 3, false);
+                line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                line2(3, 3, pGL2, dGL2, "degree", 60, 3, false);
+                line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
             }
             else
             {
                 currentPosition = 0;
                 routerW[0] = 3;
+                std::cout << "Neuer Wert routerW 0: " << routerW[0] << std::endl;
+                line2(1, 3, pGL2, dGL2, "degree", 60, 3, false);
+                line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                line2(3, 3, pGL2, dGL2, "degree", 60, 3, false);
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                line2(3, 3, pGL2, dGL2, "degree", 40, 3, false);
-                line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                line2(3, 3, pGL2, dGL2, "degree", 40, 3, false);
-                line2(3, 3, pGL2, dGL2, "crossline", 0, 1, true);
+                line2(3, 3, pGL2, dGL2, "degree", 60, 3, false);
+                line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
             }
             routerAufnehmen(motor_right); //auf Cross vor Nodes (Westen)
-            if ((currentPosition == 1 && routerO[1] == 3) || (currentPosition == 2 && routerO[2] == 3) || (currentPosition == 3 && routerO[3] == 3))
+
+            if ((currentPosition == 1 && routerO[1] == 3) || (currentPosition == 2 && routerO[2] == 3) || (currentPosition == 0 && routerO[0] == 3))
             {
                 turn2(1, 5, "degree", 180, 1, true);
-                ev3_speaker_play_tone(NOTE_E4, 500);
             }
             else if ((currentPosition == 1 && routerO[2] == 3) || (currentPosition == 0 && routerO[1] == 3) || (currentPosition == 1 && routerO[0] == 3) || (currentPosition == 2 && routerO[1] == 3))
             {
-                ev3_speaker_play_tone(NOTE_E4, 500);
                 int x = 1;
                 if ((currentPosition == 1 && routerO[0] == 3) || (currentPosition == 2 && routerO[1] == 3))
                 {
-
                     ev3_speaker_play_tone(NOTE_E4, 500);
                     x = -1;
                     currentPosition--;
@@ -760,6 +809,7 @@ void task2()
                 turn2(1, 5, "degree", 90 * x, 1, true);
             }
             routerO[currentPosition] = 2;
+            std::cout << "Neuer Wert routerO " << currentPosition << ": " << routerO[currentPosition] << std::endl;
             line2(1, 4, pGL2, dGL2, "degree", 166, 1, true);  //Node zu Wechsel bringen
             mediumMotor(longMotor, -50, "degree", 315, true); //runter
             moveStraight(-1, -3, "degree", 166, 1, true);
@@ -826,15 +876,15 @@ void task2()
             {
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                 line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
-                line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                line2(3, 3, pGL2, dGL2, "crossline", 0, 1, true);
             }
             else
             {
-                line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
             }
-            turn1(temporalMotor, 3, true, 3, "degree", 90, 1, true);
-            line2(3, 3, pGL2, dGL2, "crossline", 0, 1, false);
-            moveStraight(1, 3, "degree", miniDistance, 1, true);
+            turn1(temporalMotor, 1, false, 3, "degree", 90, 1, true);
+            line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            moveStraight(3, 3, "degree", miniDistance, 1, true);
             turn2(1, 5, "degree", 90 * (-x), 1, true);
             if ((currentPosition == 0 && currentPosition1 == 2) || (currentPosition == 2 && (currentPosition1 == 1 || currentPosition1 == 0)))
             {
@@ -868,12 +918,14 @@ void task2()
             {
                 currentPosition = 2;
                 routerO[2] = 3;
+                std::cout << "Neuer Wert routeO 2: " << routerO[2] << std::endl;
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
             }
             else if (routerO[1] == 0)
             {
                 currentPosition = 1;
                 routerO[1] = 3;
+                std::cout << "Neuer Wert routerO 1: " << routerO[1] << std::endl;
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                 line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
                 line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
@@ -882,6 +934,7 @@ void task2()
             {
                 currentPosition = 0;
                 routerO[0] = 3;
+                std::cout << "Neuer Wert routerO 0: " << routerO[0] << std::endl;
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                 line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
                 line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
@@ -889,9 +942,8 @@ void task2()
                 line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
             }
         }
-        line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
-        line2(3, 3, pGL2, dGL2, "degree", 184, 1, true); //moveBackDistance
-        turn1(secondTemporalMotor, -1, false, -4, "degree", 90, -1, true);
+        line2(3, 3, pGL2, dGL2, "degree", 180, 1, true); //moveBackDistance
+        turn1(motor_right, -1, false, -4, "degree", 90, -1, true);
         if (fall2 == 1) //Ausgangsposition long oben
         {
             line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
@@ -909,27 +961,29 @@ void task2()
                 if (routerO[1] == 2 || routerO[1] == 0)
                 {
                     currentPosition = 1;
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                 }
                 else
                 {
-                    currentPosition = 2;
                     if (currentPosition == 2)
                     {
                         currentPosition = 0;
                     }
+                    else
+                    {
+                        currentPosition = 2;
+                    }
                     line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                     line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
-                    line2(3, 3, pGL2, dGL2, "crossline", 0, 1, true);
+                    line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
                 }
-                line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
-                line2(3, 3, pGL2, dGL2, "degree", 184, 1, true); //moveBackDistance
+                line2(3, 3, pGL2, dGL2, "degree", 180, 1, true); //moveBackDistance
                 temporalMotor = motor_right;
                 if (x == 1)
                 {
                     temporalMotor = motor_left;
                 }
-                turn1(temporalMotor, 1, false, 4, "degree", 90, 1, true);
+                turn1(temporalMotor, -1, false, -4, "degree", 90, -1, true);
             }
             else
             {
@@ -941,20 +995,20 @@ void task2()
                 }
                 turn2(1, 5, "degree", 90 * x, 1, true);
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
-                line2(3, 3, pGL2, dGL2, "degree", 184, 1, true); //moveBackDistance
+                line2(3, 3, pGL2, dGL2, "degree", 180, 1, true); //moveBackDistance
                 temporalMotor = motor_right;
                 if (currentPosition == 2)
                 {
                     temporalMotor = motor_left;
                 }
-                turn1(temporalMotor, 1, false, 4, "degree", 90, 1, true);
+                turn1(temporalMotor, -1, false, -4, "degree", 90, -1, true);
             }
         }
 
         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-        line2(3, 3, pGL2, dGL2, "degree", 35, 1, true);
+        line2(3, 3, pGL2, dGL2, "degree", 50, 1, true);
         mediumMotor(longMotor, 50, "degree", 315, true); //hoch
+        moveStraight(1, 4, "degree", 100, 1, true);
         temporalMotor = motor_right;
         entscheidung = 0;
         if ((currentPosition == 1 && routerO[0] == 1) || currentPosition == 2)
@@ -965,11 +1019,11 @@ void task2()
         turn1(temporalMotor, 1, false, 4, "degree", 90, 1, true);
         if (currentPosition == 1)
         {
-            moveStraight(1, 3, "degree", 460, 1, true);
+            moveStraight(1, 3, "degree", 450, 1, true);
         }
         else
         {
-            moveStraight(1, 3, "degree", 110, 1, true);
+            moveStraight(1, 3, "degree", 100, 1, true);
         }
         turn1(temporalMotor, 1, false, 4, "degree", 90, 1, true);
         line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
@@ -987,12 +1041,14 @@ void task2()
         {
             currentPosition = 2;
             routerO[2] = 3;
+            std::cout << "Neuer Wert routerO 2: " << routerO[2] << std::endl;
             line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
         }
         else if (routerO[1] == 2)
         {
             currentPosition = 1;
             routerO[1] = 3;
+            std::cout << "Neuer Wert routerO 1: " << routerO[1] << std::endl;
             line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
             line2(3, 3, pGL2, dGL2, "degree", miniDistance, 3, false);
             line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
@@ -1061,7 +1117,7 @@ void task2()
         moveStraight(1, 3, "degree", miniDistance, 1, true);
         if (fall2 == 5 || fall2 == 6)
         {
-            if ((currentPosition == 1 && routerO[1] == 0) || (currentPosition == 2 && routerO[2] == 0) || (currentPosition == 3 && routerO[3] == 0))
+            if ((currentPosition == 1 && routerO[1] == 0) || (currentPosition == 2 && routerO[2] == 0) || (currentPosition == 0 && routerO[0] == 0))
             {
                 turn2(1, 5, "degree", 180, 1, true);
             }
@@ -1126,12 +1182,13 @@ void task2()
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
             }
             else
-            {
-                currentPosition = 2;
+            {                
                 if (currentPosition == 2)
                 {
                     x = -1;
                     currentPosition = 0;
+                }else {
+                    currentPosition = 2;
                 }
                 turn2(1, 5, "degree", 90 * x, 1, true);
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
@@ -1139,7 +1196,7 @@ void task2()
                 line2(3, 3, pGL2, dGL2, "crossline", 0, 50, false);
             }
             moveStraight(50, 50, "degree", miniDistance, 1, true);
-            turn2(1, 5, "degree", 90 * x, 1, true);
+            turn2(1, 5, "degree", 90 * (-x), 1, true);
             line2(1, 3, pGL2, dGL2, "degree", 312, 3, false);
             moveStraight(3, 3, "degree", 220, 3, false);
             line2(3, 3, pGL2, dGL2, "crossline", 0, 50, false);
@@ -1180,7 +1237,6 @@ void task2()
             moveStraight(3, 3, "degree", miniDistance, 3, false);
             line2(3, 3, pGL2, dGL2, "degree", 165, 1, true);
             turn1(temporalMotor, -1, false, -4, "degree", 90, -1, true);
-            mediumMotor(longMotor, -50, "degree", 315, true); //down
             line2(1, 3, pGL2, dGL2, "degree", 275, 1, true);
             mediumMotor(longMotor, 50, "degree", 315, true); //up
             turn2(1, 5, "degree", 180, 1, true);
@@ -1315,8 +1371,10 @@ void task2()
 
 void welcherWeg()
 {
+    std::cout << "welcherWeg entscheidung: " << entscheidung << std::endl;
     //zum wegbringen fahren _________________________________________________________________________________________________________________________________________________
     int a = 1;
+    bool lineEdge = false;
     temporalMotor = motor_left;
     temporalSensor = LSl;
     if (entscheidung == 0)
@@ -1324,13 +1382,14 @@ void welcherWeg()
         a = -1;
         temporalMotor = motor_right;
         temporalSensor = LSr;
+        lineEdge = true;
     }
     // zum schwabbelabsetzen fahren
-    line1(1, 4, pGL1, dGL1, temporalSensor, true, "degree", 1380, 4, false);
-    line1(4, 4, pGL1, dGL1, temporalSensor, true, "crossline", 0, 4, false);
-    line1(4, 4, pGL1, dGL1, temporalSensor, true, "degree", 570, 1, true);
+    line1(1, 4, pGL1, dGL1, temporalSensor, lineEdge, "degree", 1380, 4, false);
+    line1(4, 4, pGL1, dGL1, temporalSensor, lineEdge, "crossline", 0, 4, false);
+    line1(4, 4, pGL1, dGL1, temporalSensor, lineEdge, "degree", 520, 1, true);
     turn1(temporalMotor, 1, false, 4, "degree", 90, 1, true);
-    line1(1, 4, pGL1, dGL1, temporalSensor, true, "degree", 520, 4, false);
+    line1(1, 4, pGL1, dGL1, temporalSensor, lineEdge, "degree", 520, 4, false);
     line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
     moveStraight(50, 50, "degree", miniDistance, 1, true);
     turn2(1, 5, "degree", 90 * a, 1, true);
@@ -1338,6 +1397,8 @@ void welcherWeg()
 
 void wegbringen2()
 {
+    std::cout << "wegbringen2" << std::endl;
+    updateLogDatei();
     if (fall2 == 2 || fall2 == 6 || fall2 == 8) //Achtung: Fall2 wird geändert !!!
     {
         fall2 = 2;
@@ -1348,9 +1409,9 @@ void wegbringen2()
         fall2 = 1;
         turn2(1, 5, "degree", -90, 1, true);
     }
-    line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
-    line2(50, 50, pGL2, dGL2, "degree", miniDistance, 1, true);
-    // 1 = yellow, 2 = green
+    line2(1, 3, pGL2, dGL2, "degree", 50, 3, false);
+    line2(3, 3, pGL2, dGL2, "crossline", 0, 3, false);
+    line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
     for (int i = 0; i < 2; i++)
     {
         int x; //Variable für Richtung der Drehungen
@@ -1370,13 +1431,13 @@ void wegbringen2()
             turn2(1, 5, "degree", 90 * x, 1, true);
             routerAbladen(1); //node absetzen
             moveStraight(-1, -3, "degree", 128, -1, true);
+            mediumMotor(longMotor, 50, "degree", 242, true); //up
             if (i == 0)
             {
-                mediumMotor(longMotor, 50, "degree", 242, true);             //up
                 mediumMotor(doubleLever, 90, "degree", leverDistance, true); //up
-                moveStraight(-1, -3, "degree", 257, -1, true);               //bis kurz vor Node
+                moveStraight(-1, -40, "degree", 260, -1, true);              //bis kurz vor Node
                 mediumMotor(longMotor, -50, "degree", 315, true);            //down
-                moveStraight(1, 50, "degree", 184, 1, true);                 //evt. Linefollow!!
+                moveStraight(1, 50, "degree", 190, 1, true);                 //evt. Linefollow!!
                 mediumMotor(longMotor, 50, "degree", 315, true);             //up//node von unten nach oben getauscht
             }
             turn2(1, 5, "degree", 180, 1, true);
@@ -1406,7 +1467,7 @@ void wegbringen2()
                     line2(3, 3, pGL2, dGL2, "crossline", 0, 50, false);
                 }
                 moveStraight(50, 50, "degree", miniDistance, 1, true);
-                turn2(1, 5, "degree", 90, 1, true);
+                turn2(1, 5, "degree", -90, 1, true);
             }
         }
         else
@@ -1422,14 +1483,14 @@ void wegbringen2()
             moveStraight(-1, -3, "degree", 128, -1, true);
             mediumMotor(longMotor, 50, "degree", 242, true); //Up
             turn2(1, 5, "degree", 90 * x, 1, true);
-            line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
             if (i == 0)
             {
-                mediumMotor(doubleLever, 50, "degree", leverDistance, true); //up
-                moveStraight(-1, -3, "degree", 257, -1, true);               //bis kurz vor Node
-                mediumMotor(longMotor, -50, "degree", 315, true);            //down
-                moveStraight(1, 50, "degree", 184, 1, true);                 //evt. Linefollow!!
-                mediumMotor(longMotor, 50, "degree", 315, true);             //up//node von unten nach oben getauscht
+                line2(1, 3, pGL2, dGL2, "degree", 230, 1, true);
+                mediumMotor(doubleLever, 100, "degree", leverDistance, true); //up
+                moveStraight(-1, -40, "degree", 260, -1, true);               //bis kurz vor Node
+                mediumMotor(longMotor, -50, "degree", 315, true);             //down
+                moveStraight(1, 40, "degree", 210, 1, true);                  //evt. Linefollow!!
+                mediumMotor(longMotor, 50, "degree", 315, true);              //up//node von unten nach oben getauscht
                 line2(1, 3, pGL2, dGL2, "crossline", 0, 50, false);
                 moveStraight(50, 50, "degree", miniDistance, 1, true);
                 turn2(1, 5, "degree", 90 * (-x), 1, true);
@@ -1443,6 +1504,7 @@ void wegbringen2()
             }
             else if (i == 1)
             {
+                line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
                 moveStraight(1, 3, "degree", miniDistance, 1, true);
                 if (currentColor == 2)
                 {
@@ -1458,6 +1520,10 @@ void wegbringen2()
                     turn2(1, 5, "degree", -90, 1, true);
                 }
             }
+            else
+            {
+                line2(1, 3, pGL2, dGL2, "crossline", 0, 1, true);
+            }
         }
     }
 }
@@ -1469,7 +1535,7 @@ void main_task(intptr_t unused)
     std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
     std::cout.rdbuf(out.rdbuf());                //redirect std::cout to out.txt!
     start();
-    Stopwatch run;
+    //Stopwatch run;
 
     //test();
     //return;
@@ -1490,24 +1556,23 @@ void main_task(intptr_t unused)
     line2(1, 4, pGL2, dGL2, "degree", 300, 4, false);
     kabelSammeln(true);
     routerScannen(HTl, "routerW");
-
-    fallunterscheidung();
     */
 
-    //arrays router: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
-    fall1 = 1;
-    fall2 = 1;
+    //Fake
     routerO[0] = 0;
     routerO[1] = 0;
     routerO[2] = 1;
     routerW[0] = 0;
-    routerW[1] = 1;
-    routerW[2] = 0;
-    blue = 4;
-    red = 1;
-    green = 2;
-    yellow = 3;
+    routerW[1] = 0;
+    routerW[2] = 1;
+    blue = 2;
+    red = 3;
+    green = 4;
+    yellow = 1;
 
+
+    fallunterscheidung();
+    //arrays router: 0 schwarz; 1 weiß; 2 getauscht; 3 leer
     task1();
     kabelAbladen();
     wegbringen1();
@@ -1516,10 +1581,10 @@ void main_task(intptr_t unused)
     welcherWeg();
     kabelAbladen();
     wegbringen2();
-
-    moveStraight(1, 4, "degree", 184, 4, false);
-    turn1(motor_left, 4, true, 4, "degree", 20, 4, false);
-    moveStraight(4, 4, "degree", 184, 1, true);
+    mediumMotor(longMotor, -50, "degree", 315, true); //down
+    moveStraight(1, 4, "degree", 320, 4, false);
+    turn1(motor_left, 4, true, 4, "degree", 45, 1, true);
+    moveStraight(1, 4, "time", 1000, 1, true);
 
     //Ende
     int neededTime = run.getTime();

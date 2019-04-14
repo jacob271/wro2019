@@ -33,7 +33,9 @@ void align(int duration);
 
 //void logColor();
 void brake(bool stop, int endSpeed);
-int frequencyDistribution(int colorCounter[]);
+//int frequencyDistribution(int colorCounter[]);
+int frequencyDistribution(int colorCounter[], std::string mode);
+
 bool lineDetection(std::string mode);
 void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset);
 double accDec(int togo, double brakeFactor, double accFactor, double zeit, int startSpeed, int maxSpeed, int endSpeed, bool dec);

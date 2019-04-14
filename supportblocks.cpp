@@ -125,15 +125,16 @@ void brake(bool stop, int endSpeed)
   }
   else
   {
-    if (abs(cSpeed) < abs(endSpeed)){
+    if (abs(cSpeed) < abs(endSpeed))
+    {
       cSpeed = endSpeed;
     }
-      cSpeed = (int) (cSpeed);
+    cSpeed = (int)(cSpeed);
   }
 }
 
 // Auswerten der Häufigkeitsverteilung für das Erkennen von Schiffen und Lagern
-int frequencyDistribution(int colorCounter[])
+/*int frequencyDistribution(int colorCounter[])
 {
   int temp = 1;
   for (int i = 2; i < 8; i++)
@@ -145,6 +146,96 @@ int frequencyDistribution(int colorCounter[])
 
   std::cout << "Detected color is " << temp << " and was seen " << colorCounter[temp] << " times." << std::endl;
   return temp;
+}
+*/
+
+int frequencyDistribution(int colorCounter[], std::string mode)
+{
+
+  int laenge = 40;
+  std::cout << "frequencyDistribution " << mode << " " << laenge << std::endl;
+  int r = 0; //red
+  int b = 0;  //blue/black
+  int g = 0;  //green
+  int y = 0;  //yellow
+  int w = 0;  //white
+  int ergebnis = -1;
+  int ergebnisN = 0;
+
+  if (mode == "color")
+  {
+    //Mögliche Werte: 2,3,4,5
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 2)
+        b++;
+    }
+    std::cout << "b: " << b << std::endl;
+
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 3)
+        g++;
+    }
+    std::cout << "g: " << g << std::endl;
+
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 5)
+        r++;
+    }
+    std::cout << "r: " << r << std::endl;
+
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 4)
+        y++;
+    }
+    std::cout << "y: " << y << std::endl;
+
+    if (r > b && r > g && r > y){
+      ergebnis = 5;
+      ergebnisN = r;
+    }else if(g > r && g > b && g > y){
+      ergebnis = 3;
+      ergebnisN = g;
+    }else if(b > r && b > g && b > y){
+      ergebnis = 2;
+      ergebnisN = b;
+    }else{
+      ergebnis = 4;
+      ergebnisN = y;
+    }
+  }
+  else
+  {
+    //Mögliche Werte: 0,1
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 0)
+        b++;
+    }
+    std::cout << "b: " << b << std::endl;
+
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 1)
+        w++;
+    }
+    std::cout << "w: " << w << std::endl;
+
+    if (b > w){
+      ergebnis = 0;
+      ergebnisN = b;
+    }else{
+      ergebnis = 1;
+      ergebnisN = w;
+    }
+  }
+
+  std::cout << "Detected color: " << ergebnis << " N: " << ergebnisN <<std::endl;
+
+  return ergebnis;
 }
 
 // Meldet zurück, ob die Linie nach gewünschten Modus gesehen wurde
@@ -178,7 +269,8 @@ void waitForButton()
 }
 
 //Wert auf Display anzeigen
-void display(int inhalt){
+void display(int inhalt)
+{
   char buf[10];
   sprintf(buf, "%d", inhalt);
   ev3_lcd_draw_string(buf, 20, 50);
@@ -240,33 +332,34 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
 
   tslp_tsk(6);
 
-  std::cout << "C:" << rgb.r << " " << rgb.g << " " << rgb.b << " ";
+  std::cout << mode << " " << red << " " << green<< " " << blue << " ";
   if (mode == "color")
   {
-    if (red < 5 && blue < 5 && green < 5)
-      return 0;
-    if (red > blue && red > green && red > 10)
+    if (red < 20 && blue < 20 && green < 20)
+      return -1;
+    if (red > blue && red > green && red > 80)
     {
-      if (red > green * 2)
+      if (red > green * 1.8)
         return 5;
       else
       {
         return 4;
       }
     }
-    if (blue > green && blue > red && blue > 10)
+    if (blue > green && blue > red && blue > 60)
       return 2;
-    if (green > blue && green > red && green > 5)
+    if (green > blue && green > red && green > 50)
       return 3;
   }
-  else if (mode == "bw")
+  else
   {
     //Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
-    if (red < 10 && green < 10 && blue < 10)
-      return -1;  
+    if (red < 20 && green < 20 && blue < 20)
+      return -1;
     if (red > 150 && green > 150 && blue > 150)
       return 1;
-    return 0;
+    if (red > 25 && green > 25 && blue > 25)
+      return 0;
   }
   return -1;
 }
@@ -341,20 +434,18 @@ void resetMotors()
   resetMotors("total", 0, 0, 0);
 }
 
-
 //Richtet sich mit beiden Sensoren kurz an der Linie aus, damit er zu Beginn des Linienfolgers schon richtig steht.
 void align(int duration)
 {
-    double pCorrection = 0;
-    Stopwatch align;
-    double alignpGain = 1.0;
+  double pCorrection = 0;
+  Stopwatch align;
+  double alignpGain = 1.0;
 
-
-    while (align.getTime() < duration)
-    {
-        pCorrection = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
-        ev3_motor_set_power(motor_left, (-1) * (cSpeed - pCorrection * alignpGain));
-        ev3_motor_set_power(motor_right, cSpeed + pCorrection * alignpGain);
-    }
-    brake(true, 0);
+  while (align.getTime() < duration)
+  {
+    pCorrection = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
+    ev3_motor_set_power(motor_left, (-1) * (cSpeed - pCorrection * alignpGain));
+    ev3_motor_set_power(motor_right, cSpeed + pCorrection * alignpGain);
+  }
+  brake(true, 0);
 }

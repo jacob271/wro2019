@@ -197,9 +197,16 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
   cSpeed = startSpeed;
   resetMotors();
 
-  int colorCounter[8] = {0};
+  int colorCounter[40] = {0};
+
+  for (int i = 0; i < 40; i++){
+    colorCounter[i] = -1;
+  }
+  
 
   bool continueMove = true;
+
+  int cCounter = 0;
 
   while (continueMove)
   {
@@ -221,7 +228,8 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
 
     if (colorSearch)
     {
-      colorCounter[colorDetection_rgb(HTr, searchMode)]++;
+      colorCounter[cCounter] = colorDetection_rgb(searchSensor, searchMode);
+      cCounter++;
       tslp_tsk(4);
     }
   }
@@ -231,9 +239,9 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
 
   if (colorSearch)
   {
-    return frequencyDistribution(colorCounter);
+    return frequencyDistribution(colorCounter, searchMode);
   }
-  return 0;
+  return -1;
 }
 
 //Geradeaus ohne Farbscan-Option
@@ -260,7 +268,11 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
   }
   double lastpError = 0.0;
   bool continueMove = true;
-  int colorCounter[8] = {0};
+  int colorCounter[40] = {-1};
+  for (int i = 0; i < 40; i++){
+    colorCounter[i] = -1;
+  }
+  int cCounter = 0;
   bool resetSlowDown = false;
   double temporalMaxSpeed = cSpeed;
   double lastpErrors[4] = {0};
@@ -322,7 +334,8 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
       i = 0;
       if (colorSearch)
       {
-        colorCounter[colorDetection_rgb(searchSensor, searchMode)]++;
+        colorCounter[cCounter] = colorDetection_rgb(searchSensor, searchMode);
+        cCounter++;
       }
     }
     lastpError = lastpErrors[i];
@@ -335,9 +348,9 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
   if (colorSearch)
   {
-    return frequencyDistribution(colorCounter);
+    return frequencyDistribution(colorCounter, searchMode);
   }
-  return 0;
+  return -1;
 }
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop)
@@ -358,7 +371,11 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   }
   double lastpError = 0.0;
   bool continueMove = true;
-  int colorCounter[8] = {0};
+  int colorCounter[40] = {-1};
+  for (int i = 0; i < 40; i++){
+    colorCounter[i] = -1;
+  }
+  int cCounter = 0;
   bool resetSlowDown = false;
   double temporalMaxSpeed;
   double lastpErrors[4] = {0};
@@ -424,7 +441,8 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       i = 0;
       if (colorSearch)
       {
-        colorCounter[colorDetection_rgb(searchSensor, searchMode)]++;
+        colorCounter[cCounter] = colorDetection_rgb(searchSensor, searchMode);
+        cCounter++;
         //tslp_tsk(5);
       }
     }
@@ -438,9 +456,9 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
   if (colorSearch)
   {
-    return frequencyDistribution(colorCounter);
+    return frequencyDistribution(colorCounter, searchMode);
   }
-  return 0;
+  return -1;
 }
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop)
@@ -453,6 +471,11 @@ void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool
   ev3_motor_reset_counts(motor);
   Stopwatch move;
   bool continueMove = true;
+
+  if (motor == longMotor){
+    speed = speed * (-1);
+  }
+
   while (continueMove)
   {
     if (mode == "degree")

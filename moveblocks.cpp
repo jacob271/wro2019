@@ -39,7 +39,14 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
 
   if (mode == "degree")
   {
-    wert = abs(0.96* wert * (wheelCircumferance * 2) / wheelDiameter); //0.99
+    double x = 0.95;
+    if(cSpeed<0){
+      x = 1.06;
+      if (turnMotor == motor_right){
+        x = 1.01;
+      }
+    }
+    wert = abs(x* wert * (wheelCircumferance * 2) / wheelDiameter); //0.99
 
     if (stop == false)
     {
@@ -186,7 +193,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
 int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
   bool dec = false; //Soll prinzipiell nicht abbremsen
-  double togo;
+  double togo = 0;
   if (mode == "degree")
   {
     dec = true;
@@ -377,7 +384,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   }
   int cCounter = 0;
   bool resetSlowDown = false;
-  double temporalMaxSpeed;
+  double temporalMaxSpeed = cSpeed;
   double lastpErrors[4] = {0};
   int i = 0;
   double slowDownReset = 0;

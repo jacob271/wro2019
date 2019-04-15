@@ -56,7 +56,7 @@ int speedLevel(int level)
   switch (abs(level))
   {
   case 1:
-    return (20 * batteryFactor * (level / abs(level))); //Start und EndSpeed
+    return (speedLevel1 * batteryFactor * (level / abs(level))); //Start und EndSpeed
   case 2:
     return (50 * batteryFactor * (level / abs(level)));
   case 3:
@@ -389,6 +389,7 @@ int findColor(int colors[], std::string mode)
     //Summe der Farben ist immer 1
     return 1 - color;
   }
+  return -1;
 }
 
 void initializeSpeeds(int &speed1, int &speed2, int &speed3)

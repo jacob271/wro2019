@@ -1,7 +1,7 @@
 #pragma once
 class StallDetection
 {
-    int stall [20];
+    int stall [21];
     int index;
     bool array_full;
 

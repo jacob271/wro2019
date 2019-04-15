@@ -73,6 +73,8 @@ extern sensor_port_t temporalSensor;
 
 //Speeds
 extern int cSpeed;
+extern int speedLevel1;
+
 
 // Variables for Moves
 extern double pGain;

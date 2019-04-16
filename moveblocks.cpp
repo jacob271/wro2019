@@ -146,7 +146,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
     cSpeed = cSpeed * (-1);
     endSpeed = endSpeed * (-1);
   }
-
+  resetMotors();
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
 
@@ -351,7 +351,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
-  std::cout << "Schleifendurchläufe: " << counter / (move.getTime() / 1000) << std::endl;
+  std::cout << "lc: " << counter / (move.getTime() / 1000) << std::endl;
 
   if (colorSearch)
   {
@@ -459,7 +459,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
-  std::cout << "Schleifendurchläufe: " << counter / (move.getTime() / 1000) << std::endl;
+  std::cout << "lc: " << counter / (move.getTime() / 1000) << std::endl;
 
   if (colorSearch)
   {

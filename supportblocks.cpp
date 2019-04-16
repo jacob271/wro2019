@@ -58,13 +58,16 @@ int speedLevel(int level)
   case 1:
     return (speedLevel1 * batteryFactor * (level / abs(level))); //Start und EndSpeed
   case 2:
-    return (50 * batteryFactor * (level / abs(level)));
+    return (50 * batteryFactor * (level / abs(level))); //miniDistance
   case 3:
-    return (60 * batteryFactor * (level / abs(level))); //Standard Drive Speed (kurze move Straight/line follows)
+    return (60 * batteryFactor * (level / abs(level))); //Standard Drive Speed (move Straight/line follows)
   case 4:
     return (80 * batteryFactor * (level / abs(level))); //fast drive speed and turn1
   case 5:
     return (50 * batteryFactor * (level / abs(level))); //turn2 speed
+  case 6:
+    return (35 * batteryFactor * (level / abs(level))); //langsamer speed um router und kabel abzusetzen
+
   default:
     return (int)(level * batteryFactor);
   }
@@ -133,22 +136,7 @@ void brake(bool stop, int endSpeed)
   }
 }
 
-// Auswerten der Häufigkeitsverteilung für das Erkennen von Schiffen und Lagern
-/*int frequencyDistribution(int colorCounter[])
-{
-  int temp = 1;
-  for (int i = 2; i < 8; i++)
-  {
-    if (colorCounter[i] > colorCounter[temp] && colorCounter[i] > 1)
-      temp = i;
-    std::cout << i << "-" << colorCounter[i] << " | ";
-  }
-
-  std::cout << "Detected color is " << temp << " and was seen " << colorCounter[temp] << " times." << std::endl;
-  return temp;
-}
-*/
-
+//Auswerten der Farberkennung
 int frequencyDistribution(int colorCounter[], std::string mode)
 {
 

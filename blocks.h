@@ -110,7 +110,3 @@ extern int fall2;
 
 
 extern int miniDistance;
-extern int turnBackDistance;
-
- 
-extern int wallDistanceE;

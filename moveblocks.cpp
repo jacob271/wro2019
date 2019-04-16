@@ -393,7 +393,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   while (continueMove)
   {
     counter++;   //Überprüfen der Schleifendurchläufe
-    tslp_tsk(1); //Reduziert Schleifendurchläufe auf 500 pro Sekunde
+    tslp_tsk(1); //Reduziert Schleifendurchläufe
     int togo = wert - (abs(measureMotorRight() - measureMotorLeft()) / 2);
 
     if (mode == "degree")
@@ -433,15 +433,14 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       cSpeed = accDec(togo, bfLine, afLine, slowDown.getTime() - slowDownReset, startSpeed, maxSpeed, endSpeed, dec);
     }
 
-    //display(pError);
-
     double pCorrection = pError * pGain;
     double dCorrection = (pError - lastpError) * dGain;
 
     ev3_motor_set_power(motor_left, (cSpeed - pCorrection - dCorrection) * (-1));
     ev3_motor_set_power(motor_right, cSpeed + pCorrection + dCorrection);
+    
+    //Speichert lastpError
     lastpErrors[i] = pError;
-
     i++;
     if (i > 3)
     {
@@ -450,7 +449,6 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       {
         colorCounter[cCounter] = colorDetection_rgb(searchSensor, searchMode);
         cCounter++;
-        //tslp_tsk(5);
       }
     }
     lastpError = lastpErrors[i];

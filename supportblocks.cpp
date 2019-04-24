@@ -53,7 +53,7 @@ int getHTRGB(sensor_port_t sensor, int mode)
 // Geschwindigkeiten konvertieren
 int speedLevel(int level)
 {
-  switch (abs(level))
+  /*switch (abs(level))
   {
   case 1:
     return (speedLevel1 * batteryFactor * (level / abs(level))); //Start und EndSpeed
@@ -64,13 +64,34 @@ int speedLevel(int level)
   case 4:
     return (80 * batteryFactor * (level / abs(level))); //fast drive speed and turn1
   case 5:
-    return (50 * batteryFactor * (level / abs(level))); //turn2 speed
+    return (60 * batteryFactor * (level / abs(level))); //turn2 speed
   case 6:
-    return (35 * batteryFactor * (level / abs(level))); //langsamer speed um router und kabel abzusetzen
+    return (40 * batteryFactor * (level / abs(level))); //langsamer speed um router und kabel abzusetzen
 
   default:
     return (int)(level * batteryFactor);
   }
+  */
+
+ switch (abs(level))
+  {
+  case 1:
+    return (int)((18 * batteryFactor) * (level / abs(level))); //Start und EndSpeed //14
+  case 2:
+    return (int)((46 * batteryFactor) * (level / abs(level))); //miniDistance //43
+  case 3:
+    return (int)((63 * batteryFactor) * (level / abs(level))); //Standard Drive Speed (move Straight/line follows) //60
+  case 4:
+    return (int)((76 * batteryFactor) * (level / abs(level))); //fast drive speed and turn1 //73
+  case 5:
+    return (int)((56 * batteryFactor) * (level / abs(level))); //turn2 speed //53
+  case 6:
+    return (int)((50* batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50
+
+  default:
+    return (int)(abs(level) * batteryFactor * (level / abs(level)));
+  }
+
 }
 
 // Rotationsssensorkorrektur für movees
@@ -121,9 +142,14 @@ void brake(bool stop, int endSpeed)
   if (stop == true)
   {
     ev3_motor_set_power(motor_left, 0);
-    ev3_motor_stop(motor_left, true);
     ev3_motor_set_power(motor_right, 0);
+    ev3_motor_stop(motor_left, true);
     ev3_motor_stop(motor_right, true);
+    Stopwatch brake;
+    while (brake.getTime()<4){
+      ev3_motor_stop(motor_left, true);
+      ev3_motor_stop(motor_right, true);
+    }
     cSpeed = 0;
   }
   else
@@ -327,7 +353,7 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
       return -1;
     if (red > blue && red > green && red > 80)
     {
-      if (red > green * 1.8)
+      if (red > green * 1.65)
         return 5;
       else
       {

@@ -89,6 +89,7 @@ extern const double bfLine;
 extern const double afMove;
 extern const double afLine;
 
+extern double batteryLevel;
 extern double batteryFactor;
 
 extern int LSrMiddle;

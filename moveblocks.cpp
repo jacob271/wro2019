@@ -309,7 +309,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     double pError = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
 
     //Bei zu großem Fehler bremst der Roboter ab, ansonsten wird accDec ganz normal ausgeführt
-    if (abs(pError) > 20 && abs(cSpeed) > 30)
+    if (abs(pError) > 20 && abs(cSpeed) > speedLevel(45))
     {
       if (resetSlowDown)
       {
@@ -416,7 +416,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     }
 
     //Bei zu großem Fehler bremst der Roboter ab, ansonsten wird accDec ganz normal ausgeführt
-    if (abs(pError) > 15 && abs(cSpeed) > 30)
+    if (abs(pError) > 15 && abs(cSpeed) > speedLevel(40))
     {
       if (resetSlowDown)
       {

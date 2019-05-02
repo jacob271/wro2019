@@ -656,7 +656,7 @@ void wegbringen1()
             turn2(1, 5, "degree", 90 * x, 1, true);
             line1(1, 3, pGL1, dGL1, temporalSensor, edge, "degree", 450, 3, false);
             line1(cSpeed, 2, pGL1, dGL1, temporalSensor, edge, "crossline", 0, 2, false);
-            moveStraight(cSpeed,2,"degree",miniDistance,1,true);
+            moveStraight(cSpeed,2,"degree",miniDistance,1,true);//(-10)
             turn2(1, 5, "degree", 90 * x, 1, true);
             routerAbladen(0); //node absetzen
             moveStraight(-1, -3, "degree", 110, -1, true);
@@ -1494,7 +1494,7 @@ void wegbringen2()
             turn2(1, 5, "degree", 90 * x, 1, true);
             line1(1, 3, pGL1, dGL1, temporalSensor, edge, "degree", 450, 3, false);
             line1(cSpeed, 2, pGL1, dGL1, temporalSensor, edge, "crossline", 0, 2, false);
-            moveStraight(cSpeed,2,"degree",miniDistance,1,true);
+            moveStraight(cSpeed,2,"degree",miniDistance,1,true);//(-10)
             turn2(1, 5, "degree", 90 * x, 1, true);
             routerAbladen(0); //node absetzen
             moveStraight(-1, -3, "degree", 110, -1, true);

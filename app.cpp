@@ -108,7 +108,10 @@ void start() //Konfiguration für den Start
 
     batteryLevel = ev3_battery_voltage_mV();
 
-    batteryFactor = (8045 / batteryLevel);
+    batteryFactor = (7950 / batteryLevel);//8045
+    if (batteryLevel >= 8000){
+        batteryFactor = batteryFactor * 1.02;
+    }
 
     std::cout << batteryFactor << std::endl;
 
@@ -263,9 +266,8 @@ void kabelAbladen()
     moveStraight(cSpeed, 6, "degree", 160, 1, true);
     //tslp_tsk(300);
     mediumMotor(doubleLever, -50, "time", 350, false);
-    moveStraight(-1, -6, "degree", 320, 1, true); //400
+    moveStraight(-1, -6, "degree", 250, 1, true); //400
     turn2(1, 5, "degree", 180, 1, true);
-    line2(1, 2, pGL2, dGL2, "degree", 105, 1, true); //neu
     //line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
     //moveStraight(4, 4, "degree", miniDistance, 1, true);
 }
@@ -577,6 +579,9 @@ void task1()
 
 void wegbringen1()
 {
+    line2(1,3,pGL2,dGL2,"degree",110,2,false);
+    line2(2, 2, pGL2, dGL2, "crossline", 0, 1, true);
+    moveStraight(-1,-3,"degree",70,-1,true);
     std::cout << "wegbringen1:" << std::endl;
     updateLogDatei();
     if (fall1 == 3)
@@ -1170,7 +1175,7 @@ void task2()
             //OW
             line2(cSpeed, 3, pGL2, dGL2, "degree", 220, 1, true);
             mediumMotor(longMotor, longMotorUpSpeed, "degree", longMotorDistance, true); //up
-            line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            crossline(1,1);            
         }
         else
         {
@@ -1394,20 +1399,22 @@ void welcherWeg()
 
 void wegbringen2()
 {
+    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+    moveStraight(3, 3, "degree", miniDistance, 1, true);
     //1 == yellow , 2 == green
     std::cout << "wegbringen2" << std::endl;
     updateLogDatei();
     if (fall2 == 2 || fall2 == 6 || fall2 == 8) //Achtung: Fall2 wird geändert !!!
     {
         fall2 = 2;
-        turn1(motor_left, 1, false, 4, "degree", 90, 1, true);
-        //turn2(1, 5, "degree", 90, 1, true);
+        //turn1(motor_left, 1, false, 4, "degree", 90, 1, true);
+        turn2(1, 5, "degree", 90, 1, true);
     }
     else
     {
         fall2 = 1;
-        turn1(motor_right, 1, false, 4, "degree", 90, 1, true);
-        //turn2(1, 5, "degree", -90, 1, true);
+        //turn1(motor_right, 1, false, 4, "degree", 90, 1, true);
+        turn2(1, 5, "degree", -90, 1, true);
     }
     //line2(1, 3, pGL2, dGL2, "degree", 50, 3, false);
     crossline(1, 1);
@@ -1558,9 +1565,10 @@ void main_task(intptr_t unused)
     //return;
 
     //Anfang - Scannt Positionen, scannt Router und sammelt das südliche Kabel
-    moveStraight(30, 50, "degree", 18, 30, true);
-    turn1(motor_left, 1, false, 4, "degree", -90, 1, true);
-    moveStraight(20, 3, "degree", 65, 3, false);
+    moveStraight(30, 50, "degree", 110, 30, true);
+    turn1(motor_left, 1, false, 4, "degree", -45, 1, true);
+    //waitForButton();
+    moveStraight(20, 3, "degree", 120, 3, false);    
     positionenScannen();
     turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
     line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1900, 70, false);
@@ -1584,7 +1592,7 @@ void main_task(intptr_t unused)
     kabelAbladen();
     wegbringen2();
     mediumMotor(longMotor, longMotorDownSpeed, "degree", longMotorDistance, true); //down
-    moveStraight(1, 100, "degree", 270, 100, false);
+    moveStraight(1, 100, "degree", 255, 100, false);
     turn1(motor_left, 100, true, 4, "degree", 50, 100, false);
     int neededTime = run.getTime();
     moveStraight(100, 100, "time", 300, 1, true);

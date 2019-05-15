@@ -265,7 +265,7 @@ void kabelAbladen()
     mediumMotor(doubleLever, -50, "time", 350, false);
     moveStraight(-1, -6, "degree", 320, 1, true); //400
     turn2(1, 5, "degree", 180, 1, true);
-    line2(1, 2, pGL2, dGL2, "degree", 120, 1, true); //neu
+    line2(1, 2, pGL2, dGL2, "degree", 105, 1, true); //neu
     //line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
     //moveStraight(4, 4, "degree", miniDistance, 1, true);
 }

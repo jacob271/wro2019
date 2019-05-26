@@ -87,6 +87,7 @@ extern const double bfTurn2;
 extern const double bfLine;
 
 extern const double afMove;
+extern const double afTurn2;
 extern const double afLine;
 
 extern double batteryLevel;

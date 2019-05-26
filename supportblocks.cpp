@@ -73,6 +73,7 @@ int speedLevel(int level)
   }
   */
 
+//Normale speeds Wettbewerb 
  switch (abs(level))
   {
   case 1:
@@ -84,13 +85,34 @@ int speedLevel(int level)
   case 4:
     return (int)((76 * batteryFactor) * (level / abs(level))); //fast drive speed and turn1 //73
   case 5:
-    return (int)((56 * batteryFactor) * (level / abs(level))); //turn2 speed //53
+    return (int)((56 * batteryFactor) * (level / abs(level))); //turn2 speed //56
   case 6:
     return (int)((50* batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50
 
   default:
     return (int)(abs(level) * batteryFactor * (level / abs(level)));
   }
+  
+  /*boosted
+  switch (abs(level))
+  {
+  case 1:
+    return (int)((19 * batteryFactor) * (level / abs(level))); //Start und EndSpeed //14
+  case 2:
+    return (int)((46 * batteryFactor) * (level / abs(level))); //miniDistance //43
+  case 3:
+    return (int)((65 * batteryFactor) * (level / abs(level))); //Standard Drive Speed (move Straight/line follows) //60
+  case 4:
+    return (int)((85 * batteryFactor) * (level / abs(level))); //fast drive speed and turn1 //73
+  case 5:
+    return (int)((90 * batteryFactor) * (level / abs(level))); //turn2 speed //53
+  case 6:
+    return (int)((50* batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50
+
+  default:
+    return (int)(abs(level) * batteryFactor * (level / abs(level)));
+  }
+  */
 
 }
 

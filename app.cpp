@@ -45,14 +45,15 @@ const double bfMove = 0.4; // Je höher, desto früher wird gebremst
 const double bfTurn1 = 0.8;
 const double bfTurn2 = 1.1; //0.4
 const double bfLine = 1;
-const double afMove = 0.2;  //Beschleunigung in Einheiten pro Millisekunde
-const double afLine = 0.15; //0.2
+const double afMove = 0.3; //Beschleunigung in Einheiten pro Millisekunde
+const double afTurn2 = 0.6;
+const double afLine = 0.2; //0.2
 
-const double pGL1 = 0.4;
-const double dGL1 = 8;
+double pGL1 = 0.4;
+double dGL1 = 8;
 
-const double pGL2 = 0.14;
-const double dGL2 = 3.1;
+double pGL2 = 0.14;
+double dGL2 = 3.1;
 
 // Constants for vertical line alignment
 const double pi = 3.14159265358979323846264338;
@@ -108,12 +109,19 @@ void start() //Konfiguration für den Start
 
     batteryLevel = ev3_battery_voltage_mV();
 
-    batteryFactor = (7950 / batteryLevel);//8045
-    if (batteryLevel >= 8000){
+    batteryFactor = (7950 / batteryLevel); //8045
+    if (batteryLevel >= 7900)
+    {
         batteryFactor = batteryFactor * 1.02;
     }
 
     std::cout << batteryFactor << std::endl;
+
+    pGL1 = pGL1 * batteryFactor;
+    dGL1 = dGL1* batteryFactor;
+
+    pGL2 = pGL2 * batteryFactor;
+    dGL2 = dGL2 * batteryFactor;
 
     std::cout << "Battery at: " << batteryLevel << "Volt" << std::endl;
     std::cout << "speedsLevel:" << std::endl;
@@ -132,6 +140,128 @@ void start() //Konfiguration für den Start
     waitForButton();
     run.reset();
     resetMotors();
+}
+
+void nationalAnthem()
+{
+    for (int i = 0; i < 2; i++)
+    {
+        ev3_speaker_play_tone(NOTE_F4, 750);
+        tslp_tsk(750);
+        ev3_speaker_play_tone(NOTE_G4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_A4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_G4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_AS4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_A4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_G4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_E4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_F4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_D5, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_C5, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_AS4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_A4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_G4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_A4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_F4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_C5, 1000);
+        tslp_tsk(1000);
+    }
+    ev3_speaker_play_tone(NOTE_G4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_A4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_G4, 250);
+    tslp_tsk(250);
+    ev3_speaker_play_tone(NOTE_E4, 250);
+    tslp_tsk(250);
+    ev3_speaker_play_tone(NOTE_C4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_AS4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_A4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_G4, 250);
+    tslp_tsk(250);
+    ev3_speaker_play_tone(NOTE_E4, 250);
+    tslp_tsk(250);
+    ev3_speaker_play_tone(NOTE_C4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_C5, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_AS4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_A4, 750);
+    tslp_tsk(750);
+    ev3_speaker_play_tone(NOTE_A4, 250);
+    tslp_tsk(250);
+    ev3_speaker_play_tone(NOTE_B4, 500);
+    tslp_tsk(500);
+    ev3_speaker_play_tone(NOTE_B4, 250);
+    tslp_tsk(250);
+    ev3_speaker_play_tone(NOTE_C5, 250);
+    tslp_tsk(250);
+    ev3_speaker_play_tone(NOTE_C5, 1000);
+    tslp_tsk(1000);
+    for (int i = 0; i < 2; i++)
+    {
+        ev3_speaker_play_tone(NOTE_F5, 750);
+        tslp_tsk(750);
+        ev3_speaker_play_tone(NOTE_E5, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_E5, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_D5, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_C5, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_D5, 750);
+        tslp_tsk(750);
+        ev3_speaker_play_tone(NOTE_C5, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_C5, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_AS4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_A4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_G4, 750);
+        tslp_tsk(750);
+        ev3_speaker_play_tone(NOTE_A4, 125);
+        tslp_tsk(125);
+        ev3_speaker_play_tone(NOTE_AS4, 125);
+        tslp_tsk(125);
+        ev3_speaker_play_tone(NOTE_C5, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_D5, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_AS4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_G4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_F4, 500);
+        tslp_tsk(500);
+        ev3_speaker_play_tone(NOTE_A4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_G4, 250);
+        tslp_tsk(250);
+        ev3_speaker_play_tone(NOTE_F4, 1000);
+        tslp_tsk(1000);
+    }
 }
 
 void updateLogDatei()
@@ -158,13 +288,33 @@ void crossline(int startSpeed, int anzahl)
 
 void positionenScannen()
 {
-    line1(1, 90, 0.4, 8, LSr, false, "degree", 315, 90, false); //810
+    line1(1, 90, pGL1, dGL1, LSr, false, "degree", 315, 90, false);
     for (int i = 0; i < 3; i++)
     {
-        positions[i] = line1(cSpeed, 90, 0.4, 4, LSr, false, "degree", 147, 60, false, true, HTr, "color");
+        positions[i] = line1(cSpeed, 90, pGL1, dGL1*0.6, LSr, false, "degree", 147, 60, false, true, HTr, "color");
     }
     positions[3] = findColor(positions, "positions");
-    line1(cSpeed, 90, 0.4, 8, LSr, false, "degree", 375, 1, true); //810
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 360, 1, true);
+    //Überraschungsaufgabe Regio Schwwäbisch Gmünd
+    /*
+    int positionsNew[4] = {0};
+    std::cout << "positionsNew" << std::endl;
+    for (int i = 0; i < 4; i++)
+    {
+        positionsNew[i] = positions[i];
+        std::cout << i << " " << positionsNew[i] << std::endl;
+    }
+
+    positions[3] = positionsNew[2];
+    positions[2] = positionsNew[0];
+    positions[1] = positionsNew[3];
+    positions[0] = positionsNew[1];
+
+    std::cout << positions[0] << std::endl;
+    std::cout << positions[1] << std::endl;
+    std::cout << positions[2] << std::endl;
+    std::cout << positions[3] << std::endl;
+    */
 }
 
 void kabelSammeln(bool south)
@@ -204,17 +354,17 @@ void routerScannen(sensor_port_t searchSensor, std::string mode)
     {
         line2(1, 4, pGL2, dGL2, "degree", 40, 4, false);
     }
-    router[i] = line2(cSpeed, 4, 0.2, 2, "degree", 349, 4, false, true, searchSensor, "bw");
+    router[i] = line2(cSpeed, 4, pGL2, dGL2*0.6, "degree", 349, 4, false, true, searchSensor, "bw");
     i++;
     if (mode == "routerO")
     {
-        router[i] = line2(cSpeed, 4, 0.2, 2, "degree", 349, 3, false, true, searchSensor, "bw");
+        router[i] = line2(cSpeed, 4, pGL2, dGL2*0.6, "degree", 349, 3, false, true, searchSensor, "bw");
         line2(cSpeed, 3, pGL2, dGL2, "degree", 360, 3, false);
         crossline(cSpeed, 1);
     }
     else
     {
-        router[i] = line2(cSpeed, 4, 0.2, 2, "degree", 349, 1, true, true, searchSensor, "bw");
+        router[i] = line2(cSpeed, 4, pGL2, dGL2*0.6, "degree", 349, 1, true, true, searchSensor, "bw");
     }
     i++;
     router[i] = findColor(router, "router");
@@ -293,6 +443,7 @@ void routerAbladen(int vonWo) //1 von Osten oder Westen; 0 von Norden oder Süde
 
 void test()
 {
+    /*
     int batteryVoltage = ev3_battery_voltage_mV();
 
     Stopwatch voltageMessen;
@@ -310,11 +461,26 @@ void test()
 
     std::cout << "batteryVoltage: " << batteryVoltage << " left " << motorLeft << " right " << motorRight << std::endl;
     return;
+    */
 
     int x = 1;
     while (x == 1)
     {
-        moveStraight(1, 3, "degree", 500, 1, true);
+        line1(1, 2, pGL1, dGL1,LSl,false, "crossline", 0, 2, false);
+        moveStraight(cSpeed, 2, "degree", miniDistance, 1, true); //(-10)
+        turn2(1, 5, "degree", 90, 1, true);
+
+        line2(1, 6, 0.7, dGL2, "degree", 123, 1, true);    
+        mediumMotor(longMotor, -30, "degree", 230, true);
+        turn2(1, 5, "degree", 5, 1, true);
+        tslp_tsk(50);
+        turn2(1, 5, "degree", -10, 1, true);
+        tslp_tsk(50);
+        turn2(1, 5, "degree", 5, 1, true);
+
+        moveStraight(-1, -3, "degree", 110, -1, true);
+        waitForButton();
+        mediumMotor(longMotor, longMotorUpSpeed, "degree", 262, true); //Up
         waitForButton();
         /*turn2(1, 4, "degree", 90, 1, true);
         waitForButton();
@@ -579,9 +745,9 @@ void task1()
 
 void wegbringen1()
 {
-    line2(1,3,pGL2,dGL2,"degree",110,2,false);
+    line2(1, 3, pGL2, dGL2, "degree", 110, 2, false);
     line2(2, 2, pGL2, dGL2, "crossline", 0, 1, true);
-    moveStraight(-1,-3,"degree",70,-1,true);
+    moveStraight(-1, -3, "degree", 70, -1, true);
     std::cout << "wegbringen1:" << std::endl;
     updateLogDatei();
     if (fall1 == 3)
@@ -661,7 +827,7 @@ void wegbringen1()
             turn2(1, 5, "degree", 90 * x, 1, true);
             line1(1, 3, pGL1, dGL1, temporalSensor, edge, "degree", 450, 3, false);
             line1(cSpeed, 2, pGL1, dGL1, temporalSensor, edge, "crossline", 0, 2, false);
-            moveStraight(cSpeed,2,"degree",miniDistance,1,true);//(-10)
+            moveStraight(cSpeed, 2, "degree", miniDistance, 1, true); //(-10)
             turn2(1, 5, "degree", 90 * x, 1, true);
             routerAbladen(0); //node absetzen
             moveStraight(-1, -3, "degree", 110, -1, true);
@@ -1175,7 +1341,7 @@ void task2()
             //OW
             line2(cSpeed, 3, pGL2, dGL2, "degree", 220, 1, true);
             mediumMotor(longMotor, longMotorUpSpeed, "degree", longMotorDistance, true); //up
-            crossline(1,1);            
+            crossline(1, 1);
         }
         else
         {
@@ -1388,9 +1554,9 @@ void welcherWeg()
         lineEdge = true;
     }
     // zum schwabbelabsetzen fahren
-    line1(cSpeed, 4, pGL1, dGL1+1, temporalSensor, lineEdge, "degree", 1380, 4, false);
-    line1(cSpeed, 4, pGL1, dGL1+1, temporalSensor, lineEdge, "crossline", 0, 4, false);
-    line1(cSpeed, 4, pGL1, dGL1+1, temporalSensor, lineEdge, "degree", 540, 1, true);
+    line1(cSpeed, 4, pGL1, dGL1 + 1, temporalSensor, lineEdge, "degree", 1380, 4, false);
+    line1(cSpeed, 4, pGL1, dGL1 + 1, temporalSensor, lineEdge, "crossline", 0, 4, false);
+    line1(cSpeed, 4, pGL1, dGL1 + 1, temporalSensor, lineEdge, "degree", 540, 1, true);
     turn1(temporalMotor, 1, false, 4, "degree", 90, 1, true);
     line1(1, 4, pGL1, dGL1, temporalSensor, lineEdge, "degree", 520, 3, false);
     crossline(cSpeed, 1);
@@ -1501,7 +1667,7 @@ void wegbringen2()
             turn2(1, 5, "degree", 90 * x, 1, true);
             line1(1, 3, pGL1, dGL1, temporalSensor, edge, "degree", 450, 3, false);
             line1(cSpeed, 2, pGL1, dGL1, temporalSensor, edge, "crossline", 0, 2, false);
-            moveStraight(cSpeed,2,"degree",miniDistance,1,true);//(-10)
+            moveStraight(cSpeed, 2, "degree", miniDistance, 1, true); //(-10)
             turn2(1, 5, "degree", 90 * x, 1, true);
             routerAbladen(0); //node absetzen
             moveStraight(-1, -3, "degree", 110, -1, true);
@@ -1565,10 +1731,10 @@ void main_task(intptr_t unused)
     //return;
 
     //Anfang - Scannt Positionen, scannt Router und sammelt das südliche Kabel
-    moveStraight(30, 50, "degree", 110, 30, true);
+    moveStraight(30, 50, "degree", 125, 30, true);
     turn1(motor_left, 1, false, 4, "degree", -45, 1, true);
     //waitForButton();
-    moveStraight(20, 3, "degree", 120, 3, false);    
+    moveStraight(20, 3, "degree", 115, 3, false);
     positionenScannen();
     turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
     line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1900, 70, false);
@@ -1596,6 +1762,8 @@ void main_task(intptr_t unused)
     turn1(motor_left, 100, true, 4, "degree", 50, 100, false);
     int neededTime = run.getTime();
     moveStraight(100, 100, "time", 300, 1, true);
+    moveStraight(-30, -50, "degree", 20, 1, true);
+
     //int neededTime = run.getTime();
     std::cout << "Needed time: " << neededTime << std::endl;
     std::cout << batteryLevel << " " << batteryFactor << " " << fall1 << " " << fall2 << " " << neededTime << " " << blue << " " << red << " " << green << " " << yellow << " " << routerO[0] << " " << routerO[1] << " " << routerO[2] << " " << routerW[0] << " " << routerW[1] << " " << routerW[2] << std::endl;
@@ -1611,5 +1779,6 @@ void main_task(intptr_t unused)
     ev3_motor_stop(motor_left, false);
     ev3_motor_stop(motor_right, false);
     ev3_speaker_play_tone(NOTE_E4, 100);
+    //nationalAnthem();
 }
 //Das Programm braucht noch eine Zeile hintendran, sonst kompiliert es nicht

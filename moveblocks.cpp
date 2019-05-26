@@ -179,7 +179,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
       continueMove = lineDetection(mode) == false;
     }
 
-    cSpeed = accDec(togo, bfTurn2, afMove, move.getTime(), startSpeed, maxSpeed, endSpeed, dec);
+    cSpeed = accDec(togo, bfTurn2, afTurn2, move.getTime(), startSpeed, maxSpeed, endSpeed, dec);
 
     pCorrection = pGainTurn2 * (measureMotorRight() - measureMotorLeft());
     ev3_motor_set_power(motor_left, cSpeed + pCorrection);

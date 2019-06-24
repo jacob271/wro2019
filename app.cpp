@@ -45,9 +45,9 @@ const double bfMove = 0.4; // Je höher, desto früher wird gebremst
 const double bfTurn1 = 0.8;
 const double bfTurn2 = 1.1; //0.4
 const double bfLine = 1;
-const double afMove = 0.3; //Beschleunigung in Einheiten pro Millisekunde
-const double afTurn2 = 0.6;
-const double afLine = 0.2; //0.2
+const double afMove = 0.2; //Beschleunigung in Einheiten pro Millisekunde
+const double afTurn2 = 0.3;
+const double afLine = 0.15; //0.2
 
 double pGL1 = 0.4;
 double dGL1 = 8;
@@ -443,52 +443,15 @@ void routerAbladen(int vonWo) //1 von Osten oder Westen; 0 von Norden oder Süde
 
 void test()
 {
-    /*
-    int batteryVoltage = ev3_battery_voltage_mV();
+    //test
+}
 
-    Stopwatch voltageMessen;
-
-    ev3_motor_set_power(motor_left, 100);
-    ev3_motor_set_power(motor_right, 100);
-    while (voltageMessen.getTime() < 10000)
-    {
-        tslp_tsk(1);
-    }
-    ev3_motor_stop(motor_left, true);
-    ev3_motor_stop(motor_right, true);
-    int motorLeft = ev3_motor_get_counts(motor_left);
-    int motorRight = ev3_motor_get_counts(motor_right);
-
-    std::cout << "batteryVoltage: " << batteryVoltage << " left " << motorLeft << " right " << motorRight << std::endl;
-    return;
-    */
-
-    int x = 1;
-    while (x == 1)
-    {
-        line1(1, 2, pGL1, dGL1,LSl,false, "crossline", 0, 2, false);
-        moveStraight(cSpeed, 2, "degree", miniDistance, 1, true); //(-10)
-        turn2(1, 5, "degree", 90, 1, true);
-
-        line2(1, 6, 0.7, dGL2, "degree", 123, 1, true);    
-        mediumMotor(longMotor, -30, "degree", 230, true);
-        turn2(1, 5, "degree", 5, 1, true);
-        tslp_tsk(50);
-        turn2(1, 5, "degree", -10, 1, true);
-        tslp_tsk(50);
-        turn2(1, 5, "degree", 5, 1, true);
-
-        moveStraight(-1, -3, "degree", 110, -1, true);
-        waitForButton();
-        mediumMotor(longMotor, longMotorUpSpeed, "degree", 262, true); //Up
-        waitForButton();
-        /*turn2(1, 4, "degree", 90, 1, true);
-        waitForButton();
-        resetMotors();
-        turn2(1, 4, "degree", -90, 1, true);
-        waitForButton();
-        resetMotors();*/
-    }
+void zusatzAndererStart()
+{
+    moveStraight(-1,-3,"degree", 92, -1,true);
+    mediumMotor(longMotor, longMotorUpSpeed,"degree", longMotorDistance, true);
+    turn2(1,5,"degree", -135, 1,true);
+    moveStraight(1,3,"degree",170, 1,true);
 }
 
 void fallunterscheidung()
@@ -572,7 +535,7 @@ void fallunterscheidung()
         fall1 = 4;
         fall2 = 9;
     }
-    else if ((blue == 3 && red == 4 && green == 1 && yellow == 2) || (blue == 2 && red == 3 && green == 4 && yellow == 1))
+    else //if ((blue == 3 && red == 4 && green == 1 && yellow == 2) || (blue == 2 && red == 3 && green == 4 && yellow == 1))
     {
         fall1 = 4;
         fall2 = 10;
@@ -1704,7 +1667,7 @@ void wegbringen2()
                 if (currentColor == 2)
                 {
                     turn2(1, 5, "degree", 90, 1, true);
-                    line1(1, 90, pGL1, dGL1, LSl, false, "degree", 1250, 3, false);
+                    line1(1, 4, pGL1, dGL1, LSl, false, "degree", 1250, 3, false);
                     line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
                     moveStraight(1, 3, "degree", miniDistance, 1, true);
                     turn2(1, 5, "degree", -90, 1, true);
@@ -1735,6 +1698,7 @@ void main_task(intptr_t unused)
     turn1(motor_left, 1, false, 4, "degree", -45, 1, true);
     //waitForButton();
     moveStraight(20, 3, "degree", 115, 3, false);
+    //zusatzAndererStart();
     positionenScannen();
     turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
     line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1900, 70, false);

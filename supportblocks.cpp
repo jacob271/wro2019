@@ -394,7 +394,7 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
       return -1;
     if (red > 150 && green > 150 && blue > 150)
       return 1;
-    if (red > 20 && green > 20 && blue > 20)
+    if (red > 16 && green > 16 && blue > 16)
       return 0;
   }
   return -1;

@@ -1603,15 +1603,10 @@ void wegbringen2()
                     crossline(1, 1);
                 }
                 else
-                {
-                    //line1
-
-                    line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                    for (int i = 1; i < 3; i++)
-                    {
-                        line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 80, 3, false);
-                        line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                    }
+                {         
+                    line1(1, 100, pGL1, dGL1, LSl, false, "degree", 600, 100, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 180, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
                     moveStraight(cSpeed, 2, "degree", miniDistance, 1, true);
                 }
                 turn2(1, 5, "degree", -90, 1, true);
@@ -1667,7 +1662,7 @@ void wegbringen2()
                 if (currentColor == 2)
                 {
                     turn2(1, 5, "degree", 90, 1, true);
-                    line1(1, 4, pGL1, dGL1, LSl, false, "degree", 1250, 3, false);
+                    line1(1, 100, pGL1, dGL1, LSl, false, "degree", 1250, 3, false);
                     line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
                     moveStraight(1, 3, "degree", miniDistance, 1, true);
                     turn2(1, 5, "degree", -90, 1, true);

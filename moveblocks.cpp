@@ -491,6 +491,12 @@ void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool
     {
       continueMove = move.getTime() < wert;
     }
+
+    if (move.getTime() > 2000){
+      continueMove = false;
+      ev3_speaker_play_tone(NOTE_E4, 200);
+    }
+    
     ev3_motor_set_power(motor, speed);
   }
   ev3_motor_stop(motor, stop);

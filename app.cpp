@@ -43,7 +43,7 @@ int resetRightDegree = 0;
 int resetLeftDegree = 0;
 const double bfMove = 0.4; // Je höher, desto früher wird gebremst
 const double bfTurn1 = 0.8;
-const double bfTurn2 = 1.1; //0.4
+const double bfTurn2 = 1.3; //1.1
 const double bfLine = 1;
 const double afMove = 0.2; //Beschleunigung in Einheiten pro Millisekunde
 const double afTurn2 = 0.3;
@@ -66,7 +66,7 @@ int miniDistanceShort = 40; //rückwärts an Linie herangefahren
 int moveBackDistance = 193; //Distanz vor einer Drehung zum Router
 int leverDistance = 110;
 int leverUpTime = 400;
-int longMotorUpSpeed = 80;
+int longMotorUpSpeed = 75;
 int longMotorDownSpeed = -80;
 int longMotorDistance = 310;
 
@@ -330,7 +330,7 @@ void kabelSammeln(bool south)
     moveStraight(1, 3, "degree", 115, 1, true);
     turn2(1, 5, "degree", 90 * richtung, 1, true);
     mediumMotor(doubleLever, -80, "degree", leverDistance, false); //down
-    line2(1, 3, pGL2, dGL2, "degree", 275, 1, true);
+    line2(1, 55, pGL2, dGL2, "degree", 275, 1, true);
     mediumMotor(doubleLever, 80, "time", 630, true); //up
     moveStraight(-1, -3, "crossline", 0, -1, true);
     moveStraight(1, 2, "degree", miniDistanceShort, 1, true);
@@ -413,7 +413,7 @@ void kabelAbladen()
 {
     line2(1, 3, 0.7, dGL2, "degree", 300, 6, false);
     line2(cSpeed, 6, 0.7, dGL2, "degree", 140, 6, false);
-    moveStraight(cSpeed, 6, "degree", 160, 1, true);
+    moveStraight(cSpeed, 40, "degree", 160, 1, true);
     //tslp_tsk(300);
     mediumMotor(doubleLever, -50, "time", 350, false);
     moveStraight(-1, -6, "degree", 250, 1, true); //400
@@ -443,7 +443,10 @@ void routerAbladen(int vonWo) //1 von Osten oder Westen; 0 von Norden oder Süde
 
 void test()
 {
-    //test
+    mediumMotor(longMotor,50,"time",400, true);
+    mediumMotor(longMotor,50,"time",20, false);
+    waitForButton();
+    //mediumMotor(longMotor,50,"time",400, true);
 }
 
 void zusatzAndererStart()
@@ -751,7 +754,7 @@ void wegbringen1()
                 mediumMotor(doubleLever, 90, "time", leverUpTime, true);                       //up
                 moveStraight(-1, -40, "degree", 260, -1, true);                                //bis kurz vor Node
                 mediumMotor(longMotor, longMotorDownSpeed, "degree", longMotorDistance, true); //down
-                moveStraight(1, 50, "degree", 190, 1, true);                                   //evt. Linefollow!!
+                moveStraight(1, 45, "degree", 190, 1, true);                                   //evt. Linefollow!!
                 mediumMotor(longMotor, longMotorUpSpeed, "degree", longMotorDistance, true);   //up//node von unten nach oben getauscht
                 moveStraight(1, 4, "degree", 70, 1, true);
             }
@@ -1560,7 +1563,17 @@ void wegbringen2()
             currentColor = 2;
             x = -1;
         }
+        /* suprise rule
+        if(currentColor == 2 && i == 0){
+            mediumMotor(longMotor, longMotorDownSpeed, "degree", 242, true); //down
+            turn2(1,3,"degree",180,1,true);
 
+        }else if(currentColor == 2 && i ==1){
+
+        }
+
+        else if
+        */
         if ((currentColor == 1 && (yellow == 1 || yellow == 3)) || (currentColor == 2 && (green == 1 || green == 3)))
         {
             turn2(1, 5, "degree", 90 * x, 1, true);
@@ -1587,13 +1600,12 @@ void wegbringen2()
                     temporalSensor = LSl;
                     edge = false;
                 }
-                line1(1, 3, pGL1, dGL1, temporalSensor, edge, "crossline", 0, 3, false);
-                for (int i = 1; i < 2; i++)
-                {
-                    line1(cSpeed, 3, pGL1, dGL1, temporalSensor, edge, "degree", 80, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, temporalSensor, edge, "crossline", 0, 3, false);
-                }
+                line1(1, 3, pGL1*0.7, dGL1*0.7, temporalSensor, edge, "crossline", 0, 3, false);               
+                line1(cSpeed, 3, pGL1*0.7, dGL1*0.7, temporalSensor, edge, "degree", 80, 3, false);
+                line1(cSpeed, 3, pGL1*0.7, dGL1*0.7, temporalSensor, edge, "crossline", 0, 3, false);                
                 moveStraight(cSpeed, 2, "degree", miniDistance, 1, true);
+                std::cout << "wegbringen2 i == 0" << std::endl;
+
             }
             else if (i == 1)
             {
@@ -1676,6 +1688,37 @@ void wegbringen2()
     }
 }
 
+void surprise(){
+    std::cout << "time " << run.getTime() << std::endl;
+    std::cout << "surprise" << std::endl;
+    line1(cSpeed, 3, 0.3, 5, LSr, true, "crossline", 0, 3, false);
+    moveStraight(cSpeed, 3, "degree", miniDistance, 1, true);
+    turn2(1, 5, "degree", -90, 1, true);
+    crossline(1,1);
+    turn2(1, 5, "degree", 90, 1, true);
+    mediumMotor(longMotor,-50,"degree",190, true);
+    line2(1, 6, 0.7, dGL2, "degree", 290, 1, true);
+    turn2(1,5,"degree",-10,1,true);
+    moveStraight(1,3,"degree",55,1,true);
+    mediumMotor(longMotor,50,"time",500, true);
+    moveStraight(-1,-3,"degree",55,-1,true);
+    mediumMotor(longMotor,50,"time",400, true);
+    //turn2(1,5,"degree",10,1,true);
+    turn2(1, 40, "degree", -170, 1, true);
+    crossline(1,1);
+    moveStraight(1, 3, "degree", 140, 1, true);
+    mediumMotor(longMotor,-40,"degree",240, true);
+    moveStraight(-1, -3, "degree", 140, -1, true);
+    mediumMotor(longMotor,50,"time",700, true);
+    mediumMotor(longMotor,50,"time",20, false);
+
+    turn2(1, 5, "degree", -90, 1, true);
+    crossline(1,1);
+    turn2(1, 5, "degree", -90, 1, true);
+    line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1680, 100, false);
+    std::cout << "time " << run.getTime() << std::endl;
+}
+
 void main_task(intptr_t unused)
 {
     //Log-Datei initialisieren
@@ -1689,14 +1732,17 @@ void main_task(intptr_t unused)
     //return;
 
     //Anfang - Scannt Positionen, scannt Router und sammelt das südliche Kabel
-    moveStraight(30, 50, "degree", 125, 30, true);
+    moveStraight(30, 50, "degree", 115, 30, true);
     turn1(motor_left, 1, false, 4, "degree", -45, 1, true);
     //waitForButton();
     moveStraight(20, 3, "degree", 115, 3, false);
     //zusatzAndererStart();
     positionenScannen();
     turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
-    line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1900, 70, false);
+
+    surprise();
+
+    //line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1900, 70, false);
     line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 380, 3, false);
     line1(cSpeed, 3, 0.3, 5, LSr, true, "crossline", 0, 3, false);
     moveStraight(cSpeed, 3, "degree", miniDistance, 1, true);
@@ -1716,12 +1762,31 @@ void main_task(intptr_t unused)
     welcherWeg();
     kabelAbladen();
     wegbringen2();
+
+    /* //surprise2 
+    turn2(1,5,"degree",-90,1,true);
+    line1(1,100,pGL1,dGL1,LSr,true,"degree",1000,3,false);
+    line1(cSpeed, 3, 0.3, 5, LSr, true, "crossline", 0, 3, false);
+    moveStraight(cSpeed, 3, "degree", miniDistance, 1, true);
+    turn2(1,5,"degree",90,1,true);
+    crossline(1,1);
+    turn2(1,5,"degree",90,1,true);
+    line2(1,3,pGL2,dGL2,"degree",550,1,true);
+    mediumMotor(longMotor, longMotorDownSpeed, "degree", longMotorDistance, true);
+    line2(1,4,pGL2,dGL2,"crossline",0,4,false);
+    moveStraight(cSpeed, 100, "degree", 100, 100, false);
+    turn1(motor_right, 100, true, 4, "degree", 50, 100, false);
+    //endsurprise */
+
+    
     mediumMotor(longMotor, longMotorDownSpeed, "degree", longMotorDistance, true); //down
     moveStraight(1, 100, "degree", 255, 100, false);
     turn1(motor_left, 100, true, 4, "degree", 50, 100, false);
+    
+
     int neededTime = run.getTime();
     moveStraight(100, 100, "time", 300, 1, true);
-    moveStraight(-30, -50, "degree", 20, 1, true);
+    moveStraight(-30, -50, "degree", 40, 1, true);
 
     //int neededTime = run.getTime();
     std::cout << "Needed time: " << neededTime << std::endl;

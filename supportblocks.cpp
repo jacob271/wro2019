@@ -5,6 +5,42 @@
 // SUPPORT BLOCKS
 //-----------------------------------------------------------------------------
 
+//speedControl
+
+void motorControl(motor_port_t motor, int speed, int maxSpeed){
+  double pGain = 0;//1.5;// * speed/100;
+  double dGain = 0;//1.5;//0.5 + 1 * speed/100;
+  int cPower = abs(ev3_motor_get_power(motor));
+  int error = abs(speed) - cPower;
+  
+  int newSpeed = speed + error*pGain + (speedControlLastError - error) * dGain;
+  newSpeed = newSpeed * (maxSpeed/abs(maxSpeed));
+
+  if (motor == motor_left){
+      newSpeed = newSpeed * (-1);
+  }
+
+   ev3_motor_set_power(motor, newSpeed);
+
+   speedControlD[speedControlIndex] = error;
+
+    speedControlIndex++;
+    if (speedControlIndex > 3)
+    {
+      speedControlIndex = 0;
+    }
+    speedControlLastError = speedControlD[speedControlIndex];
+
+
+  //std::cout << speed << " " << cPower  <<" " << error << " " << newSpeed << std::endl;
+}
+
+void resetSpeedControl (){
+  speedControlD[4] = {0};
+  speedControlIndex = 0;
+  speedControlLastError = 0.0;
+}
+
 // get RGB value of EV3 color sensor
 int getRGB(sensor_port_t port, int color)
 {
@@ -81,11 +117,11 @@ int speedLevel(int level)
   case 2:
     return (int)((46 * batteryFactor) * (level / abs(level))); //miniDistance //43
   case 3:
-    return (int)((63 * batteryFactor) * (level / abs(level))); //Standard Drive Speed (move Straight/line follows) //60
+    return (int)((90 * batteryFactor) * (level / abs(level))); //Standard Drive Speed (move Straight/line follows) //60
   case 4:
     return (int)((76 * batteryFactor) * (level / abs(level))); //fast drive speed and turn1 //73
   case 5:
-    return (int)((56 * batteryFactor) * (level / abs(level))); //turn2 speed //56
+    return (int)((60 * batteryFactor) * (level / abs(level))); //turn2 speed //56
   case 6:
     return (int)((50* batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50
 
@@ -116,13 +152,18 @@ int speedLevel(int level)
 
 }
 
-// Rotationsssensorkorrektur für movees
+// Rotationsssensorkorrektur für moves
 void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset)
 {
   double pCorrection;
   pCorrection = ((ev3_motor_get_counts(motor_left) - leftreset) + (ev3_motor_get_counts(motor_right) - rightreset)) * (abs(pGain * cSpeed) + 0.4);
-  ev3_motor_set_power(motor_left, (-1) * (cSpeed + pCorrection));
-  ev3_motor_set_power(motor_right, cSpeed - pCorrection);
+  
+
+
+  motorControl(motor_left, (cSpeed + pCorrection), cSpeed);
+  motorControl(motor_right, (cSpeed - pCorrection), cSpeed);
+  //ev3_motor_set_power(motor_left, (-1) * speedControl((cSpeed + pCorrection),motor_left));
+  //ev3_motor_set_power(motor_right, speedControl((cSpeed - pCorrection),motor_right));
 }
 
 double accDec(int togo, double brakeFactor, double accFactor, double zeit, int startSpeed, int maxSpeed, int endSpeed, bool dec)

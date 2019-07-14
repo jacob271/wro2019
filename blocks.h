@@ -21,6 +21,8 @@
 //-----------------------------------------------------------------------------
 
 // SUPPORT BLOCKS
+void motorControl(motor_port_t motor, int speed, int maxSpeed);
+void resetSpeedControl ();
 int getRGB(sensor_port_t port, int color);
 int getHTRGB(sensor_port_t sensor, int mode);
 int speedLevel(int level);
@@ -74,7 +76,9 @@ extern sensor_port_t temporalSensor;
 //Speeds
 extern int cSpeed;
 extern int speedLevel1;
-
+extern int speedControlD[];
+extern int speedControlIndex;
+extern double speedControlLastError;
 
 // Variables for Moves
 extern double pGain;

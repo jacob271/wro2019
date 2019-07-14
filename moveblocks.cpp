@@ -28,29 +28,21 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
     resetOtherMotor = resetRightDegree;
   }
 
-  //Winkel in Grad umrechnen
   double togo;
   int OMbrakeDistance = 0;
   int OMaccDistance = 0;
   if (brakeOtherMotor)
   {
-    OMbrakeDistance = abs(startSpeed - endSpeed) / bfTurn1;
-  }
+    OMbrakeDistance = abs(startSpeed - endSpeed) / (bfTurn1+1);
+  }  
 
   if (mode == "degree")
   {
-    double x = 0.95;
-    if(cSpeed<0){
-      x = 1.06;
-      if (turnMotor == motor_right){
-        x = 1.01;
-      }
-    }
-    wert = abs(x* wert * (wheelCircumferance * 2) / wheelDiameter); //0.99
+    wert = abs(wert); //0.99
 
     if (stop == false)
     {
-      OMaccDistance = abs(endSpeed);
+      OMaccDistance = (abs(endSpeed)-speedLevel(1));
     }
     wert = wert + OMbrakeDistance + OMaccDistance;
     togo = wert;
@@ -65,7 +57,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
   bool continueMove = true; //Bedingung zum Beenden der Bewegung
   while (continueMove)
   {
-
+    tslp_tsk(1);
     togo = wert - abs(ev3_motor_get_counts(turnMotor) - resetTurnMotor);
     cSpeed = accDec(togo, bfTurn1, afMove, move.getTime(), startSpeed, maxSpeed, endSpeed, dec);
 
@@ -83,27 +75,27 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
     }
 
     //Turnmotor ansteuern
+    //motorControl(turnMotor,cSpeed, maxSpeed);
+
     if (turnMotor == motor_right)
       ev3_motor_set_power(turnMotor, cSpeed);
     else
       ev3_motor_set_power(turnMotor, cSpeed * (-1));
 
     //Abbremsen otherMotor am Anfang
-    if (OMbrakeDistance - abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) >= 0) //Falls die verbleibende Bremsstrecke noch größer Null ist
+    if (OMbrakeDistance - abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) >= 0 && brakeOtherMotor == true) //Falls die verbleibende Bremsstrecke noch größer Null ist
     {
       double otherSpeed = (abs(startSpeed) - (abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) / OMbrakeDistance) * abs(startSpeed - endSpeed)) * (maxSpeed / abs(maxSpeed));
       //(Startspeed - prozentual zurückgelegte Bresmstrecke * zu bremsende Geschwindidkeit) * vorwärts oder rückwärts aus maxSpeed
 
-      if (otherMotor == motor_right)
-        ev3_motor_set_power(otherMotor, otherSpeed);
-      else
-        ev3_motor_set_power(otherMotor, otherSpeed * -1);
+      motorControl(otherMotor, otherSpeed, maxSpeed);
     }
-    else if (stop == false) //Beschleunigen otherMotor am Ende
+
+    if (stop == false) //Beschleunigen otherMotor am Ende
     {
-      double otherSpeed = (OMaccDistance - 0 - togo) * (maxSpeed / abs(maxSpeed));
+      double otherSpeed = speedLevel(1) + (OMaccDistance - 0 - togo) *   (maxSpeed / abs(maxSpeed));
       //Beschelunigt direkt proportional zur verbleienden Strecke des anderen Motors
-      if (otherSpeed > 0)
+      if (otherSpeed >= speedLevel(1))
       {
         if (otherMotor == motor_right)
           ev3_motor_set_power(otherMotor, otherSpeed);
@@ -157,7 +149,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
   double togo;
   if (mode == "degree")
   {
-    wert = 0.98 * wert * (wheelCircumferance) / wheelDiameter; //0.98
+    //wert = 0.98 * wert * (wheelCircumferance) / wheelDiameter; //0.98
     togo = abs(wert);
     dec = true;
   }
@@ -165,6 +157,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
   bool continueMove = true;
   while (continueMove)
   {
+    tslp_tsk(1);
     togo = abs(wert) - (abs(measureMotorLeft()) + abs(measureMotorRight())) / 2;
     if (mode == "degree")
     {
@@ -188,6 +181,8 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
   brake(stop, endSpeed);
   resetMotors("degree", wert, wert * (-1), maxSpeed);
 }
+
+//Add ratio to fulfill arcs
 
 //Bewegungsblock um mit Rotationssensoren geradeaus zu fahren (verschiedene Endbedingungen)
 int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
@@ -217,6 +212,7 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
 
   while (continueMove)
   {
+    tslp_tsk(1);
     if (mode == "degree")
     {
       continueMove = (abs(measureMotorRight() - measureMotorLeft()) / 2) <= wert;

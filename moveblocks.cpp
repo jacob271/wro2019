@@ -183,7 +183,7 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
 }
 
 //Add ratio to fulfill arcs
-
+/* 
 //Bewegungsblock um mit Rotationssensoren geradeaus zu fahren (verschiedene Endbedingungen)
 int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
@@ -246,11 +246,77 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
   }
   return -1;
 }
+*/
+
+int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
+{
+  bool dec = false; //Soll prinzipiell nicht abbremsen
+  double togo = 0;
+  if (mode == "degree")
+  {
+    dec = true;
+    togo = wert;
+  }
+  Stopwatch move;
+  initializeSpeeds(startSpeed, maxSpeed, endSpeed);
+  cSpeed = startSpeed;
+  resetMotors();
+
+  int colorCounter[40] = {0};
+
+  for (int i = 0; i < 40; i++){
+    colorCounter[i] = -1;
+  }
+  
+
+  bool continueMove = true;
+
+  int cCounter = 0;
+
+  while (continueMove)
+  {
+    tslp_tsk(1);
+    if (mode == "degree")
+    {
+      if (leftRatio == 1)
+        continueMove = abs(measureMotorLeft()) <= wert;
+      else
+        continueMove = abs(measureMotorRight()) <= wert;
+    }
+    else if (mode == "time")
+    {
+      continueMove = move.getTime() <= wert;
+    }
+    else
+    {
+      continueMove = lineDetection(mode) == false;
+    }
+
+    cSpeed = accDec(togo, bfMove, afMove, move.getTime(), startSpeed, maxSpeed, endSpeed, dec);
+    motorCorrection(pGain, cSpeed, resetRightDegree, resetLeftDegree, leftRatio, rightRatio);
+
+    if (colorSearch)
+    {
+      colorCounter[cCounter] = colorDetection_rgb(searchSensor, searchMode);
+      cCounter++;
+      tslp_tsk(4);
+    }
+  }
+
+  brake(stop, endSpeed);
+  resetMotors(mode, wert, wert, maxSpeed);
+
+  if (colorSearch)
+  {
+    return frequencyDistribution(colorCounter, searchMode);
+  }
+  return -1;
+}
 
 //Geradeaus ohne Farbscan-Option
-int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop)
+int moveStraight(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop)
 {
-  return moveStraight(startSpeed, maxSpeed, mode, wert, endSpeed, stop, false, HTr, " ");
+  return moveStraight(startSpeed, maxSpeed, leftRatio, rightRatio, mode, wert, endSpeed, stop, false, HTr, " ");
 }
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
@@ -300,6 +366,9 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     else
     {
       continueMove = lineDetection(mode) == false;
+       if (continueMove == false){
+        ev3_speaker_play_tone(NOTE_F4, 30);
+      }
     }
 
     double pError = ev3_color_sensor_get_reflect(LSr) - ev3_color_sensor_get_reflect(LSl);
@@ -363,6 +432,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
+  //std::cout << "sensorLine1: " << followSensor << std::endl;
   Stopwatch move;
   Stopwatch slowDown;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
@@ -403,6 +473,9 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     else
     {
       continueMove = lineDetection(mode) == false;
+      if (continueMove == false){
+        ev3_speaker_play_tone(NOTE_F4, 30);
+      }
     }
 
     double pError = LSrMiddle - ev3_color_sensor_get_reflect(followSensor);
@@ -464,7 +537,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop)
 {
-  return line1(startSpeed, maxSpeed, pGain, dGain, followSensor, rightEdge, mode, wert, endSpeed, stop, false, LSl, " ");
+  return line1(startSpeed, maxSpeed, pGain, dGain, followSensor, rightEdge, mode, wert, endSpeed, stop, false, HTr, " ");
 }
 
 void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool stop)

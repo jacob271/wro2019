@@ -39,7 +39,7 @@ void brake(bool stop, int endSpeed);
 int frequencyDistribution(int colorCounter[], std::string mode);
 
 bool lineDetection(std::string mode);
-void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset);
+void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset, double leftRatio, double rightRatio);
 double accDec(int togo, double brakeFactor, double accFactor, double zeit, int startSpeed, int maxSpeed, int endSpeed, bool dec);
 
 void initializeSpeeds(int &speed1, int &speed2, int &speed3);
@@ -49,8 +49,8 @@ int measureMotorRight();
 int measureMotorLeft();
 
 // ACTION BLOCKS
-int moveStraight(int startSpeed, int maxSpeed, std::string mode, double value, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
-int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop);
+int moveStraight(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double value, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
+int moveStraight(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop);
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);

@@ -153,15 +153,13 @@ int speedLevel(int level)
 }
 
 // Rotationsssensorkorrektur für moves
-void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset)
+void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset, double leftRatio, double rightRatio)
 {
   double pCorrection;
-  pCorrection = ((ev3_motor_get_counts(motor_left) - leftreset) + (ev3_motor_get_counts(motor_right) - rightreset)) * (abs(pGain * cSpeed) + 0.4);
+  pCorrection = ( (ev3_motor_get_counts(motor_left) - leftreset)/leftRatio + (ev3_motor_get_counts(motor_right) - rightreset)/rightRatio) * (abs(pGain*70)); //*70    +0.4 *cSpeed
   
-
-
-  motorControl(motor_left, (cSpeed + pCorrection), cSpeed);
-  motorControl(motor_right, (cSpeed - pCorrection), cSpeed);
+  motorControl(motor_left, (leftRatio * cSpeed + pCorrection), cSpeed);
+  motorControl(motor_right, (rightRatio * cSpeed - pCorrection), cSpeed);
   //ev3_motor_set_power(motor_left, (-1) * speedControl((cSpeed + pCorrection),motor_left));
   //ev3_motor_set_power(motor_right, speedControl((cSpeed - pCorrection),motor_right));
 }
@@ -333,7 +331,7 @@ bool lineDetection(std::string mode)
   else if (mode == "whiteleft")
     return ev3_color_sensor_get_reflect(LSl) > 50;
   else if (mode == "crossline")
-    return (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 90;
+    return (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
   return false;
 }
 

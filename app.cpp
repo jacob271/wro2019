@@ -73,6 +73,7 @@ int leverUpTime = 400;
 int longMotorUpSpeed = 75;
 int longMotorDownSpeed = -80;
 int longMotorDistance = 310;
+int spin180 = 480;
 
 //Values for Line1
 int LSrMiddle = (92 + 9) / 2;
@@ -287,7 +288,7 @@ void crossline(int startSpeed, int anzahl)
         line2(cSpeed, 3, pGL2, dGL2, "degree", 80, 3, false);
         line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
     }
-    moveStraight(cSpeed, 2, "degree", miniDistance, 1, true);
+    //moveStraight(cSpeed, 2, "degree", miniDistance, 1, true);
 }
 
 void positionenScannen()
@@ -311,13 +312,13 @@ void kabelSammeln(bool south)
     line2(1, 3, pGL2, dGL2, "degree", 100, 3, false);
     crossline(cSpeed, 1);
     turn2(1, 5, "degree", -90 * richtung, 1, true);
-    moveStraight(1, 3, "degree", 115, 1, true);
+    //moveStraight(1, 3, "degree", 115, 1, true);
     turn2(1, 5, "degree", 90 * richtung, 1, true);
     mediumMotor(doubleLever, -80, "degree", leverDistance, false); //down
     line2(1, 40, pGL2, dGL2, "degree", 280, 1, true);              //275
     mediumMotor(doubleLever, 80, "time", 630, true);               //up
-    moveStraight(-1, -3, "crossline", 0, -1, true);
-    moveStraight(1, 2, "degree", miniDistanceShort, 1, true);
+    //moveStraight(-1, -3, "crossline", 0, -1, true);
+    //moveStraight(1, 2, "degree", miniDistanceShort, 1, true);
     if (fall2 != 2 && fall2 != 3 && fall2 != 10)
     {
         turn2(1, 5, "degree", -90 * richtung, 1, true);
@@ -406,14 +407,19 @@ void kabelAbladen()
 {
     line2(1, 3, 0.7, dGL2, "degree", 300, 6, false);
     line2(cSpeed, 6, 0.7, dGL2, "degree", 140, 40, false);
-    moveStraight(cSpeed, 35, "degree", 160, 1, true);
+    //moveStraight(cSpeed, 35, "degree", 160, 1, true);
     //tslp_tsk(300);
     mediumMotor(doubleLever, -50, "time", 350, false);
-    moveStraight(-1, -6, "degree", 250, 1, true);
+    //moveStraight(-1, -6, "degree", 250, 1, true);
 }
 
-void routerAbladen(int vonWo)
+void routerAbladen()
 {
+    line2(cSpeed, 30, pGL2, dGL2, "crossline", 0, 1, true);
+    mediumMotor(longMotor, -30, "degree", 230, true);
+    waitForButton();
+    moveStraight(-1,-3,1,1,"degree",350,-1,true);
+    turn2(1,5,"degree",480,1,true);
 }
 
 void test()
@@ -565,40 +571,8 @@ void fallunterscheidung()
     }
 }
 
-void surprise()
-{
-    std::cout << "time " << run.getTime() << std::endl;
-    std::cout << "surprise" << std::endl;
-    line1(cSpeed, 3, 0.3, 5, LSr, true, "crossline", 0, 3, false);
-    moveStraight(cSpeed, 3, "degree", miniDistance, 1, true);
-    turn2(1, 5, "degree", -90, 1, true);
-    crossline(1, 1);
-    turn2(1, 5, "degree", 90, 1, true);
-    mediumMotor(longMotor, -50, "degree", 190, true);
-    line2(1, 6, 0.7, dGL2, "degree", 290, 1, true);
-    turn2(1, 5, "degree", -10, 1, true);
-    moveStraight(1, 3, "degree", 55, 1, true);
-    mediumMotor(longMotor, 50, "time", 500, true);
-    moveStraight(-1, -3, "degree", 55, -1, true);
-    mediumMotor(longMotor, 50, "time", 400, true);
-    //turn2(1,5,"degree",10,1,true);
-    turn2(1, 40, "degree", -170, 1, true);
-    crossline(1, 1);
-    moveStraight(1, 3, "degree", 140, 1, true);
-    mediumMotor(longMotor, -40, "degree", 240, true);
-    moveStraight(-1, -3, "degree", 140, -1, true);
-    mediumMotor(longMotor, 50, "time", 700, true);
-    mediumMotor(longMotor, 50, "time", 20, false);
-
-    turn2(1, 5, "degree", -90, 1, true);
-    crossline(1, 1);
-    turn2(1, 5, "degree", -90, 1, true);
-    line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1680, 100, false);
-    std::cout << "time " << run.getTime() << std::endl;
-}
-
 //Gibt die Fahrtrichtung im Uhrzeigersinn anhand der Position auf dem Router-Kreis und der Himmelsrichtung (1-4) zurück
-bool direction(int position, int direction)
+bool directionRouter(int position, int direction)
 {
     if ((direction == 1) && (position == 2 || position == 3 || position == 4 || position == 5))
     {
@@ -613,6 +587,31 @@ bool direction(int position, int direction)
         return true;
     }
     else if ((direction == 4) && (position == 1))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//Gibt die Fahrtrichtung im Uhrzeigersinn anhand der Position auf dem Router-Kreis und der Himmelsrichtung (1-4) zurück
+bool directionCity(int position, int direction)
+{
+    if ((direction == 1) && (position == 2 || position == 3 || position == 4 || position == 5))
+    {
+        return true;
+    }
+    else if ((direction == 2) && (position == 6 || position == 7 || position == 8 || position == 9))
+    {
+        return true;
+    }
+    else if ((direction == 3) && (position == 10 || position == 11 || position == 12 || position == 13))
+    {
+        return true;
+    }
+    else if ((direction == 4) && (position == 14 ||position == 15 || position == 16 || position == 1))
     {
         return true;
     }
@@ -677,12 +676,12 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
     }
     else
     {
-        driveDirection = direction(currentPosition, currentDirection);
+        driveDirection = directionRouter(currentPosition, currentDirection);
     }
     std::cout << "driveDirection: " << driveDirection << std::endl;
 
     //Dreht den Roboter gegebenenfalls in Fahrtrichtung
-    if (direction(currentPosition, currentDirection) != driveDirection)
+    if (directionRouter(currentPosition, currentDirection) != driveDirection)
     {
         turn2(1, 5, "degree", 480, 1, true);
     }
@@ -707,12 +706,13 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
         turnMotor = motor_left;
         for (int i = currentPosition; i != endPosition; i++)
         {
+             if (i == 11)
+                i = 1;
+
             nextPosition = i + 1;
             if (i == 10)
                 nextPosition = 1;
 
-            if (i == 11)
-                i = 1;
             if (i != endPosition)
             {
                 endSpeed = 3;
@@ -722,12 +722,13 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                     endSpeed = 1;
                     stopNow = true;
                 }
+                std::cout<< "position: " << i << std::endl;
                 switch (i)
                 {
                 case 1:
                 case 6:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 145, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, endSpeed, stop);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, endSpeed, stopNow);
                     break;
                 case 2:
                 case 3:
@@ -736,13 +737,13 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 8:
                 case 9:
                     line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stop);
+                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 5:
                 case 10:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 60, 3, false);
                     turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
-                    line2(1, 3, pGL2, dGL2, "degree", 205, endSpeed, stop);
+                    line2(1, 3, pGL2, dGL2, "degree", 205, endSpeed, stopNow);
                     break;
                 default:
                     break;
@@ -757,12 +758,13 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
         turnMotor = motor_right;
         for (int i = currentPosition; i != endPosition; i--)
         {
+            if (i == 0)
+                i = 10;
+
             nextPosition = i - 1;
             if (i == 1)
                 nextPosition = 10;
 
-            if (i == 0)
-                i = 10;
             if (i != endPosition)
             {
                 endSpeed = 3;
@@ -772,12 +774,13 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                     endSpeed = 1;
                     stopNow = true;
                 }
+                std::cout<< "position: " << i << std::endl;
                 switch (i)
                 {
                 case 1:
                 case 6:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 145, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, endSpeed, stop);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, endSpeed, stopNow);
                     break;
                 case 10:
                 case 9:
@@ -786,13 +789,13 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 4:
                 case 3:
                     line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stop);
+                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 2:
                 case 7:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 60, 3, false);
                     turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
-                    line2(1, 3, pGL2, dGL2, "degree", 205, endSpeed, stop);
+                    line2(1, 3, pGL2, dGL2, "degree", 205, endSpeed, stopNow);
                     break;
                 default:
                     break;
@@ -804,7 +807,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
     }
 
     //Dreht am Ende, falls die Orientierung noch nicht übereinstimmt
-    if (direction(endPosition, endDirection) != driveDirection)
+    if (directionRouter(endPosition, endDirection) != driveDirection)
     {
         turn2(1, 5, "degree", 480, 1, true);
     }
@@ -812,10 +815,245 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
     std::cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << std::endl;
 }
 
-void city(int startPosition, bool startDirection, int endPosition, bool stop)
+void city(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop)
 {
-    //Positionen um die Stadt herum mit Nummern versehen
-    //1 = westlichste Linie auf der Südseite
+    
+    //1 = westlichste Seite im Süden, dann im Uhrzeigersinn
+    std::cout << "Enter City-Kreis at: " << currentPosition << " " << currentDirection << std::endl;
+
+
+    //Berechnen wo der Roboter hinfährt - Strecken aufteilen
+    //Auf den Kreis fahren
+
+    //Berechnet die Abstände im und gegen den Uhrzeigersinn auf dem City-Kreis 
+    int distanceForw = 0;
+    int distanceBack = 0;
+    for (int i = currentPosition; i != endPosition; i++)
+    {
+        if (i == 17)
+        {
+            i = 1;
+        }
+        if (i != endPosition)
+        {
+            distanceForw++;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    for (int i = currentPosition; i != endPosition; i--)
+    {
+        if (i == 0)
+        {
+            i = 16;
+        }
+        if (i != endPosition)
+        {
+            distanceBack++;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    std::cout << "distanceForw: " << distanceForw << " distanceBack: " << distanceBack << std ::endl;
+
+    //Legt anhand der kürzeren Strecke die Fahrtrichtung fest. Falls es keine kürzere gibt entscheidet die aktuelle Orientierung des Roboters
+    bool driveDirection;
+    if (distanceForw < distanceBack)
+    {
+        driveDirection = true;
+    }
+    else if (distanceForw > distanceBack)
+    {
+        driveDirection = false;
+    }
+    else
+    {
+        driveDirection = directionCity(currentPosition, currentDirection);
+    }
+    std::cout << "driveDirection: " << driveDirection << std::endl;
+
+    //Dreht den Roboter gegebenenfalls in Fahrtrichtung
+    if (directionCity(currentPosition, currentDirection) != driveDirection)
+    {
+        turn2(1, 5, "degree", 480, 1, true);
+        std::cout<<"turn into driveDirection" << std::endl;
+    }
+
+    //übernimmt Fahrtgeschwindigkeit oder setzt Startspeed
+    if (abs(cSpeed) < abs(speedLevel(1)))
+        cSpeed = 1;
+
+    std::cout<< "cSpeed " << cSpeed << std::endl;
+    //Strecken
+    int toMiddle = 310;      //Von Crossline bis der Roboter zwischen den Linien steht
+    int degT1continue = 495; //Strecke für 90 Grad turn1 ohne abbremsen
+    motor_port_t turnMotor;
+
+    int endSpeed;
+    bool stopNow;
+
+    int nextPosition;
+
+    //Zählt je nach Fahrtrichtung die Positionen hoch oder runter und fährt von einer zur nächsten
+    if (driveDirection == true)
+    {
+        turnMotor = motor_left;
+        for (int i = currentPosition; i != endPosition; i++)
+        {
+            if (i == 17)
+                i = 1;
+
+            nextPosition = i + 1;
+            if (i == 16)
+                nextPosition = 1;
+
+            if (i != endPosition)
+            {
+                endSpeed = 3;
+                stopNow = false;
+                if (nextPosition == endPosition && stop == true)
+                {
+                    endSpeed = 1;
+                    stopNow = true;
+                }
+                std::cout<< "position: " << i << std::endl;
+                switch (i)
+                {
+                case 1:
+                case 9:
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 125, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 60, endSpeed, stopNow);
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
+                    break;
+                case 10:
+                case 11:
+                case 12:
+                    line1(cSpeed, 3, pGL1, dGL1, LSl,false, "crossline", 0, 3, false);
+                    line1(3,3,pGL1,dGL1,LSl,false,"degree",toMiddle,endSpeed,stopNow);
+                    break;
+                case 13:
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 10, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
+                    break;
+                case 5:
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
+                    break;
+                case 6:
+                case 7:
+                case 14:
+                case 15:
+                    line1(cSpeed,3,pGL1,dGL1,LSl,false,"crossline",0,3,false);
+                    line1(3,3,pGL1,dGL1,LSl,false,"degree",415,endSpeed,stopNow);
+                    break;
+                case 8:
+                case 16:
+                    line1(cSpeed,3,pGL1,dGL1,LSl,false,"crossline",0,3,false);
+                    line1(3,3,pGL1,dGL1,LSl,false,"degree",440,endSpeed,stopNow);
+                    break;
+                default:
+                    break;
+                }
+            }
+            else
+                break;
+        }
+    }
+    else
+    {
+        turnMotor = motor_right;
+        for (int i = currentPosition; i != endPosition; i--)
+        {
+            if (i == 0)
+                i = 16;
+
+            nextPosition = i - 1;
+            if (i == 1)
+                nextPosition = 16;           
+            if (i != endPosition)
+            {
+                endSpeed = 3;
+                stopNow = false;
+                if (nextPosition == endPosition && stop == true)
+                {
+                    endSpeed = 1;
+                    stopNow = true;
+                }
+                std::cout<< "position: " << i << std::endl;
+                switch (i)
+                {
+                case 1:
+                case 8:
+                case 9:
+                case 16:
+                    line1(cSpeed,3,pGL1,dGL1,LSr,true,"crossline",0,3,false);
+                    line1(3,3,pGL1,dGL1,LSr,true,"degree",415,endSpeed,stopNow);
+                    break;
+                case 2:
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
+                    break;
+                case 10:
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 10, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
+                    break;
+                case 6:
+                case 14:
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 160, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 60, endSpeed, stopNow);
+                    break;
+                case 7:
+                case 15:
+                    line1(cSpeed,3,pGL1,dGL1,LSr,true,"crossline",0,3,false);
+                    line1(3,3,pGL1,dGL1,LSr,true,"degree",440,endSpeed,stopNow);
+                    break;
+                case 11:
+                case 12:
+                case 13:
+                    line1(cSpeed, 3, pGL1, dGL1, LSr,true, "crossline", 0, 3, false);
+                    line1(3,3,pGL1,dGL1,LSr,true,"degree",toMiddle,endSpeed,stopNow);
+                    break;
+                default:
+                    break;
+                }
+            }
+            else
+                break;
+        }
+    }
+
+    //Dreht am Ende, falls die Orientierung noch nicht übereinstimmt
+    if (directionCity(endPosition, endDirection) != driveDirection)
+    {
+        turn2(1, 5, "degree", 480, 1, true);
+        std::cout<< "turn to endPosition" << std::endl;
+    }
+
+    std::cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << std::endl;
+    
 }
 
 void trickshot()
@@ -839,8 +1077,14 @@ void main_task(intptr_t unused)
     start();
     //Stopwatch run;
     tslp_tsk(200);
-
-    routerEinsammeln(false, false);
+    city(1,4,9,2,false);
+    city(9,2,1,4,false);
+    //city(1,2,14,2,false);
+    line2(3,3,pGL2,dGL2,"degree",200,1,true);
+    moveStraight(1,3,1,0.163,"degree",1170,1,true);
+    routerAbladen();
+    //router(7,1,2,1,true);
+    //routerEinsammeln(false,true);
     //trickshot();
     //router(10, 3, 6, 2, true);
     //turn1(motor_right,1,false,60,"degree",900,1,true);
@@ -849,10 +1093,10 @@ void main_task(intptr_t unused)
     return;
 
     //Anfang - Scannt Positionen, scannt Router und sammelt das südliche Kabel
-    moveStraight(30, 50, "degree", 115, 30, true);
+        //moveStraight(30, 50, "degree", 115, 30, true);
     turn1(motor_left, 1, false, 4, "degree", -45, 1, true);
     //waitForButton();
-    moveStraight(20, 3, "degree", 115, 3, false);
+        //moveStraight(20, 3, "degree", 115, 3, false);
     //zusatzAndererStart();
     positionenScannen();
     turn1(motor_right, 1, false, 4, "degree", -90, 1, true);
@@ -862,7 +1106,7 @@ void main_task(intptr_t unused)
     line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 1900, 70, false);
     line1(cSpeed, 100, pGL1, dGL1, LSr, true, "degree", 380, 3, false);
     line1(cSpeed, 3, 0.3, 5, LSr, true, "crossline", 0, 3, false);
-    moveStraight(cSpeed, 3, "degree", miniDistance, 1, true);
+        //moveStraight(cSpeed, 3, "degree", miniDistance, 1, true);
     turn2(1, 5, "degree", -90, 1, true);
     routerScannen(HTr, "routerO");
     turn2(1, 5, "degree", 90, 1, true);
@@ -878,12 +1122,12 @@ void main_task(intptr_t unused)
 
     //auskommentieren für surprise2
     mediumMotor(longMotor, longMotorDownSpeed, "degree", longMotorDistance, true); //down
-    moveStraight(1, 100, "degree", 255, 100, false);
+        //moveStraight(1, 100, "degree", 255, 100, false);
     turn1(motor_left, 100, true, 4, "degree", 50, 100, false);
 
     int neededTime = run.getTime();
-    moveStraight(100, 100, "time", 300, 1, true);
-    moveStraight(-30, -50, "degree", 40, 1, true);
+        //moveStraight(100, 100, "time", 300, 1, true);
+        //moveStraight(-30, -50, "degree", 40, 1, true);
 
     //int neededTime = run.getTime();
     std::cout << "Needed time: " << neededTime << std::endl;

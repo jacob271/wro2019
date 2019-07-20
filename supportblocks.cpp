@@ -13,7 +13,7 @@ void motorControl(motor_port_t motor, int speed, int maxSpeed){
   int cPower = abs(ev3_motor_get_power(motor));
   int error = abs(speed) - cPower;
   
-  int newSpeed = speed + error*pGain + (speedControlLastError - error) * dGain;
+  int newSpeed = abs(speed) + error*pGain + (speedControlLastError - error) * dGain;
   newSpeed = newSpeed * (maxSpeed/abs(maxSpeed));
 
   if (motor == motor_left){
@@ -207,7 +207,7 @@ void brake(bool stop, int endSpeed)
     ev3_motor_stop(motor_left, true);
     ev3_motor_stop(motor_right, true);
     Stopwatch brake;
-    while (brake.getTime()<4){
+    while (brake.getTime()<0){
       ev3_motor_stop(motor_left, true);
       ev3_motor_stop(motor_right, true);
     }

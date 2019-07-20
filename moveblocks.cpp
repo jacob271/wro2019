@@ -46,7 +46,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
     }
     wert = wert + OMbrakeDistance + OMaccDistance;
     togo = wert;
-
+    std::cout<< "togo: " << togo << std::endl;
     dec = true;
   }
 
@@ -87,16 +87,19 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
     {
       double otherSpeed = (abs(startSpeed) - (abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) / OMbrakeDistance) * abs(startSpeed - endSpeed)) * (maxSpeed / abs(maxSpeed));
       //(Startspeed - prozentual zurückgelegte Bresmstrecke * zu bremsende Geschwindidkeit) * vorwärts oder rückwärts aus maxSpeed
-
       motorControl(otherMotor, otherSpeed, maxSpeed);
+      std::cout<< "DEC: " << otherSpeed << std::endl;
     }
 
     if (stop == false) //Beschleunigen otherMotor am Ende
     {
-      double otherSpeed = speedLevel(1) + (OMaccDistance - 0 - togo) *   (maxSpeed / abs(maxSpeed));
+      double otherSpeed = speedLevel(1) + (OMaccDistance - 0 - togo);   // * (maxSpeed / abs(maxSpeed))
+      
       //Beschelunigt direkt proportional zur verbleienden Strecke des anderen Motors
       if (otherSpeed >= speedLevel(1))
       {
+        std::cout<< "ACC: " << otherSpeed << std::endl;
+        motorControl(otherMotor,otherSpeed, maxSpeed);
         if (otherMotor == motor_right)
           ev3_motor_set_power(otherMotor, otherSpeed);
         else
@@ -267,7 +270,6 @@ int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRat
   for (int i = 0; i < 40; i++){
     colorCounter[i] = -1;
   }
-  
 
   bool continueMove = true;
 

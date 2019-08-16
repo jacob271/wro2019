@@ -332,6 +332,22 @@ bool lineDetection(std::string mode)
     return ev3_color_sensor_get_reflect(LSl) > 50;
   else if (mode == "crossline")
     return (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
+  else if (mode == "yellowR")
+    return  ev3_color_sensor_get_color(LSr) == 7;
+  else if (mode == "yellowL")
+    return  ev3_color_sensor_get_color(LSl) == 7;
+  else if (mode == "blueR")
+    return  ev3_color_sensor_get_color(LSr) == 2;
+  else if (mode == "blueL")
+    return  ev3_color_sensor_get_color(LSl) == 2;
+  else if (mode == "greenR")
+    return  ev3_color_sensor_get_color(LSr) == 3;
+  else if (mode == "greenL")
+    return  ev3_color_sensor_get_color(LSl) == 3;
+  else if (mode == "redR")
+    return  ev3_color_sensor_get_color(LSr) == 5;
+  else if (mode == "redL")
+    return  ev3_color_sensor_get_color(LSl) == 5;
   return false;
 }
 

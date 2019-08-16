@@ -564,7 +564,7 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
             break;
         }
     }
-    //std::cout << "distanceForw: " << distanceForw << std::endl;
+    std::cout << "distanceForw: " << distanceForw << std::endl;
 
     int distanceBack = 0;
     for (int i = startPosition; i != endPosition; i--)
@@ -583,7 +583,7 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
         }
     }
 
-    //std::cout << "distanceBack: " << distanceBack << std::endl;
+    std::cout << "distanceBack: " << distanceBack << std::endl;
 
     int distance = 0;
     if (distanceForw == abs(distanceBack))
@@ -602,7 +602,6 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
     {
         distance = distanceBack;
     }
-    std::cout << distance << " ";
     return distance;
 }
 
@@ -770,19 +769,37 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
     std::cout << "Enter City-Kreis at: " << currentPosition << " " << currentDirection << std::endl;
 
     //Alle Anfahrmöglichkeiten des inneren City-Kreises gespeichert
-    int cityPositions[13][7] = {{0},
-                                {-1, 16, 1},
-                                {-2, 1, 2, 3, -3},
-                                {-3, -2, -4, 3, 4},
-                                {-4, 4, 5, 6},
-                                {-5, 6, 7},
-                                {-6, 7, 8},
-                                {-7, 8, 9},
-                                {-8, 9, 10, 11, -9},
-                                {-9, 9, -8, -10, 14, 11, 12},
-                                {-10, -9, 12, 13, 14},
-                                {-11, 14, 15},
-                                {-12, 15, 16}};
+    int cityPositionsIn[13][7] = {{0},
+                                  {-1, 16, 1},
+                                  {-2, 1, 2, 3, -3},
+                                  {-3, -2, -4, 3, 4},
+                                  {-4, 4, 5, 6},
+                                  {-5, 6, 7},
+                                  {-6, 7, 8},
+                                  {-7, 8, 9},
+                                  {-8, 9, 10, 11, -9},
+                                  {-9, 9, -8, -10, 14, 11, 12},
+                                  {-10, -9, 12, 13, 14},
+                                  {-11, 14, 15},
+                                  {-12, 15, 16}};
+
+    int cityPositionsOut[17][7] = {{0},
+                                   {1, -1, 16, -2, -3},
+                                   {2, 1, 3, -2},
+                                   {3, -2, -3, 4, 2},
+                                   {4, -3, -4, 3, 5},
+                                   {5, 4, 6, -4},
+                                   {6, -3, -4, -5, 7, 5},
+                                   {7, -6, -5, 6, 8},
+                                   {8, -6, -7, 7, 9},
+                                   {9, -9, -8, -7, 8, 10},
+                                   {10, -8, 9, 11},
+                                   {11, -9, -8, 10, 12},
+                                   {12, -9, -10, 11, 13},
+                                   {13, -10, 14, 12},
+                                   {14, -9, -10, -11, 15, 13},
+                                   {15, 14, 16, -11, -12},
+                                   {16, 15, -1, -12, 1}};
 
     //Haben current- und endPosition gemeinsame Anfahrpukte?
     int gemeinsameOptionen[4] = {0};
@@ -792,13 +809,29 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
     {
         for (int j = 0; j < 7; j++)
         {
-            int option1 = cityPositions[abs(currentPosition)][i];
-            int option2 = cityPositions[abs(endPosition)][j];
+            int option1 = 0;
+            int option2 = 0;
+            if (currentPosition < 0)
+            {
+                option1 = cityPositionsIn[abs(currentPosition)][i];
+            }
+            else
+            {
+                option1 = cityPositionsOut[abs(currentPosition)][i];
+            }
+            if (endPosition < 0)
+            {
+                option2 = cityPositionsIn[abs(endPosition)][j];
+            }
+            else
+            {
+                option2 = cityPositionsOut[abs(endPosition)][j];
+            }
             if (option1 == option2 && option1 != 0)
             {
                 gemeinsameOptionen[n] = option1;
-                n++;
                 std::cout << gemeinsameOptionen[n] << " ";
+                n++;
             }
         }
     }
@@ -812,7 +845,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         {
             gemeinsameOption = gemeinsameOptionen[i];
         }
-        else if (gemeinsameOptionen[i] < gemeinsameOption)
+        else if (gemeinsameOptionen[i] < gemeinsameOption && gemeinsameOptionen[i] != 0)
         {
             gemeinsameOption = gemeinsameOptionen[i];
         }
@@ -820,49 +853,41 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
 
     std::cout << "finale gemeinsameOption: " << gemeinsameOption << std::endl;
 
-    if (gemeinsameOption < 0)
+    if (gemeinsameOption == endPosition)
     {
-        //Falls ja, ist Distance 1 und die Strecke kann gefahren werden
-        if (gemeinsameOption == endPosition)
+        //Fährt von ngativer Position zu anderer negativer Position
+        std::cout << "Fahrt von innerem Kreis zum inneren Kreis" << std::endl;
+        switch (currentPosition)
         {
-
-            switch (currentPosition)
+        case -3:
+        case -9:
+            switch (endPosition)
             {
-            case -3:
-            case -9:
-                switch (endPosition)
-                {
-                case -2:
-                case -8:
-                    turn1(motor_left, cSpeed, true, -4, "degree", 503, -1, true);
-                    turn1(motor_right, cSpeed, false, -4, "degree", 512, -1, true);
-                    line2(1, 4, pGL2, dGL2, "degree", 312, 4, true);
-                    break;
-                case -4:
-                case -10:
-                    turn1(motor_right, cSpeed, true, -4, "degree", 503, -1, true);
-                    turn1(motor_left, cSpeed, false, -4, "degree", 512, -1, true);
-                    line2(1, 4, pGL2, dGL2, "degree", 312, 4, true);
-                    break;               
-                }
             case -2:
             case -8:
-                turn1(motor_right, cSpeed, true, -4, "degree", 503, -1, true);
-                turn1(motor_left, cSpeed, false, -4, "degree", 512, -1, true);
-                line2(1, 4, pGL2, dGL2, "degree", 312, 4, true);
+                turn1(motor_left, cSpeed, true, -4, "degree", 503, -1, true);
+                turn1(motor_right, cSpeed, false, -4, "degree", 512, -1, true);
+                line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
                 break;
             case -4:
             case -10:
-                turn1(motor_left, cSpeed, true, -4, "degree", 503, -1, true);
-                turn1(motor_right, cSpeed, false, -4, "degree", 512, -1, true);
-                line2(1, 4, pGL2, dGL2, "degree", 312, 4, true);
+                turn1(motor_right, cSpeed, true, -4, "degree", 503, -1, true);
+                turn1(motor_left, cSpeed, false, -4, "degree", 512, -1, true);
+                line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
                 break;
             }
-            //Direkt fahren
-        }
-        else
-        {
-            //Von currentPosition zu gemeinsamer Option und dann weiter
+        case -2:
+        case -8:
+            turn1(motor_right, cSpeed, true, -4, "degree", 503, -1, true);
+            turn1(motor_left, cSpeed, false, -4, "degree", 512, -1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
+            break;
+        case -4:
+        case -10:
+            turn1(motor_left, cSpeed, true, -4, "degree", 503, -1, true);
+            turn1(motor_right, cSpeed, false, -4, "degree", 512, -1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
+            break;
         }
     }
     else
@@ -876,14 +901,45 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         {
             for (int j = 0; j < 7; j++)
             {
-                int option1 = cityPositions[abs(currentPosition)][i];
-                int option2 = cityPositions[abs(endPosition)][j];
+                int option1 = 0;
+                int option2 = 0;
+                if (currentPosition < 0)
+                {
+                    option1 = cityPositionsIn[abs(currentPosition)][i];
+                }
+                else
+                {
+                    option1 = cityPositionsOut[abs(currentPosition)][i];
+                }
+                if (endPosition < 0)
+                {
+                    option2 = cityPositionsIn[abs(endPosition)][j];
+                }
+                else
+                {
+                    option2 = cityPositionsOut[abs(endPosition)][j];
+                }
                 if (option1 > 0 && option2 > 0)
                 {
                     abstand[n][0] = option1;
                     abstand[n][1] = option2;
-                    std::cout << "abstand: " << option1 << " " << option2 << std::endl;
-                    abstand[n][2] = getDistance(option1, 0, option2, 16);
+                    
+                    int distance = getDistance(option1, 0, option2, 16);
+                    if (option1 != currentPosition){
+                        if (distance >= 0)
+                            distance++;
+                        else
+                            distance--;
+                    }
+                        
+                    if (option2 != endPosition){
+                        if (distance >= 0)
+                            distance++;
+                        else
+                            distance--;
+                    }
+                    abstand[n][2] = distance;
+                    std::cout << "abstand: " << option1 << " " << option2 << " " << abstand[n][2]<< std::endl;
                     n++;
                 }
             }
@@ -916,6 +972,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 break;
             }
         }
+        std::cout<< "startTemp: " << startTemp << " endTemp: " << endTemp << std::endl;
 
         //Legt anhand der Strecke die Fahrtrichtung fest
         bool driveDirection;
@@ -931,6 +988,236 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
 
         if (startTemp != currentPosition)
         {
+            switch (currentPosition)
+            {
+            case -1:
+                if (startTemp == 1)
+                {
+                    turn2(1, 5, "degree", -240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
+                }
+                else if (startTemp == 16)
+                {
+                    turn2(1, 5, "degree", 240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                }
+                break;
+            case -2:
+                if (startTemp == 3)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
+                }
+                else if (startTemp == 1)
+                {
+                    if(startTemp == endPosition && endDirection == 4)
+                    {
+                        moveStraight(-1, -3, 1, 0.153, "degree", 1150, -1, true);                        
+                    }
+                    else
+                    {
+                        turn2(1,5,"degree",-240,1,true);
+                        moveStraight(-1,-3,1,1,"degree",225,-3,false);
+                        turn1(motor_right,-3,true,-3,"degree",525,-1,true);
+                        driveDirection = false;
+                    }
+                }
+                else if (startTemp == 2)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
+                }
+                break;
+            case -3:
+                if (startTemp == 4)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
+                }
+                else if (startTemp == 3)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
+                }
+                else if (startTemp == 1)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 540, -3, false);
+                    moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 540, -1, true);
+                }
+                else if (startTemp == 6)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 540, -3, false);
+                    moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 540, -1, true);
+                }
+                break;
+            case -4:
+                if (startTemp == 6)
+                {
+                    if(startTemp == endPosition && endDirection == 4)
+                    {
+                        moveStraight(-1, -3, 0.153, 1, "degree", 1150, -1, true);
+                        driveDirection = false;                    
+                    }
+                    else
+                    {
+                        turn2(1,5,"degree",240,1,true);
+                        moveStraight(-1,-3,1,1,"degree",225,-3,false);
+                        turn1(motor_left,-3,true,-3,"degree",525,-1,true);
+                        driveDirection = true;
+                    }
+                }
+                else if (startTemp == 4)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
+                }
+                else if (startTemp == 5)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
+                }
+                break;
+            case -5:
+                if (startTemp == 7)
+                {
+                    turn2(1, 5, "degree", -240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 3, false);
+                }
+                else if (startTemp == 6)
+                {
+                    turn2(1, 5, "degree", 240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
+                }
+                break;
+            case -6:
+                if (startTemp == 8)
+                {
+                    turn2(1, 5, "degree", -240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                }
+                else if (startTemp == 7)
+                {
+                    turn2(1, 5, "degree", 240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                }
+                break;
+            case -7:
+                if (startTemp == 9)
+                {
+                    turn2(1, 5, "degree", -240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
+                }
+                else if (startTemp == 8)
+                {
+                    turn2(1, 5, "degree", 240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                }
+                break;
+            case -8:
+                if (startTemp == 10)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                    line1(3, 3, pGL1, dGL1, LSr, true, "degree", 340, 1, true);
+                }
+                else if (startTemp == 9)
+                {
+                    moveStraight(-1, -3, 1, 0.153, "degree", 1150, -1, true);
+                }
+                else if (startTemp == 11)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                    line1(3, 3, pGL1, dGL1, LSl, false, "degree", 340, 1, true);
+                }
+                break;
+            case -9:
+                if (startTemp == 14)
+                {
+                    moveStraight(-1, -3, 0.42, 1, "degree", 1700, -1, true);
+                }
+                else if (startTemp == 9)
+                {
+                    moveStraight(-1, -3, 1, 0.42, "degree", 1700, -1, true);
+                }
+                else if (startTemp == 11)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                    line1(3, 3, pGL1, dGL1, LSr, true, "degree", 340, 1, true);
+                }
+                else if (startTemp == 12)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                    line1(3, 3, pGL1, dGL1, LSl, false, "degree", 340, 1, true);
+                }
+                break;
+            case -10:
+                if (startTemp == 12)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                    line1(3, 3, pGL1, dGL1, LSr, true, "degree", 340, 1, true);
+                }
+                else if (startTemp == 13)
+                {
+                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                    line1(3, 3, pGL1, dGL1, LSl, false, "degree", 340, 1, true);
+                }
+                else if (startTemp == 14)
+                {
+                    moveStraight(-1, -3, 0.153, 1, "degree", 1150, -1, true);
+                }
+                break;
+            case -11:
+                if (startTemp == 14)
+                {
+                    turn2(1, 5, "degree", 240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
+                }
+                else if (startTemp == 15)
+                {
+                    turn2(1, 5, "degree", -240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                }
+                break;
+            case -12:
+                if (startTemp == 15)
+                {
+                    turn2(1, 5, "degree", 240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                }
+                else if (startTemp == 16)
+                {
+                    turn2(1, 5, "degree", -240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                }
+                 break;
+            }
             //AUf Kreis fahren
         }
         else
@@ -1124,9 +1411,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
 
 void test()
 {
-    moveStraight(-1, -4, -1, -1, "degree", 90, -4, false);
-    //turn1(motor_right,cSpeed,true,-4,"degree",485,-1,true);
-    city(-2, 2, -3, 4, true);
+    city(-4, 2, 6, 4, true);
 }
 
 void main_task(intptr_t unused)

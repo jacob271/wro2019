@@ -284,7 +284,7 @@ void updateLogDatei()
 //todo
 void positionenScannen()
 {
-    line1(1, 90, pGL1, dGL1, LSr, false, "degree", 315, 90, false);
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 235, 90, false);
     for (int i = 0; i < 3; i++)
     {
         positions[i] = line1(cSpeed, 90, pGL1, dGL1 * 0.6, LSr, false, "degree", 147, 60, false, true, HTr, "color");
@@ -853,7 +853,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
 
     std::cout << "finale gemeinsameOption: " << gemeinsameOption << std::endl;
 
-    if (gemeinsameOption == endPosition)
+    if (gemeinsameOption == endPosition && currentPosition < 0)
     {
         //Fährt von ngativer Position zu anderer negativer Position
         std::cout << "Fahrt von innerem Kreis zum inneren Kreis" << std::endl;
@@ -1528,7 +1528,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
 
 void test()
 {
-    city(-4, 2, 4, 3, true);
+    line2(1,3,pGL2,dGL2,"degree",400,3,false);
+    moveStraight(3,3,1,0.42,"degree",800,3,false);
+    moveStraight(3,3,1,1,"degree",500,1,true);
+
+    
+
+    //city(5, 3, -4, 2, true);
 }
 
 void main_task(intptr_t unused)
@@ -1540,8 +1546,12 @@ void main_task(intptr_t unused)
     start();
     //Stopwatch run;
     tslp_tsk(200);
-    test();
-    return;
+    //test();
+    //return;
+    moveStraight(1,3,0.4,1,"degree",220,3,false);
+    moveStraight(cSpeed,3,1,0.4,"degree",205,3,false);
+    moveStraight(3,3,1,1,"degree",80,3,false);
+    positionenScannen();
 
     int neededTime = run.getTime();
 

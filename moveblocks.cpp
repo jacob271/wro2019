@@ -33,8 +33,8 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
   int OMaccDistance = 0;
   if (brakeOtherMotor)
   {
-    OMbrakeDistance = abs(startSpeed - endSpeed) / (bfTurn1+1);
-  }  
+    OMbrakeDistance = abs(startSpeed - endSpeed) / (bfTurn1 + 1);
+  }
 
   if (mode == "degree")
   {
@@ -42,11 +42,11 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
 
     if (stop == false)
     {
-      OMaccDistance = (abs(endSpeed)-speedLevel(1));
+      OMaccDistance = (abs(endSpeed) - speedLevel(1));
     }
     wert = wert + OMbrakeDistance + OMaccDistance;
     togo = wert;
-    std::cout<< "togo: " << togo << std::endl;
+    std::cout << "togo: " << togo << std::endl;
     dec = true;
   }
 
@@ -88,18 +88,18 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
       double otherSpeed = (abs(startSpeed) - (abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) / OMbrakeDistance) * abs(startSpeed - endSpeed)) * (maxSpeed / abs(maxSpeed));
       //(Startspeed - prozentual zurückgelegte Bresmstrecke * zu bremsende Geschwindidkeit) * vorwärts oder rückwärts aus maxSpeed
       motorControl(otherMotor, otherSpeed, maxSpeed);
-      std::cout<< "DEC: " << otherSpeed << std::endl;
+      std::cout << "DEC: " << otherSpeed << std::endl;
     }
 
     if (stop == false) //Beschleunigen otherMotor am Ende
     {
-      double otherSpeed = speedLevel(1) + (OMaccDistance - 0 - togo);   // * (maxSpeed / abs(maxSpeed))
-      
+      double otherSpeed = speedLevel(1) + (OMaccDistance - 0 - togo); // * (maxSpeed / abs(maxSpeed))
+
       //Beschelunigt direkt proportional zur verbleienden Strecke des anderen Motors
       if (otherSpeed >= speedLevel(1))
       {
-        std::cout<< "ACC: " << otherSpeed << std::endl;
-        motorControl(otherMotor,otherSpeed, maxSpeed);
+        std::cout << "ACC: " << otherSpeed << std::endl;
+        motorControl(otherMotor, otherSpeed, maxSpeed);
         if (otherMotor == motor_right)
           ev3_motor_set_power(otherMotor, otherSpeed);
         else
@@ -190,13 +190,14 @@ void motorStall(motor_port_t motor, int speed)
   bool continueMove = true;
   int measure;
   resetMotors();
-  ev3_motor_set_power(motor, speed);  
+  ev3_motor_set_power(motor, speed);
   tslp_tsk(100);
-  while(continueMove == true)
-  {      
+  while (continueMove == true)
+  {
     measure = ev3_motor_get_counts(motor);
     tslp_tsk(100);
-    if (measure == ev3_motor_get_counts(motor)){
+    if (measure == ev3_motor_get_counts(motor))
+    {
       continueMove = false;
       ev3_speaker_play_tone(NOTE_E4, 100);
     }
@@ -286,7 +287,8 @@ int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRat
 
   int colorCounter[40] = {0};
 
-  for (int i = 0; i < 40; i++){
+  for (int i = 0; i < 40; i++)
+  {
     colorCounter[i] = -1;
   }
 
@@ -300,9 +302,15 @@ int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRat
     if (mode == "degree")
     {
       if (leftRatio == 1)
+      {
         continueMove = abs(measureMotorLeft()) <= wert;
+        togo = wert - abs(measureMotorLeft());
+      }
       else
+      {
         continueMove = abs(measureMotorRight()) <= wert;
+        togo = wert - abs(measureMotorRight());
+      }
     }
     else if (mode == "time")
     {
@@ -335,7 +343,7 @@ int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRat
 }
 
 //Geradeaus ohne Farbscan-Option
-int moveStraight(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop)
+int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop)
 {
   return moveStraight(startSpeed, maxSpeed, leftRatio, rightRatio, mode, wert, endSpeed, stop, false, HTr, " ");
 }
@@ -348,7 +356,8 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
   Stopwatch slowDown;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
   cSpeed = startSpeed;
-  if (startSpeed <= speedLevel(1)){
+  if (startSpeed <= speedLevel(1))
+  {
     //align(100);
   }
   bool dec = false;
@@ -359,7 +368,8 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
   double lastpError = 0.0;
   bool continueMove = true;
   int colorCounter[40] = {-1};
-  for (int i = 0; i < 40; i++){
+  for (int i = 0; i < 40; i++)
+  {
     colorCounter[i] = -1;
   }
   int cCounter = 0;
@@ -387,7 +397,8 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     else
     {
       continueMove = lineDetection(mode) == false;
-       if (continueMove == false){
+      if (continueMove == false)
+      {
         ev3_speaker_play_tone(NOTE_F4, 30);
       }
     }
@@ -466,7 +477,8 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   double lastpError = 0.0;
   bool continueMove = true;
   int colorCounter[40] = {-1};
-  for (int i = 0; i < 40; i++){
+  for (int i = 0; i < 40; i++)
+  {
     colorCounter[i] = -1;
   }
   int cCounter = 0;
@@ -494,7 +506,8 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     else
     {
       continueMove = lineDetection(mode) == false;
-      if (continueMove == false){
+      if (continueMove == false)
+      {
         ev3_speaker_play_tone(NOTE_F4, 30);
       }
     }
@@ -528,7 +541,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
     ev3_motor_set_power(motor_left, (cSpeed - pCorrection - dCorrection) * (-1));
     ev3_motor_set_power(motor_right, cSpeed + pCorrection + dCorrection);
-    
+
     //Speichert lastpError
     lastpErrors[i] = pError;
     i++;
@@ -567,7 +580,8 @@ void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool
   Stopwatch move;
   bool continueMove = true;
 
-  if (motor == longMotor){
+  if (motor == longMotor)
+  {
     speed = speed * (-1);
   }
 
@@ -582,11 +596,12 @@ void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool
       continueMove = move.getTime() < wert;
     }
 
-    if (move.getTime() > 2000){
+    if (move.getTime() > 2000)
+    {
       continueMove = false;
       ev3_speaker_play_tone(NOTE_E4, 200);
     }
-    
+
     ev3_motor_set_power(motor, speed);
   }
   ev3_motor_stop(motor, stop);

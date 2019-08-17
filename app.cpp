@@ -290,7 +290,9 @@ void positionenScannen()
         positions[i] = line1(cSpeed, 90, pGL1, dGL1 * 0.6, LSr, false, "degree", 147, 60, false, true, HTr, "color");
     }
     positions[3] = findColor(positions, "positions");
-    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 360, 1, true);
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 400, 3, false);
+    turn1(motor_right, 3,true,3,"degree",490,3,false);
+    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 620, 3, false);
 }
 
 //todo
@@ -304,25 +306,17 @@ void routerScannen(sensor_port_t searchSensor, std::string mode)
     //direkt nach der Drehung
     int router[3] = {0};
     int i = 0;
-    if (mode == "routerO")
-    {
-        line2(1, 4, pGL2, dGL2, "degree", 165, 4, false);
-    }
-    else
-    {
-        line2(1, 4, pGL2, dGL2, "degree", 40, 4, false);
-    }
-    router[i] = line2(cSpeed, 4, pGL2, dGL2 * 0.6, "degree", 349, 4, false, true, searchSensor, "bw");
+    router[i] = line2(cSpeed, 3, pGL2, dGL2 * 0.6, "degree", 349, 4, false, true, searchSensor, "bw");
     i++;
     if (mode == "routerO")
     {
         router[i] = line2(cSpeed, 4, pGL2, dGL2 * 0.6, "degree", 349, 3, false, true, searchSensor, "bw");
-        line2(cSpeed, 3, pGL2, dGL2, "degree", 360, 3, false);
+        line2(cSpeed, 3, pGL2, dGL2, "degree", 435, 3, false);
         //crossline(cSpeed, 1);
     }
     else
     {
-        router[i] = line2(cSpeed, 4, pGL2, dGL2 * 0.6, "degree", 349, 1, true, true, searchSensor, "bw");
+        router[i] = line2(cSpeed, 3, pGL2, dGL2 * 0.6, "degree", 349, 1, true, true, searchSensor, "bw");
     }
     i++;
     router[i] = findColor(router, "router");
@@ -1552,6 +1546,16 @@ void main_task(intptr_t unused)
     moveStraight(cSpeed,3,1,0.4,"degree",205,3,false);
     moveStraight(3,3,1,1,"degree",80,3,false);
     positionenScannen();
+    city(9,4,5,3,false);
+    routerScannen(HTr,"routerO");
+    turn1(motor_left,3,true,3,"degree",490,3,false);
+    line2(3,3,pGL2,dGL2,"degree",100,3,false);
+    moveStraight(3,4,1,0.57,"degree",320,4,false);
+    moveStraight(4,4,0.57,1,"degree",310,4,false);
+    line2(4,4,pGL2,dGL2,"degree",220,1,true);
+
+
+
 
     int neededTime = run.getTime();
 

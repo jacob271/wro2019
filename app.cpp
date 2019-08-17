@@ -68,7 +68,7 @@ const double wheelCircumferance = 17.6;
 int miniDistance = 50;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
 int miniDistanceShort = 40; //rückwärts an Linie herangefahren
 int moveBackDistance = 193; //Distanz vor einer Drehung zum Router
-int leverDistance = 110;
+int leverDistance = 230;
 int leverUpTime = 400;
 int longMotorUpSpeed = 75;
 int longMotorDownSpeed = -80;
@@ -284,13 +284,13 @@ void updateLogDatei()
 //todo
 void positionenScannen()
 {
-    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 235, 90, false);
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 155, 90, false);
     for (int i = 0; i < 3; i++)
     {
         positions[i] = line1(cSpeed, 90, pGL1, dGL1 * 0.6, LSr, false, "degree", 147, 60, false, true, HTr, "color");
     }
     positions[3] = findColor(positions, "positions");
-    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 400, 3, false);
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 480, 3, false);
     turn1(motor_right, 3,true,3,"degree",490,3,false);
     line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 620, 3, false);
 }
@@ -1552,7 +1552,14 @@ void main_task(intptr_t unused)
     line2(3,3,pGL2,dGL2,"degree",100,3,false);
     moveStraight(3,4,1,0.57,"degree",320,4,false);
     moveStraight(4,4,0.57,1,"degree",310,4,false);
-    line2(4,4,pGL2,dGL2,"degree",220,1,true);
+    line2(4,4,pGL2,dGL2,"degree",250,2,false);
+    moveStraight(2,2,1,1,"degree",60,1,true);
+    mediumMotor(doubleLever, 70,"degree",leverDistance,true);
+    moveStraight(-1,-3,1,1,"degree",270,1,true);
+    turn2(1,5,"degree",240,1,true);
+    line2(1,3,pGL2,dGL2,"degree",100,3,false);
+    routerScannen(HTl,"routerW");
+    
 
 
 

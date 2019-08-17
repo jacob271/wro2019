@@ -997,35 +997,81 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         }
         std::cout << "driveDirection: " << driveDirection << std::endl;
 
+        //Strecken
+        int toMiddle = 310;      //Von Crossline bis der Roboter zwischen den Linien steht
+        int degT1continue = 495; //Strecke für 90 Grad turn1 ohne abbremsen
+        motor_port_t turnMotor;
+
+        int endSpeed;
+        bool stopNow;
+
         if (startTemp != currentPosition && currentPosition < 0)
         {
-
             //RICHTUNGEN fehlen teilweise noch
+            //Muss hier bereits stoppen können
+            endSpeed = 3;
+            stopNow = false;
+            if (startTemp == endPosition && stop == true)
+            {
+                endSpeed = 1;
+                stopNow = true;
+            }
             switch (currentPosition)
             {
             case -1:
-                if (startTemp == 1)
+            case -7:
+                switch (startTemp)
                 {
+                case 1:
+                case 9:
                     turn2(1, 5, "degree", -240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
-                }
-                else if (startTemp == 16)
-                {
+                    line2(1, 3, dGL2, pGL2, "degree", 340, endSpeed, stopNow);
+                    break;
+                case 16:
+                case 8:
                     turn2(1, 5, "degree", 240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, endSpeed, stopNow);
+                    break;
                 }
                 break;
-            case -2:
-                if (startTemp == 3)
+            case -5:
+            case -11:
+                switch (startTemp)
                 {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
+                case 6:
+                case 14:
+                    turn2(1, 5, "degree", 240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 340, endSpeed, stopNow);
+                    break;
+                case 7:
+                case 15:
+                    turn2(1, 5, "degree", -240, 1, true);
+                    line2(1, 3, dGL2, pGL2, "degree", 248, endSpeed, stopNow);
+                    break;
                 }
-                else if (startTemp == 1)
+                break;
+            case -12:
+            case -6:
+                switch (startTemp)
                 {
-                    if (startTemp == endPosition && endDirection == 4)
+                case 15:
+                case 7:
+                    turn2(1, 5, "degree", 240, 1, true);
+                    break;
+                case 16:
+                case 8:
+                    turn2(1, 5, "degree", -240, 1, true);
+                    break;
+                }
+                line2(1, 3, dGL2, pGL2, "degree", 248, endSpeed, stopNow);
+                break;
+            case -2:
+            case -8:
+                switch (startTemp)
+                {
+                case 1:
+                case 9:
+                    if (startTemp == endPosition && ((endDirection == 4 && startTemp == 1) || (endDirection == 2 && startTemp == 9)))
                     {
                         moveStraight(-1, -3, 1, 0.153, "degree", 1150, -1, true);
                     }
@@ -1036,52 +1082,48 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         turn1(motor_right, -3, true, -3, "degree", 525, -1, true);
                         driveDirection = false;
                     }
-                }
-                else if (startTemp == 2)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
-                }
-                break;
-            case -3:
-                if (startTemp == 4)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
-                }
-                else if (startTemp == 3)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
-                }
-                else if (startTemp == 1)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 540, -3, false);
-                    moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 540, -1, true);
-                }
-                else if (startTemp == 6)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 540, -3, false);
-                    moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 540, -1, true);
+                    break;
+                case 2:
+                case 10:
+                    if (startTemp == endPosition && ((endDirection == 1 && startTemp == 2) || (endDirection == 3 && startTemp == 10)))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    }
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                        line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
+                    }
+                    break;
+                case 3:
+                case 11:
+                    if (startTemp == endPosition && ((endDirection == 1 && startTemp == 3) || (endDirection == 3 && startTemp == 11)))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    }
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                        line2(3, 3, pGL2, dGL2, "degree", 248, endSpeed, stopNow);
+                    }
+                    break;
                 }
                 break;
+            case -10:
             case -4:
-                if (startTemp == 6)
+                switch (startTemp)
                 {
-                    if (startTemp == endPosition && endDirection == 4)
+                case 6:
+                case 14:
+                    if (startTemp == endPosition && ((endDirection == 4 && startTemp == 6) || (endDirection == 2 && startTemp == 14)))
                     {
                         moveStraight(-1, -3, 0.153, 1, "degree", 1150, -1, true);
-                        driveDirection = false;
                     }
                     else
                     {
@@ -1090,151 +1132,108 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         turn1(motor_left, -3, true, -3, "degree", 525, -1, true);
                         driveDirection = true;
                     }
-                }
-                else if (startTemp == 4)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
-                }
-                else if (startTemp == 5)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", 340, 1, true);
-                }
-                break;
-            case -5:
-                if (startTemp == 7)
-                {
-                    turn2(1, 5, "degree", -240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 3, false);
-                }
-                else if (startTemp == 6)
-                {
-                    turn2(1, 5, "degree", 240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
-                }
-                break;
-            case -6:
-                if (startTemp == 8)
-                {
-                    turn2(1, 5, "degree", -240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
-                }
-                else if (startTemp == 7)
-                {
-                    turn2(1, 5, "degree", 240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
-                }
-                break;
-            case -7:
-                if (startTemp == 9)
-                {
-                    turn2(1, 5, "degree", -240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
-                }
-                else if (startTemp == 8)
-                {
-                    turn2(1, 5, "degree", 240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
-                }
-                break;
-            case -8:
-                if (startTemp == 10)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
-                    line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-                    line1(3, 3, pGL1, dGL1, LSr, true, "degree", 340, 1, true);
-                }
-                else if (startTemp == 9)
-                {
-                    moveStraight(-1, -3, 1, 0.153, "degree", 1150, -1, true);
-                }
-                else if (startTemp == 11)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
-                    line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                    line1(3, 3, pGL1, dGL1, LSl, false, "degree", 340, 1, true);
-                }
-                break;
-            case -9:
-                if (startTemp == 14)
-                {
-                    moveStraight(-1, -3, 0.42, 1, "degree", 1700, -1, true);
-                }
-                else if (startTemp == 9)
-                {
-                    if (startTemp = endPosition && endDirection == 2){
-                        moveStraight(-1, -3, 1, 0.42, "degree", 1700, -1, true);
-                    }else{
-                        
+                    break;
+                case 5:
+                case 13:
+                    if (startTemp == endPosition && ((endDirection == 1 && startTemp == 13) || (endDirection == 3 && startTemp == 5)))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
                     }
-                    
-                }
-                else if (startTemp == 11)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
-                    line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-                    line1(3, 3, pGL1, dGL1, LSr, true, "degree", 340, 1, true);
-                }
-                else if (startTemp == 12)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
-                    line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                    line1(3, 3, pGL1, dGL1, LSl, false, "degree", 340, 1, true);
-                }
-                break;
-            case -10:
-                if (startTemp == 12)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
-                    line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-                    line1(3, 3, pGL1, dGL1, LSr, true, "degree", 340, 1, true);
-                }
-                else if (startTemp == 13)
-                {
-                    moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
-                    turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
-                    line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                    line1(3, 3, pGL1, dGL1, LSl, false, "degree", 340, 1, true);
-                }
-                else if (startTemp == 14)
-                {
-                    moveStraight(-1, -3, 0.153, 1, "degree", 1150, -1, true);
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                        line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
+                    }
+                    break;
+                case 4:
+                case 12:
+                    if (startTemp == endPosition && ((endDirection == 1 && startTemp == 4) || (endDirection == 3 && startTemp == 12)))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    }
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                        line2(3, 3, pGL2, dGL2, "degree", 248, endSpeed, stopNow);
+                    }
+                    break;
                 }
                 break;
-            case -11:
-                if (startTemp == 14)
+            case -3:
+            case -9:
+                switch (startTemp)
                 {
-                    turn2(1, 5, "degree", 240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 340, 4, false);
+                case 4:
+                case 12:
+                    if (startTemp == endPosition && ((endDirection == 1 && startTemp == 12) || (endDirection == 3 && startTemp == 4)))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                    }
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                        line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
+                    }
+                    break;
+                case 3:
+                case 11:
+                    if (startTemp == endPosition && ((endDirection == 1 && startTemp == 3) || (endDirection == 3 && startTemp == 11)))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                    }
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 120, 3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                        line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
+                    }
+                    break;
+                case 1:
+                case 9:
+                    if (startTemp == endPosition && ((endDirection == 2 && startTemp == 9) || endDirection == 4 && startTemp == 1))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 540, -3, false);
+                        moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 540, -1, true);
+                    }
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 540, -3, false);
+                        moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 540, -1, true);
+                    }
+                    break;
+                case 6:
+                case 14:
+                    if (startTemp == endPosition && ((endDirection == 2 && startTemp == 14) || endDirection == 4 && startTemp == 6))
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 540, -3, false);
+                        moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 540, -1, true);
+                    }
+                    else
+                    {
+                        moveStraight(-1, -3, 1, 1, "degree", 50, -3, false);
+                        turn1(motor_right, -3, true, -3, "degree", 540, -3, false);
+                        moveStraight(-3, -3, 1, 1, "degree", 395, -3, false);
+                        turn1(motor_left, -3, true, -3, "degree", 540, -1, true);
+                    }
+                    break;
                 }
-                else if (startTemp == 15)
-                {
-                    turn2(1, 5, "degree", -240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
-                }
-                break;
-            case -12:
-                if (startTemp == 15)
-                {
-                    turn2(1, 5, "degree", 240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
-                }
-                else if (startTemp == 16)
-                {
-                    turn2(1, 5, "degree", -240, 1, true);
-                    line2(1, 3, dGL2, pGL2, "degree", 248, 4, false);
-                }
-                break;
             }
         }
         else
@@ -1251,14 +1250,6 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         if (abs(cSpeed) < abs(speedLevel(1)))
             cSpeed = 1;
         std::cout << "cSpeed " << cSpeed << std::endl;
-
-        //Strecken
-        int toMiddle = 310;      //Von Crossline bis der Roboter zwischen den Linien steht
-        int degT1continue = 495; //Strecke für 90 Grad turn1 ohne abbremsen
-        motor_port_t turnMotor;
-
-        int endSpeed;
-        bool stopNow;
 
         int nextPosition;
 
@@ -1625,12 +1616,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
 
         //Dreht am Ende, falls die Orientierung noch nicht übereinstimmt
         //MUSS NOCH AN INNEREN KREIS ANGEPASST WERDEN
-        if (endPosition > 0){
-        if (direction(endPosition, endDirection, 16) != driveDirection)
+        if (endPosition > 0)
         {
-            turn2(1, 5, "degree", 480, 1, true);
-            std::cout << "turn to endPosition" << std::endl;
-        }
+            if (direction(endPosition, endDirection, 16) != driveDirection)
+            {
+                turn2(1, 5, "degree", 480, 1, true);
+                std::cout << "turn to endPosition" << std::endl;
+            }
         }
 
         std::cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << std::endl;

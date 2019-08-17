@@ -1404,213 +1404,88 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             switch (endPosition)
             {
             case -1:
-                if (endTemp == 1)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", -240, 1, true);
-                }
-                else if (endTemp == 16)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
+            case -5:
+            case -6:
+            case -7:
+            case -11:
+            case -12:
+                line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
+                line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
+                if (driveDirection == true){
                     turn2(1, 5, "degree", 240, 1, true);
+                }else
+                {
+                    turn2(1, 5, "degree", -240, 1, true);
                 }
                 break;
             case -2:
-                if (endTemp == 3)
+            case -8:
+                switch (endTemp)
                 {
-                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                else if (endTemp == 1)
-                {
-                    //might not brake before
-                    moveStraight(1, 3, 1, 0.153, "degree", 1150, 1, true);
-                }
-                else if (endTemp == 2)
-                {
+                case 2:
+                case 10:
                     moveStraight(cSpeed, 3, 1, 1, "degree", 20, 3, false);
                     turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
                     moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                break;
-            case -3:
-                if (endTemp == 4)
-                {
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
+                    break;
+                case 3:
+                case 11:
                     turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
                     moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
+                    break;
+                case 9:
+                case 1:
+                    //might not brake before
+                    moveStraight(1, 3, 1, 0.153, "degree", 1150, 1, true);
+                    break;
                 }
-                else if (endTemp == 3)
+                break;            
+            case -3:
+            case -9:
+                switch (endTemp)
                 {
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
+                case 12:
+                case 4:
+                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
+                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
+                    break;
+                case 3:
+                case 11:
                     turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
                     moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                else if (endTemp == 1)
-                {
-                    turn1(motor_left, 3, true, 3, "degree", 540, 3, false);
-                    moveStraight(3, 3, 1, 1, "degree", 395, 3, false);
-                    turn1(motor_left, 3, true, -3, "degree", 540, 3, false);
-                    moveStraight(1, 3, 1, 1, "degree", 50, 3, false);
-                }
-                else if (endTemp == 6)
-                {
-                    turn1(motor_right, 3, true, 3, "degree", 540, 3, false);
-                    moveStraight(3, 3, 1, 1, "degree", 395, 3, false);
-                    turn1(motor_right, 3, true, -3, "degree", 540, 3, false);
-                    moveStraight(1, 3, 1, 1, "degree", 50, 3, false);
+                    break;
+                case 9:
+                    moveStraight(1, 3, 1, 0.42, "degree", 1700, 1, true);
+                    break;
+                case 14:
+                    moveStraight(1, 3, 0.42, 1, "degree", 1700, 1, true);
+                    break;
                 }
                 break;
             case -4:
-                if (endTemp == 6)
-                {
-                    moveStraight(1, 3, 0.153, 1, "degree", 1150, 1, true);
-                }
-                else if (endTemp == 4)
-                {
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
-                    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                else if (endTemp == 5)
-                {
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
-                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                break;
-            case -5:
-                if (endTemp == 7)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", -240, 1, true);
-                }
-                else if (endTemp == 6)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", 240, 1, true);
-                }
-                break;
-            case -6:
-                if (endTemp == 8)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", -240, 1, true);
-                }
-                else if (endTemp == 7)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", 240, 1, true);
-                }
-                break;
-            case -7:
-                if (endTemp == 9)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", -240, 1, true);
-                }
-                else if (endTemp == 8)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", 240, 1, true);
-                }
-                break;
-            case -8:
-                if (endTemp == 10)
-                {
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 20, 3, false);
-                    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                else if (endTemp == 9)
-                {
-                    //might not brake before
-                    moveStraight(1, 3, 1, 0.153, "degree", 1150, 1, true);
-                }
-                else if (endTemp == 11)
-                {
-                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                break;
-            case -9:
-                if (endTemp == 14)
-                {
-                    moveStraight(1, 3, 0.42, 1, "degree", 1700, 1, true);
-                }
-                else if (endTemp == 9)
-                {
-                    moveStraight(1, 3, 1, 0.42, "degree", 1700, 1, true);
-                }
-                else if (endTemp == 11)
-                {
-                    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                else if (endTemp == 12)
-                {
-                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
-                    moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                break;
             case -10:
-                if (endTemp == 12)
+                switch (endTemp)
                 {
+                case 4:
+                case 12:
+                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
                     turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
                     moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                else if (endTemp == 13)
-                {
+                    break;
+                case 5:
+                case 13:
                     line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                     line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
                     turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
                     moveStraight(cSpeed, 3, 1, 1, "degree", 120, 1, true);
-                }
-                else if (endTemp == 14)
-                {
+                    break;
+                case 6:
+                case 14:
                     moveStraight(1, 3, 0.153, 1, "degree", 1150, 1, true);
+                    break;
                 }
-                break;
-            case -11:
-                if (endTemp == 14)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", 240, 1, true);
-                }
-                else if (endTemp == 15)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", -240, 1, true);
-                }
-                break;
-            case -12:
-                if (endTemp == 15)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", 240, 1, true);
-                }
-                else if (endTemp == 16)
-                {
-                    line2(cSpeed, 3, dGL2, pGL2, "crossline", 0, 3, false);
-                    line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
-                    turn2(1, 5, "degree", -240, 1, true);
-                }
-                break;
+                break;                 
             }
         }
 

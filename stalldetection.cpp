@@ -24,10 +24,10 @@ bool StallDetection::detectStall()
         else
             next = stall[index+1];
         if (current == next){
-            //std::cout << "stall detected " << current << " " << next << std::endl;
+            //cout << "stall detected " << current << " " << next << endl;
             //for(int i = 0; i < 20; i++);
-                //std::cout << stall[i] << " ";
-            //std::cout << std::endl;
+                //cout << stall[i] << " ";
+            //cout << endl;
             ev3_speaker_play_tone(NOTE_C4, 500);
             return true;
         }

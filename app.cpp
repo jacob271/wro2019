@@ -121,7 +121,7 @@ void start() //Konfiguration für den Start
         batteryFactor = batteryFactor * 1.02;
     }
 
-    std::cout << batteryFactor << std::endl;
+    cout << batteryFactor << endl;
 
     pGL1 = pGL1 * batteryFactor;
     dGL1 = dGL1 * batteryFactor;
@@ -129,19 +129,19 @@ void start() //Konfiguration für den Start
     pGL2 = pGL2 * batteryFactor;
     dGL2 = dGL2 * batteryFactor;
 
-    std::cout << "Battery at: " << batteryLevel << "Volt" << std::endl;
-    std::cout << "speedsLevel:" << std::endl;
-    std::cout << "1 " << speedLevel(1) << std::endl;
-    std::cout << "2 " << speedLevel(2) << std::endl;
-    std::cout << "3 " << speedLevel(3) << std::endl;
-    std::cout << "4 " << speedLevel(4) << std::endl;
-    std::cout << "5 " << speedLevel(5) << std::endl;
-    std::cout << "6 " << speedLevel(6) << std::endl;
+    cout << "Battery at: " << batteryLevel << "Volt" << endl;
+    cout << "speedsLevel:" << endl;
+    cout << "1 " << speedLevel(1) << endl;
+    cout << "2 " << speedLevel(2) << endl;
+    cout << "3 " << speedLevel(3) << endl;
+    cout << "4 " << speedLevel(4) << endl;
+    cout << "5 " << speedLevel(5) << endl;
+    cout << "6 " << speedLevel(6) << endl;
     display(batteryLevel);
 
     //Berechnet minSpeed mit batteryVoltage
     //speedLevel1 = (int)(25 - (batteryVoltage - 7500) * (16 / 1000));
-    //std::cout << "speedLevel1: " << speedLevel1 << std::endl;
+    //cout << "speedLevel1: " << speedLevel1 << endl;
 
     waitForButton();
     run.reset();
@@ -272,13 +272,13 @@ void nationalAnthem()
 
 void updateLogDatei()
 {
-    std::cout << "-" << std::endl;
-    std::cout << "time " << run.getTime() << std::endl;
-    std::cout << "fall1 " << fall1 << " fall2 " << fall2 << std::endl;
-    std::cout << "blue " << blue << " red " << red << " green " << green << " yellow " << yellow << std::endl;
-    std::cout << "routerO " << routerO[0] << " " << routerO[1] << " " << routerO[2] << std::endl;
-    std::cout << "routerW " << routerW[0] << " " << routerW[1] << " " << routerW[2] << std::endl;
-    std::cout << "-" << std::endl;
+    cout << "-" << endl;
+    cout << "time " << run.getTime() << endl;
+    cout << "fall1 " << fall1 << " fall2 " << fall2 << endl;
+    cout << "blue " << blue << " red " << red << " green " << green << " yellow " << yellow << endl;
+    cout << "routerO " << routerO[0] << " " << routerO[1] << " " << routerO[2] << endl;
+    cout << "routerW " << routerW[0] << " " << routerW[1] << " " << routerW[2] << endl;
+    cout << "-" << endl;
 }
 
 //todo
@@ -558,7 +558,7 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
             break;
         }
     }
-    std::cout << "distanceForw: " << distanceForw << std::endl;
+    cout << "distanceForw: " << distanceForw << endl;
 
     int distanceBack = 0;
     for (int i = startPosition; i != endPosition; i--)
@@ -577,7 +577,7 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
         }
     }
 
-    std::cout << "distanceBack: " << distanceBack << std::endl;
+    cout << "distanceBack: " << distanceBack << endl;
 
     int distance = 0;
     if (distanceForw == abs(distanceBack))
@@ -603,12 +603,12 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
 void router(int &currentPosition, int currentDirection, int &endPosition, int endDirection, bool stop)
 {
     //1 = kurze Seite im Süden, dann im Uhrezeigersinn
-    std::cout << "Enter Router-Kreis at: " << currentPosition << " " << currentDirection << std::endl;
+    cout << "Enter Router-Kreis at: " << currentPosition << " " << currentDirection << endl;
 
     //Berechnet die Abstände im und gegen den Uhrzeigersinn auf dem Router-Kreis
     int distance = getDistance(currentPosition, currentDirection, endPosition, 10);
 
-    std::cout << "distance: " << distance << std ::endl;
+    cout << "distance: " << distance << std ::endl;
 
     //Legt anhand der kürzeren Strecke die Fahrtrichtung fest. Falls es keine kürzere gibt entscheidet die aktuelle Orientierung des Roboters
     bool driveDirection;
@@ -620,7 +620,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
     {
         driveDirection = false;
     }
-    std::cout << "driveDirection: " << driveDirection << std::endl;
+    cout << "driveDirection: " << driveDirection << endl;
 
     //Dreht den Roboter gegebenenfalls in Fahrtrichtung
     if (direction(currentPosition, currentDirection, 10) != driveDirection)
@@ -664,7 +664,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
                     endSpeed = 1;
                     stopNow = true;
                 }
-                std::cout << "position: " << i << std::endl;
+                cout << "position: " << i << endl;
                 switch (i)
                 {
                 case 1:
@@ -716,7 +716,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
                     endSpeed = 1;
                     stopNow = true;
                 }
-                std::cout << "position: " << i << std::endl;
+                cout << "position: " << i << endl;
                 switch (i)
                 {
                 case 1:
@@ -754,13 +754,13 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
         turn2(1, 5, "degree", 480, 1, true);
     }
 
-    std::cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << std::endl;
+    cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << endl;
 }
 
 void city(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop)
 {
     //1 = westlichste Seite im Süden, dann im Uhrzeigersinn
-    std::cout << "Enter City-Kreis at: " << currentPosition << " " << currentDirection << std::endl;
+    cout << "Enter City-Kreis at: " << currentPosition << " " << currentDirection << endl;
 
     //Alle Anfahrmöglichkeiten des inneren City-Kreises gespeichert
     int cityPositionsIn[13][7] = {{0},
@@ -798,7 +798,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
     //Haben current- und endPosition gemeinsame Anfahrpukte?
     int gemeinsameOptionen[4] = {0};
     int n = 0;
-    std::cout << "gemeinsameOptionen: ";
+    cout << "gemeinsameOptionen: ";
     for (int i = 0; i < 7; i++)
     {
         for (int j = 0; j < 7; j++)
@@ -824,12 +824,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             if (option1 == option2 && option1 != 0)
             {
                 gemeinsameOptionen[n] = option1;
-                std::cout << gemeinsameOptionen[n] << " ";
+                cout << gemeinsameOptionen[n] << " ";
                 n++;
             }
         }
     }
-    std::cout << std::endl;
+    cout << endl;
 
     //Wählt aus den gemeinsamen Optionen zunächst negative auf dem inneren Kreis aus
     int gemeinsameOption = 0;
@@ -845,12 +845,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         }
     }
 
-    std::cout << "finale gemeinsameOption: " << gemeinsameOption << std::endl;
+    cout << "finale gemeinsameOption: " << gemeinsameOption << endl;
 
     if (gemeinsameOption == endPosition && currentPosition < 0)
     {
         //Fährt von ngativer Position zu anderer negativer Position
-        std::cout << "Fahrt von innerem Kreis zum inneren Kreis" << std::endl;
+        cout << "Fahrt von innerem Kreis zum inneren Kreis" << endl;
         switch (currentPosition)
         {
         case -3:
@@ -888,7 +888,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
     {
         //Falls nein, negative Auswahlmöglichkeiten für current- und endPosition werden aussortiert.
         //Abstände zwischen den verbleibenden Anfahroptionen auf dem Citykreis
-        std::cout << "Alle Abstände berechnen: ";
+        cout << "Alle Abstände berechnen: ";
         int abstand[24][3] = {0};
         int n = 0;
         for (int i = 0; i < 7; i++)
@@ -935,12 +935,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                             distance--;
                     }
                     abstand[n][2] = distance;
-                    std::cout << "abstand: " << option1 << " " << option2 << " " << abstand[n][2] << std::endl;
+                    cout << "abstand: " << option1 << " " << option2 << " " << abstand[n][2] << endl;
                     n++;
                 }
             }
         }
-        std::cout << std::endl;
+        cout << endl;
         int shortestDistance = 100;
         for (int i = 0; i >= 0; i++)
         {
@@ -954,7 +954,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 i = -2;
             }
         }
-        std::cout << "Kürzester Abstand: " << shortestDistance << std::endl;
+        cout << "Kürzester Abstand: " << shortestDistance << endl;
 
         //Zwischenpositionen speichern
         int startTemp = 0;
@@ -977,7 +977,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         {
             endTemp = endPosition;
         }
-        std::cout << "startTemp: " << startTemp << " endTemp: " << endTemp << std::endl;
+        cout << "startTemp: " << startTemp << " endTemp: " << endTemp << endl;
 
         //Legt anhand der Strecke die Fahrtrichtung fest
         bool driveDirection;
@@ -989,7 +989,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         {
             driveDirection = true;
         }
-        std::cout << "driveDirection: " << driveDirection << std::endl;
+        cout << "driveDirection: " << driveDirection << endl;
 
         //Strecken
         int toMiddle = 310;      //Von Crossline bis der Roboter zwischen den Linien steht
@@ -1258,14 +1258,14 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             if (direction(currentPosition, currentDirection, 16) != driveDirection)
             {
                 turn2(1, 5, "degree", 480, 1, true);
-                std::cout << "turn into driveDirection" << std::endl;
+                cout << "turn into driveDirection" << endl;
             }
         }
 
         //übernimmt Fahrtgeschwindigkeit oder setzt Startspeed
         if (abs(cSpeed) < abs(speedLevel(1)))
             cSpeed = 1;
-        std::cout << "cSpeed " << cSpeed << std::endl;
+        cout << "cSpeed " << cSpeed << endl;
 
         int nextPosition;
 
@@ -1291,7 +1291,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         endSpeed = 1;
                         stopNow = true;
                     }
-                    std::cout << "position: " << i << std::endl;
+                    cout << "position: " << i << endl;
                     switch (i)
                     {
                     case 1:
@@ -1362,7 +1362,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         endSpeed = 1;
                         stopNow = true;
                     }
-                    std::cout << "position: " << i << std::endl;
+                    cout << "position: " << i << endl;
                     switch (i)
                     {
                     case 1:
@@ -1512,12 +1512,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             if (direction(endPosition, endDirection, 16) != driveDirection)
             {
                 turn2(1, 5, "degree", 480, 1, true);
-                std::cout << "turn to endPosition" << std::endl;
+                cout << "turn to endPosition" << endl;
             }
         }
     }
 
-    std::cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << std::endl;
+    cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << endl;
 }
 
 void test()
@@ -1535,8 +1535,8 @@ void main_task(intptr_t unused)
 {
     //Log-Datei initialisieren
     std::ofstream out("logFile.txt");
-    std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
-    std::cout.rdbuf(out.rdbuf());                //redirect std::cout to out.txt!
+    std::streambuf *coutbuf = cout.rdbuf(); //save old buf
+    cout.rdbuf(out.rdbuf());                //redirect cout to out.txt!
     start();
     //Stopwatch run;
     tslp_tsk(200);
@@ -1560,19 +1560,15 @@ void main_task(intptr_t unused)
     line2(1,3,pGL2,dGL2,"degree",100,3,false);
     routerScannen(HTl,"routerW");
     
-
-
-
-
     int neededTime = run.getTime();
 
     //int neededTime = run.getTime();
-    std::cout << "Needed time: " << neededTime << std::endl;
-    std::cout << batteryLevel << " " << batteryFactor << " " << fall1 << " " << fall2 << " " << neededTime << " " << blue << " " << red << " " << green << " " << yellow << " " << routerO[0] << " " << routerO[1] << " " << routerO[2] << " " << routerW[0] << " " << routerW[1] << " " << routerW[2] << std::endl;
+    cout << "Needed time: " << neededTime << endl;
+    cout << batteryLevel << " " << batteryFactor << " " << fall1 << " " << fall2 << " " << neededTime << " " << blue << " " << red << " " << green << " " << yellow << " " << routerO[0] << " " << routerO[1] << " " << routerO[2] << " " << routerW[0] << " " << routerW[1] << " " << routerW[2] << endl;
     char msgbuf[10];
     sprintf(msgbuf, "Time: %d", neededTime);
     ev3_lcd_draw_string(msgbuf, 10, 10);
-    std::cout.rdbuf(coutbuf);
+    cout.rdbuf(coutbuf);
 
     ev3_motor_stop(motor_left, true);
     ev3_motor_stop(motor_right, true);

@@ -46,7 +46,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
     }
     wert = wert + OMbrakeDistance + OMaccDistance;
     togo = wert;
-    std::cout << "togo: " << togo << std::endl;
+    cout << "togo: " << togo << endl;
     dec = true;
   }
 
@@ -88,7 +88,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
       double otherSpeed = (abs(startSpeed) - (abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) / OMbrakeDistance) * abs(startSpeed - endSpeed)) * (maxSpeed / abs(maxSpeed));
       //(Startspeed - prozentual zurückgelegte Bresmstrecke * zu bremsende Geschwindidkeit) * vorwärts oder rückwärts aus maxSpeed
       motorControl(otherMotor, otherSpeed, maxSpeed);
-      std::cout << "DEC: " << otherSpeed << std::endl;
+      cout << "DEC: " << otherSpeed << endl;
     }
 
     if (stop == false) //Beschleunigen otherMotor am Ende
@@ -98,7 +98,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
       //Beschelunigt direkt proportional zur verbleienden Strecke des anderen Motors
       if (otherSpeed >= speedLevel(1))
       {
-        std::cout << "ACC: " << otherSpeed << std::endl;
+        cout << "ACC: " << otherSpeed << endl;
         motorControl(otherMotor, otherSpeed, maxSpeed);
         if (otherMotor == motor_right)
           ev3_motor_set_power(otherMotor, otherSpeed);
@@ -444,11 +444,11 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
     }
     lastpError = lastpErrors[i];
 
-    //std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;
+    //cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << endl;
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
-  std::cout << "lc: " << counter / (move.getTime() / 1000) << std::endl;
+  cout << "lc: " << counter / (move.getTime() / 1000) << endl;
 
   if (colorSearch)
   {
@@ -464,7 +464,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
-  //std::cout << "sensorLine1: " << followSensor << std::endl;
+  //cout << "sensorLine1: " << followSensor << endl;
   Stopwatch move;
   Stopwatch slowDown;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
@@ -556,11 +556,11 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
     }
     lastpError = lastpErrors[i];
 
-    //std::cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << std::endl;
+    //cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << endl;
   }
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
-  std::cout << "lc: " << counter / (move.getTime() / 1000) << std::endl;
+  cout << "lc: " << counter / (move.getTime() / 1000) << endl;
 
   if (colorSearch)
   {

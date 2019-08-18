@@ -32,7 +32,7 @@ void motorControl(motor_port_t motor, int speed, int maxSpeed){
     speedControlLastError = speedControlD[speedControlIndex];
 
 
-  //std::cout << speed << " " << cPower  <<" " << error << " " << newSpeed << std::endl;
+  //cout << speed << " " << cPower  <<" " << error << " " << newSpeed << endl;
 }
 
 void resetSpeedControl (){
@@ -228,7 +228,7 @@ int frequencyDistribution(int colorCounter[], std::string mode)
 {
 
   int laenge = 40;
-  std::cout << "frequencyDistribution " << mode << " " << laenge << std::endl;
+  cout << "frequencyDistribution " << mode << " " << laenge << endl;
   int r = 0; //red
   int b = 0;  //blue/black
   int g = 0;  //green
@@ -245,28 +245,28 @@ int frequencyDistribution(int colorCounter[], std::string mode)
       if (colorCounter[i] == 2)
         b++;
     }
-    std::cout << "b: " << b << std::endl;
+    cout << "b: " << b << endl;
 
     for (int i = 0; i < laenge; i++)
     {
       if (colorCounter[i] == 3)
         g++;
     }
-    std::cout << "g: " << g << std::endl;
+    cout << "g: " << g << endl;
 
     for (int i = 0; i < laenge; i++)
     {
       if (colorCounter[i] == 5)
         r++;
     }
-    std::cout << "r: " << r << std::endl;
+    cout << "r: " << r << endl;
 
     for (int i = 0; i < laenge; i++)
     {
       if (colorCounter[i] == 4)
         y++;
     }
-    std::cout << "y: " << y << std::endl;
+    cout << "y: " << y << endl;
 
     if (r > b && r > g && r > y){
       ergebnis = 5;
@@ -290,14 +290,14 @@ int frequencyDistribution(int colorCounter[], std::string mode)
       if (colorCounter[i] == 0)
         b++;
     }
-    std::cout << "b: " << b << std::endl;
+    cout << "b: " << b << endl;
 
     for (int i = 0; i < laenge; i++)
     {
       if (colorCounter[i] == 1)
         w++;
     }
-    std::cout << "w: " << w << std::endl;
+    cout << "w: " << w << endl;
 
     if (b > w){
       ergebnis = 0;
@@ -308,7 +308,7 @@ int frequencyDistribution(int colorCounter[], std::string mode)
     }
   }
 
-  std::cout << "Detected color: " << ergebnis << " N: " << ergebnisN <<std::endl;
+  cout << "Detected color: " << ergebnis << " N: " << ergebnisN <<endl;
 
   return ergebnis;
 }
@@ -371,7 +371,7 @@ void display(int inhalt)
 int colorDetection(sensor_port_t sensor)
 {
   int htColor = getHTRGB(sensor, 0);
-  std::cout << htColor << " ";
+  cout << htColor << " ";
   switch (htColor)
   {
   case 0:
@@ -405,7 +405,7 @@ int colorDetection(sensor_port_t sensor)
   case 17:
     return 0; //5
   default:
-    //std::cout << "Keine Farbe erkannt: " << htColor << std::endl; ####
+    //cout << "Keine Farbe erkannt: " << htColor << endl; ####
     return 0;
   }
 }
@@ -423,7 +423,7 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
 
   tslp_tsk(6);
 
-  std::cout << mode << " " << red << " " << green<< " " << blue << " ";
+  cout << mode << " " << red << " " << green<< " " << blue << " ";
   if (mode == "color")
   {
     if (red < 20 && blue < 20 && green < 20)
@@ -465,7 +465,7 @@ int findColor(int colors[], std::string mode)
     {
       color = color + colors[i];
     }
-    std::cout << "lastColor: " << 14 - color << std::endl;
+    cout << "lastColor: " << 14 - color << endl;
     //Summe der Farben ist immer 14
     return 14 - color;
   }
@@ -476,7 +476,7 @@ int findColor(int colors[], std::string mode)
     {
       color = color + colors[i];
     }
-    std::cout << "lastColor: " << 1 - color << std::endl;
+    cout << "lastColor: " << 1 - color << endl;
     //Summe der Farben ist immer 1
     return 1 - color;
   }

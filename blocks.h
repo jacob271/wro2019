@@ -16,6 +16,8 @@
 #include "timer.h" //custom timer
 #include "stalldetection.h"
 #include <iostream>
+using std::cout;
+using std::endl;
 
 
 //-----------------------------------------------------------------------------

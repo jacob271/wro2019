@@ -20,9 +20,7 @@ void test()
     line2(1,3,pGL2,dGL2,"degree",400,3,false);
     move(3,3,1,0.42,"degree",800,3,false);
     move(3,3,1,1,"degree",500,1,true);   
-    start(); 
-
-    //city(5, 3, -4, 2, true);
+    start();
 }
 
 void main_task(intptr_t unused)

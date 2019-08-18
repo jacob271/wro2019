@@ -184,7 +184,6 @@ void updateLogDatei()
     cout << "-" << endl;
 }
 
-//todo
 void positionenScannen()
 {
     line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 155, 90, false);
@@ -201,9 +200,9 @@ void positionenScannen()
 //todo
 void kabelSammeln(bool south)
 {
+
 }
 
-//todo
 void routerScannen(sensor_port_t searchSensor, std::string mode)
 {
     //direkt nach der Drehung

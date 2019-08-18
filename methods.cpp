@@ -1,7 +1,4 @@
 #include "blocks.h"
-#include "timer.h"
-#include "stalldetection.h"
-#include "app.h"
 
 void start() //Konfiguration für den Start
 {

@@ -1,6 +1,6 @@
 APPL_COBJS +=
 
-APPL_CXXOBJS += supportblocks.o stalldetection.o timer.o moveblocks.o
+APPL_CXXOBJS += supportblocks.o stalldetection.o timer.o moveblocks.o methods.o globals.o
 
 SRCLANG := c++
 

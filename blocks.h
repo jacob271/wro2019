@@ -82,7 +82,7 @@ void motorStall(motor_port_t motor, int speed);
 // Global Vars
 extern motor_port_t motor_left;
 extern motor_port_t longMotor;
-extern motor_port_t tool2;
+extern motor_port_t doubleLever;
 extern motor_port_t motor_right;
 extern sensor_port_t HTl;
 extern sensor_port_t LSr;
@@ -136,3 +136,31 @@ extern int fall2;
 
 
 extern int miniDistance;
+
+extern double pGL1;
+extern double dGL1;
+
+extern double pGL2;
+extern double dGL2;
+
+// Constants for vertical line alignment
+extern const double pi;
+extern const double wheelDiameter;
+extern const double wheelCircumferance;
+
+//Distances for main
+extern int miniDistance;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+extern int miniDistanceShort; //rückwärts an Linie herangefahren
+extern int moveBackDistance; //Distanz vor einer Drehung zum Router
+extern int leverDistance;
+extern int leverUpTime;
+extern int longMotorUpSpeed;
+extern int longMotorDownSpeed;
+extern int longMotorDistance;
+extern int spin180;
+
+extern int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
+extern int currentPosition;
+extern int endPosition;
+extern int currentColor;
+extern Stopwatch run;

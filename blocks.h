@@ -22,6 +22,23 @@ using std::endl;
 
 //-----------------------------------------------------------------------------
 
+//Methods
+void start();
+void nationalAnthem();
+void updateLogDatei();
+void positionenScannen();
+void kabelSammeln(bool south);
+void routerScannen(sensor_port_t searchSensor, std::string mode);
+void routerEinsammeln(bool directionEast, bool fromSouth);
+void kabelAbladen();
+void routerAbladen();
+void fallunterscheidung();
+bool direction(int position, int direction, int nPositions);
+int getDistance(int startPosition, int startDirection, int endPosition, int nPositions);
+void router(int &currentPosition, int currentDirection, int &endPosition, int endDirection, bool stop);
+void city(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
+
+
 // SUPPORT BLOCKS
 void motorControl(motor_port_t motor, int speed, int maxSpeed);
 void resetSpeedControl ();
@@ -51,8 +68,8 @@ int measureMotorRight();
 int measureMotorLeft();
 
 // ACTION BLOCKS
-int moveStraight(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double value, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
-int moveStraight(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop);
+int move(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double value, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
+int move(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop);
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);

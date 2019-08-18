@@ -208,7 +208,7 @@ void motorStall(motor_port_t motor, int speed)
 //Add ratio to fulfill arcs
 /* 
 //Bewegungsblock um mit Rotationssensoren geradeaus zu fahren (verschiedene Endbedingungen)
-int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
+int move(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
   bool dec = false; //Soll prinzipiell nicht abbremsen
   double togo = 0;
@@ -271,7 +271,7 @@ int moveStraight(int startSpeed, int maxSpeed, std::string mode, double wert, in
 }
 */
 
-int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
   bool dec = false; //Soll prinzipiell nicht abbremsen
   double togo = 0;
@@ -343,9 +343,9 @@ int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRat
 }
 
 //Geradeaus ohne Farbscan-Option
-int moveStraight(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop)
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop)
 {
-  return moveStraight(startSpeed, maxSpeed, leftRatio, rightRatio, mode, wert, endSpeed, stop, false, HTr, " ");
+  return move(startSpeed, maxSpeed, leftRatio, rightRatio, mode, wert, endSpeed, stop, false, HTr, " ");
 }
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)

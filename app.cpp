@@ -18,7 +18,7 @@
 //Enthält nurnoch die Logik - Die weiteren Untermethoden finden sich in methods.cpp
 void logic()
 {
-    waitForButton();
+    //waitForButton();
     if (routerW[1] == 0) //blau
     {
         routerW[1] = 2;
@@ -460,6 +460,7 @@ void logic()
 
 void test()
 {
+    line2(1,3,pGL2,dGL2,"degree",500,1,true,longMotor,50,"degree",400,true);
     mediumMotor(longMotor, -100, "time", 5000, true);
 }
 
@@ -470,8 +471,8 @@ void main_task(intptr_t unused)
     std::streambuf *coutbuf = cout.rdbuf(); //save old buf
     cout.rdbuf(out.rdbuf());                //redirect cout to out.txt!
     start();
-    test();
-    return;
+    //test();
+    //return;
 
     //Anfang
     move(1, 3, 0.4, 1, "degree", 220, 3, false);

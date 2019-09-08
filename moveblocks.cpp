@@ -516,7 +516,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
   //MediumMotor Option
   StallDetection stall;
-  stall.init(150);
+  stall.init(400);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)
@@ -650,7 +650,7 @@ void mediumMotor(motor_port_t mediumMotor, int mediumMotorSpeed, std::string med
 {
   StallDetection stall;
   Stopwatch move;
-  stall.init(150);
+  stall.init(400);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)

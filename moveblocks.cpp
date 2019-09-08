@@ -185,26 +185,6 @@ void turn2(int startSpeed, int maxSpeed, std::string mode, double wert, int endS
   resetMotors("degree", wert, wert * (-1), maxSpeed);
 }
 
-void motorStall(motor_port_t motor, int speed)
-{
-  bool continueMove = true;
-  int measure;
-  resetMotors();
-  ev3_motor_set_power(motor, speed);
-  tslp_tsk(100);
-  while (continueMove == true)
-  {
-    measure = ev3_motor_get_counts(motor);
-    tslp_tsk(100);
-    if (measure == ev3_motor_get_counts(motor))
-    {
-      continueMove = false;
-      ev3_speaker_play_tone(NOTE_E4, 100);
-    }
-  }
-  ev3_motor_stop(motor, true);
-}
-
 //Add ratio to fulfill arcs
 /* 
 //Bewegungsblock um mit Rotationssensoren geradeaus zu fahren (verschiedene Endbedingungen)

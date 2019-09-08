@@ -2,7 +2,7 @@
 class StallDetection
 {
     int arrayLength = 21;
-    int stall [40];
+    int stall [150];
     int index;
     bool array_full;
 

@@ -33,7 +33,6 @@ bool StallDetection::detectStall()
             //for(int i = 0; i < 20; i++);
                 //cout << stall[i] << " ";
             //cout << endl;
-            ev3_speaker_play_tone(NOTE_C4, 100);
             return true;
         }
 

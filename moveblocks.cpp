@@ -361,7 +361,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
   //MediumMotor Option
   StallDetection stall;
-  stall.init(21);
+  stall.init(150);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)
@@ -406,9 +406,10 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
         continueMediumMotor = move.getTime() < mediumMotorWert;
       }
 
-      if (stall.detectStall())
+      if (stall.detectStall() && move.getTime() > 200)
       {
         continueMediumMotor = false;
+        ev3_speaker_play_tone(NOTE_C4, 100);
       }
 
       ev3_motor_set_power(mediumMotor, mediumMotorSpeed);
@@ -515,7 +516,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
   //MediumMotor Option
   StallDetection stall;
-  stall.init(21);
+  stall.init(150);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)
@@ -560,9 +561,10 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
         continueMediumMotor = move.getTime() < mediumMotorWert;
       }
 
-      if (stall.detectStall())
+      if (stall.detectStall() && move.getTime() > 200)
       {
         continueMediumMotor = false;
+        ev3_speaker_play_tone(NOTE_C4, 100);
       }
 
       ev3_motor_set_power(mediumMotor, mediumMotorSpeed);
@@ -631,7 +633,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
 {
-  return line1(startSpeed, maxSpeed, pGain, dGain, followSensor, rightEdge, mode, wert, endSpeed, stop, colorSearch, searchSensor, searchMode , longMotor, 0, " ", 0, true);
+  return line1(startSpeed, maxSpeed, pGain, dGain, followSensor, rightEdge, mode, wert, endSpeed, stop, colorSearch, searchSensor, searchMode, longMotor, 0, " ", 0, true);
 }
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop)
@@ -648,7 +650,7 @@ void mediumMotor(motor_port_t mediumMotor, int mediumMotorSpeed, std::string med
 {
   StallDetection stall;
   Stopwatch move;
-  stall.init(21);
+  stall.init(150);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)
@@ -669,9 +671,10 @@ void mediumMotor(motor_port_t mediumMotor, int mediumMotorSpeed, std::string med
       continueMediumMotor = move.getTime() < mediumMotorWert;
     }
 
-    if (stall.detectStall())
+    if (stall.detectStall() && move.getTime() > 200)
     {
       continueMediumMotor = false;
+      ev3_speaker_play_tone(NOTE_C4, 100);
     }
 
     ev3_motor_set_power(mediumMotor, mediumMotorSpeed);

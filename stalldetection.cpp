@@ -2,10 +2,15 @@
 #include "blocks.h"
 #include "stalldetection.h"
 
+void StallDetection::init(int length)
+{
+    arrayLength = length;
+}
+
 void StallDetection::measure(int value)
 {
     index++;
-    if(index == 20){
+    if(index == arrayLength - 1){
         index = 0;
         array_full = true;
     }
@@ -19,7 +24,7 @@ bool StallDetection::detectStall()
     int next;
     if (array_full){
         current = stall[index];
-        if (index == 19)
+        if (index == arrayLength - 2)
             next = stall[0];
         else
             next = stall[index+1];
@@ -28,7 +33,7 @@ bool StallDetection::detectStall()
             //for(int i = 0; i < 20; i++);
                 //cout << stall[i] << " ";
             //cout << endl;
-            ev3_speaker_play_tone(NOTE_C4, 500);
+            ev3_speaker_play_tone(NOTE_C4, 100);
             return true;
         }
 

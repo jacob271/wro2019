@@ -576,6 +576,9 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
 void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool stop)
 {
+
+  StallDetection stall;
+  stall.init(21); 
   ev3_motor_reset_counts(motor);
   Stopwatch move;
   bool continueMove = true;
@@ -587,19 +590,16 @@ void mediumMotor(motor_port_t motor, int speed, std::string mode, int wert, bool
 
   while (continueMove)
   {
+    int motorCounts = abs(ev3_motor_get_counts(motor));
+    stall.measure(motorCounts);
+    stall.detectStall();
     if (mode == "degree")
     {
-      continueMove = abs(ev3_motor_get_counts(motor)) < wert;
+      continueMove = motorCounts < wert;
     }
     else
     {
       continueMove = move.getTime() < wert;
-    }
-
-    if (move.getTime() > 2000)
-    {
-      continueMove = false;
-      ev3_speaker_play_tone(NOTE_E4, 200);
     }
 
     ev3_motor_set_power(motor, speed);

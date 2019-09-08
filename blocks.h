@@ -75,6 +75,8 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);
 
+int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);
+int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop);
 void mediumMotor(motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);

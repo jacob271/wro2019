@@ -29,13 +29,13 @@ void updateLogDatei();
 void positionenScannen();
 void kabelSammeln(bool south);
 void routerScannen(sensor_port_t searchSensor, std::string mode);
-void routerEinsammeln(bool directionEast, bool fromSouth);
+void routerEinsammeln(bool directionEast, int mode, bool crossline);
 void kabelAbladen();
 void routerAbladen();
 void fallunterscheidung();
 bool direction(int position, int direction, int nPositions);
 int getDistance(int startPosition, int startDirection, int endPosition, int nPositions);
-void router(int &currentPosition, int currentDirection, int &endPosition, int endDirection, bool stop);
+void router(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
 void city(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
 
 
@@ -158,6 +158,9 @@ extern int longMotorUpSpeed;
 extern int longMotorDownSpeed;
 extern int longMotorDistance;
 extern int spin180;
+extern int spin90;
+extern int turn90;
+extern int goTurn90;
 
 extern int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
 extern int currentPosition;

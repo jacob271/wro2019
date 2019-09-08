@@ -15,11 +15,455 @@
 #define _debug(x)
 #endif
 
+//Enthält nurnoch die Logik - Die weiteren Untermethoden finden sich in methods.cpp
+void logic()
+{
+    waitForButton();
+    if (routerW[1] == 0) //blau
+    {
+        routerW[1] = 2;
+        if (blue == 1 || blue == 4) //drehen
+        {
+            routerEinsammeln(false, 3, true);
+            router(4, 3, 1, 2, true);
+            mediumMotor(longMotor, 60, "degree", 250, true);
+        }
+        else //nicht drehen
+        {
+            move(-1, -3, 1, 1, "degree", 56, -1, true);
+            routerEinsammeln(true, 3, false);
+            turn2(1, 5, "degree", -spin90, 1, true);
+            router(3, 3, 1, 2, true);
+        }
+
+        if (blue == 1 || blue == 3)
+        {
+            router(1, 2, 10, 1, false);
+            city(2, 1, -2, 2, false);
+            routerAbladen();
+            city(-2, 2, -3, 2, true);
+        }
+        else
+        {
+            line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+            line1(3, 3, pGL1, dGL1, LSr, true, "degree", 150, 3, false);
+            city(1, 2, -1, 1, true);
+            routerAbladen();
+            city(-1, 1, -3, 2, true);
+        }
+        kabelAbladen();
+
+        //rot
+        if (routerO[1] == 0 && (red == 3 || red == 4))
+        {
+            turn2(1, 5, "degree", spin180, 1, true);
+            routerEinsammeln(true, 6, false); //todo
+            routerO[1] = 2;
+            turn2(1, 5, "degree", spin90, 1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 150, 3, false); //todo
+            if (red == 3)
+            {
+                city(4, 1, -4, 2, false);
+                routerAbladen();
+                city(-4, 2, 6, 4, true);
+            }
+            else
+            {
+                city(4, 1, -5, 3, true);
+                routerAbladen();
+                city(-5, 3, 6, 4, false);
+            }
+        }
+        else if (routerO[2] == 0 && (red == 3 || red == 4))
+        {
+            city(-3, 2, 4, 1, false);
+            routerEinsammeln(true, 3, true);
+            if (red == 3)
+            {
+                turn2(1, 5, "degree", spin180, 1, true);
+                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false);
+                routerAbladen();
+                city(-4, 2, 6, 4, true);
+            }
+            else
+            {
+                turn2(1, 5, "degree", spin90, 1, true);
+                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false); //todo
+                city(5, 1, -5, 3, true);
+                routerAbladen();
+                city(-5, 3, 6, 4, false);
+            }
+        }
+        else if (routerO[2] == 0)
+        {
+            city(-3, 2, 4, 1, true);
+            routerEinsammeln(false, 1, true);
+            if (red == 1)
+            {
+                city(4, 1, -4, 2, true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+                routerAbladen();
+                city(-4, 2, 6, 4, true);
+            }
+            else
+            {
+                city(4, 1, 5, 1, true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+                city(5, 1, -5, 3, true);
+                routerAbladen();
+                city(-5, 3, 6, 4, false);
+            }
+        }
+        else
+        {
+            city(-3, 2, 3, 3, true);
+            routerEinsammeln(false, 4, true);
+            city(3, 1, 4, 1, true);
+            mediumMotor(longMotor, 60, "degree", 250, true);
+            if (red == 1)
+            {
+                city(4, 1, -4, 2, false);
+                routerAbladen();
+                city(-4, 2, 6, 4, true);
+            }
+            else
+            {
+                city(4, 1, -5, 3, false);
+                routerAbladen();
+                city(-5, 3, 6, 4, true);
+            }
+        }
+        line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+        line1(3, 3, pGL1, dGL1, LSr, true, "degree", 150, 3, false); //todo
+    }
+    else //rot
+    {
+        routerW[2] = 2;
+        if (red == 1 || red == 2) //drehen
+        {
+            routerEinsammeln(false, 1, true);
+            router(4, 1, 6, 2, true);
+            mediumMotor(longMotor, 60, "degree", 250, true);
+        }
+        else //nicht drehen
+        {
+            routerEinsammeln(true, 3, true);
+            turn2(1, 5, "degree", spin90, 1, true);
+            router(5, 1, 6, 2, true);
+        }
+
+        if (red == 1 || red == 3)
+        {
+            router(6, 2, 7, 3, false);
+            city(5, 3, -4, 2, false);
+            routerAbladen();
+            city(-4, 2, -3, 2, true);
+        }
+        else
+        {
+            line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+            line1(3, 3, pGL1, dGL1, LSl, false, "degree", 150, 3, false);
+            city(6, 2, -5, 3, true);
+            routerAbladen();
+            city(-5, 3, -3, 2, true);
+        }
+        kabelAbladen();
+
+        //blau
+
+        if (routerO[1] == 0 && (blue == 3 || blue == 2))
+        {
+            turn2(1, 5, "degree", spin180, 1, true);
+            routerEinsammeln(true, 6, false); //todo
+            routerO[1] = 2;
+            turn2(1, 5, "degree", -spin90, 1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 150, 3, false); //todo
+            if (blue == 3)
+            {
+                city(3, 3, -2, 2, false);
+                routerAbladen();
+                city(-2, 2, 5, 1, false);
+            }
+            else
+            {
+                city(3, 3, -1, 1, true);
+                routerAbladen();
+                city(-1, 1, 5, 1, false);
+            }
+        }
+        else if (routerO[0] == 0 && (blue == 3 || blue == 2))
+        {
+            city(-3, 2, 3, 3, false);
+            routerEinsammeln(true, 1, true);
+            if (blue == 3)
+            {
+                turn2(1, 5, "degree", spin180, 1, true);
+                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false);
+                routerAbladen();
+                city(-2, 2, 5, 1, false);
+            }
+            else
+            {
+                turn2(1, 5, "degree", -spin90, 1, true);
+                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false); //todo
+                city(2, 3, -1, 1, true);
+                routerAbladen();
+                city(-1, 1, 5, 1, false);
+            }
+        }
+        else if (routerO[0] == 0)
+        {
+            city(-3, 2, 3, 3, true);
+            routerEinsammeln(false, 2, true);
+            if (blue == 1)
+            {
+                city(3, 3, -2, 2, true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+                routerAbladen();
+                city(-2, 2, 5, 1, false);
+            }
+            else
+            {
+                city(3, 3, 2, 3, true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+                city(2, 3, - 1, 1, true);
+                routerAbladen();
+                city(-1, 1, 5, 1, false);
+            }
+        }
+        else
+        {
+            city(-3, 2, 4, 1, true);
+            routerEinsammeln(false, 3, true);
+            city(4, 1, 3, 1, true);
+            mediumMotor(longMotor, 60, "degree", 250, true);
+            if (blue == 1)
+            {
+                city(3, 1, -2, 2, false);
+                routerAbladen();
+                city(-2, 2, 5, 1, false);
+            }
+            else
+            {
+                city(3, 1, -1, 1, false);
+                routerAbladen();
+                city(-1, 1, 5, 1, false);
+            }
+        }
+        turn1(motor_right, 3, true, 3, "degree", goTurn90, 3, false);
+    }
+    kabelSammeln(false);
+    turn2(1, 5, "degree", -spin90, 1, true);
+    bool greenFirst = true; // green == true
+    if (routerW[2] == 0)
+    {
+        if (green == 3 || green == 2)
+        {
+            router(5, 3, 4, 3, true);
+            routerEinsammeln(false, 4, true);
+            router(4, 1, 6, 2, true);
+            mediumMotor(longMotor, 60, "degree", 250, true);
+        }
+        else
+        {
+            routerEinsammeln(true, 1, true);
+            turn2(1, 5, "degree", spin90, 1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 200, 3, false); //todo
+            router(5, 1, 6, 2, false);
+        }
+        line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+        line1(3, 3, pGL1, dGL1, LSl, false, "degree", 150, 3, false);
+        if (green == 4 || green == 2)
+        {
+            city(6, 2, -7, 3, true);
+            routerAbladen();
+            city(-7, 3, -9, 4, false);
+        }
+        else
+        {
+            city(6, 2, -8, 4, true);
+            routerAbladen();
+            city(-8, 4, -9, 4, false);
+        }
+    }
+    else{
+        greenFirst = false;
+        if (yellow == 3 || yellow == 4)
+        {
+            router(5, 3, 3, 3, true);
+            routerEinsammeln(false, 2, true);
+            router(3, 3, 1, 2, true);
+            mediumMotor(longMotor, 60, "degree", 250, true);
+        }
+        else
+        {
+            router(5,3,3,3,false);
+            routerEinsammeln(true, 1, true);
+            turn2(1, 5, "degree", -spin90, 1, true);
+            line2(1, 3, pGL2, dGL2, "degree", 200, 3, false); //todo
+            router(2, 3, 1, 2, false);
+        }
+        line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+        line1(3, 3, pGL1, dGL1, LSr, true, "degree", 150, 3, false);
+        if (yellow == 4 || yellow == 2)
+        {
+            city(1, 2, -11, 1, true);
+            routerAbladen();
+            city(-11, 1, -9, 4, false);
+        }
+        else
+        {
+            city(1, 2, -10, 4, true);
+            routerAbladen();
+            city(-10, 4, -9, 4, false);
+        }
+        
+    }
+    kabelAbladen();
+    
+    if(greenFirst == true)
+    {
+        if(yellow == 2 || yellow == 1)//nicht drehen
+        {
+            if(routerO[2] == 0)
+            {
+                city(-9,4,5,3,false);
+                routerEinsammeln(true,1,true);
+                turn2(1,5,"degree",-spin90,1,true);
+                city(4,3, 15,2,false);                
+            }
+            else if(routerO[1] ==0)
+            {
+                city(-9,4,4,3,false);
+                routerEinsammeln(true,1,true);
+                turn2(1,5,"degree",-spin90,1,true);
+                city(3,3, 15,2,false);  
+            }
+            else
+            {
+                city(-9,4,3,3,false);
+                routerEinsammeln(true,1,true);
+                turn2(1,5,"degree",-spin90,1,true);
+                line2(1,3,pGL2,dGL2,"degree",200,1,false);//todo
+                city(2,3, 15,2,false);  
+            }           
+        }
+        else//drehen
+        {
+            if(routerO[2] == 0)
+            {
+                city(-9,4,5,3,false);
+                line2(1,3,pGL2,dGL2,"degree",50,1,true);//todo
+                routerEinsammeln(false,2,true);
+                city(5,3, 1,2,true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+            }
+            else if(routerO[1] == 0)
+            {
+                city(-9,4,4,3,false);
+                routerEinsammeln(false,2,true);
+                city(4,3, 1,2,true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+            }
+            else
+            {
+                city(-9,4,3,3,false);
+                routerEinsammeln(false,2,true);
+                city(3,3, 1,2,true);
+                mediumMotor(longMotor, 60, "degree", 250, true); 
+            }          
+            city(1,2,15,2,false); 
+        }
+        if(yellow == 4 || yellow == 2)
+        {
+            city(15,2,-11,1,true);
+            routerAbladen();
+            city(-11,1,14,2,false);
+        }
+        else
+        {
+            city(15,2,-1,4,true);
+            routerAbladen();
+            city(-1,4,14,2,true);
+        }
+        //-> base
+    }
+    else
+    {
+        //green
+        if(green == 4 || green == 1)//nicht drehen
+        {
+            if(routerO[2] == 0)
+            {
+                city(-9,4,4,1,false);
+                routerEinsammeln(true,3,true);
+                turn2(1,5,"degree",spin90,1,true);
+                line2(1,3,pGL2,dGL2,"degree",200,1,false);//todo
+                city(5,1, 15,2,false);                
+            }
+            else if(routerO[1] ==0)
+            {
+                city(-9,4,3,1,false);
+                routerEinsammeln(true,3,true);
+                turn2(1,5,"degree",spin90,1,true);
+                city(4,1, 15,2,false); 
+            }
+            else
+            {
+                city(-9,4,2,1,false);
+                routerEinsammeln(true,3,true);
+                turn2(1,5,"degree",spin90,1,true);
+                city(3,1, 15,2,false);  
+            }           
+        }
+        else//drehen
+        {
+            if(routerO[2] == 0)
+            {
+                city(-9,4,4,1,false);                
+                routerEinsammeln(false,1,true);
+                city(4,1,6,2,true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+            }
+            else if(routerO[1] == 0)
+            {
+                city(-9,4,3,1,false);                
+                routerEinsammeln(false,1,true);
+                city(3,1,6,2,true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+            }
+            else
+            {
+                city(-9,4,2,1,false);
+                line2(1,3,pGL2,dGL2,"degree",50,1,true);//todo                                
+                routerEinsammeln(false,1,true);
+                city(2,1,6,2,true);
+                mediumMotor(longMotor, 60, "degree", 250, true);
+            }          
+            city(6,2,8,2,false); 
+        }
+        if(green == 4 || green == 2)
+        {
+            city(8,2,-7,3,true);
+            routerAbladen();
+            city(-7,3,13,3,false);
+        }
+        else
+        {
+            city(8,2,-8,4,true);
+            routerAbladen();
+            city(-8,4,13,3,true);
+        }
+        //-> base
+    }
+
+}
+
 void test()
 {
-    line2(1,3,pGL2,dGL2,"degree",400,3,false);
-    move(3,3,1,0.42,"degree",800,3,false);
-    move(3,3,1,1,"degree",500,1,true);   
+    line2(1, 3, pGL2, dGL2, "degree", 400, 3, false);
+    move(3, 3, 1, 0.42, "degree", 800, 3, false);
+    move(3, 3, 1, 1, "degree", 500, 1, true);
     start();
 }
 
@@ -30,28 +474,26 @@ void main_task(intptr_t unused)
     std::streambuf *coutbuf = cout.rdbuf(); //save old buf
     cout.rdbuf(out.rdbuf());                //redirect cout to out.txt!
     start();
-    //Stopwatch run;
-    tslp_tsk(200);
     //test();
     //return;
-    move(1,3,0.4,1,"degree",220,3,false);
-    move(cSpeed,3,1,0.4,"degree",205,3,false);
-    move(3,3,1,1,"degree",80,3,false);
+
+    //Anfang
+    move(1, 3, 0.4, 1, "degree", 220, 3, false);
+    move(cSpeed, 3, 1, 0.4, "degree", 205, 3, false);
+    move(3, 3, 1, 1, "degree", 80, 3, false);
     positionenScannen();
-    city(9,4,5,3,false);
-    routerScannen(HTr,"routerO");
-    turn1(motor_left,3,true,3,"degree",490,3,false);
-    line2(3,3,pGL2,dGL2,"degree",100,3,false);
-    move(3,4,1,0.57,"degree",320,4,false);
-    move(4,4,0.57,1,"degree",310,4,false);
-    line2(4,4,pGL2,dGL2,"degree",250,2,false);
-    move(2,2,1,1,"degree",60,1,true);
-    mediumMotor(doubleLever, 70,"degree",leverDistance,true);
-    move(-1,-3,1,1,"degree",270,1,true);
-    turn2(1,5,"degree",240,1,true);
-    line2(1,3,pGL2,dGL2,"degree",100,3,false);
-    routerScannen(HTl,"routerW");
-    
+    city(9, 4, 5, 3, false);
+    routerScannen(HTr, "routerO");
+    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
+    kabelSammeln(true);
+    turn2(1, 5, "degree", 240, 1, true);
+    line2(1, 3, pGL2, dGL2, "degree", 100, 3, false);
+    routerScannen(HTl, "routerW");
+    fallunterscheidung();
+    //Anfang Ende
+
+    logic();
+
     int neededTime = run.getTime();
 
     //int neededTime = run.getTime();

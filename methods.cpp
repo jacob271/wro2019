@@ -42,13 +42,10 @@ void start() //Konfiguration für den Start
     cout << "6 " << speedLevel(6) << endl;
     display(batteryLevel);
 
-    //Berechnet minSpeed mit batteryVoltage
-    //speedLevel1 = (int)(25 - (batteryVoltage - 7500) * (16 / 1000));
-    //cout << "speedLevel1: " << speedLevel1 << endl;
-
     waitForButton();
-    run.reset();
     resetMotors();
+    tslp_tsk(200);
+    run.reset();
 }
 
 void nationalAnthem()
@@ -175,6 +172,7 @@ void nationalAnthem()
 
 void updateLogDatei()
 {
+    //todo - Überarbeiten oder rausschmeißen
     cout << "-" << endl;
     cout << "time " << run.getTime() << endl;
     cout << "fall1 " << fall1 << " fall2 " << fall2 << endl;
@@ -186,21 +184,36 @@ void updateLogDatei()
 
 void positionenScannen()
 {
-    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 155, 90, false);
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 335, 90, false);
     for (int i = 0; i < 3; i++)
     {
+        ev3_speaker_play_tone(NOTE_F4, 50);  
         positions[i] = line1(cSpeed, 90, pGL1, dGL1 * 0.6, LSr, false, "degree", 147, 60, false, true, HTr, "color");
     }
     positions[3] = findColor(positions, "positions");
-    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 480, 3, false);
-    turn1(motor_right, 3,true,3,"degree",490,3,false);
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 300, 3, false);
+    turn1(motor_right, 3, true, 3, "degree", goTurn90, 3, false);
     line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 620, 3, false);
 }
 
-//todo
 void kabelSammeln(bool south)
 {
+    line2(3, 3, pGL2, dGL2, "degree", 100, 3, false);
+    if (south)
+    {
 
+        move(3, 4, 1, 0.57, "degree", 320, 4, false);
+        move(4, 4, 0.57, 1, "degree", 310, 4, false);
+    }
+    else
+    {
+        move(3, 4, 0.57, 1, "degree", 320, 4, false);
+        move(4, 4, 1, 0.57, "degree", 310, 4, false);
+    }
+    line2(4, 4, pGL2, dGL2, "degree", 250, 2, false);
+    move(2, 2, 1, 1, "degree", 60, 1, true);
+    mediumMotor(doubleLever, 70, "degree", leverDistance, true);
+    move(-1, -3, 1, 1, "degree", 270, 1, true);
 }
 
 void routerScannen(sensor_port_t searchSensor, std::string mode)
@@ -208,17 +221,20 @@ void routerScannen(sensor_port_t searchSensor, std::string mode)
     //direkt nach der Drehung
     int router[3] = {0};
     int i = 0;
-    router[i] = line2(cSpeed, 3, pGL2, dGL2 * 0.6, "degree", 349, 4, false, true, searchSensor, "bw");
+    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
+    router[i] = line2(cSpeed, 3, pGL2, dGL2 * 0.6, "degree", 280, 3, false, true, searchSensor, "bw");
+    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
     i++;
     if (mode == "routerO")
     {
-        router[i] = line2(cSpeed, 4, pGL2, dGL2 * 0.6, "degree", 349, 3, false, true, searchSensor, "bw");
-        line2(cSpeed, 3, pGL2, dGL2, "degree", 435, 3, false);
+        router[i] = line2(cSpeed, 4, pGL2, dGL2 * 0.6, "degree", 320, 3, false, true, searchSensor, "bw");
+        line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
+        line2(cSpeed, 3, pGL2, dGL2, "degree", 340, 3, false);
         //crossline(cSpeed, 1);
     }
     else
     {
-        router[i] = line2(cSpeed, 3, pGL2, dGL2 * 0.6, "degree", 349, 1, true, true, searchSensor, "bw");
+        router[i] = line2(cSpeed, 3, pGL2, dGL2 * 0.6, "degree", 296, 1, true, true, searchSensor, "bw");
     }
     i++;
     router[i] = findColor(router, "router");
@@ -239,35 +255,51 @@ void routerScannen(sensor_port_t searchSensor, std::string mode)
     }
 }
 
-void routerEinsammeln(bool directionEast, bool fromSouth)
+void routerEinsammeln(bool directionEast, int mode, bool crossline)
 {
     if (directionEast == true)
     {
         motor_port_t turnMotor = motor_right;
-        if (fromSouth == true)
+        if (mode == 3)
         {
             turnMotor = motor_left;
-        }
-        line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
-        line2(cSpeed, 4, pGL2, dGL2, "degree", 250, 1, true);
-        turn1(turnMotor, -1, false, -4, "degree", 435, -1, true);
+        }   
+        if (crossline)
+        {
+            line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
+            line2(cSpeed, 4, pGL2, dGL2, "degree", 250, 1, true);
+        }       
+        turn1(turnMotor, -1, false, -4, "degree", turn90, -1, true);
         mediumMotor(longMotor, -100, "degree", 210, true);
-        line2(1, 4, pGL2, dGL2, "degree", 200, 1, true);
-        mediumMotor(longMotor, 60, "degree", 250, true);
+        line2(1, 2, pGL2, dGL2, "degree", 250, 1, true);
+        mediumMotor(longMotor, 60, "degree", 220, true);
+        move(-1,-3,1,1,"degree",95,-1,true);
     }
     else
     {
-        if (fromSouth == true)
+        if (mode == 1)
         {
-            turn2(1, 5, "degree", -240, 1, true);
+            turn2(1, 5, "degree", -spin90, 1, true);
             mediumMotor(longMotor, -100, "degree", 210, true);
-            turn2(1, 5, "degree", 240, 1, true);
+            turn2(1, 5, "degree", spin90, 1, true);
         }
-        else
+        else if (mode == 2)
         {
-            turn2(1, 5, "degree", 240, 1, true);
+            turn2(1, 5, "degree", spin90, 1, true);
             mediumMotor(longMotor, -100, "degree", 210, true);
-            turn2(1, 5, "degree", -240, 1, true);
+            turn2(1, 5, "degree", -spin90, 1, true);
+        }
+        else if (mode == 3)
+        {
+            turn2(1, 5, "degree", -spin90, 1, true);
+            mediumMotor(longMotor, -100, "degree", 210, true);
+            turn2(1, 5, "degree", -spin90, 1, true);
+        }
+        else if (mode == 4)
+        {
+            turn2(1, 5, "degree", spin90, 1, true);
+            mediumMotor(longMotor, -100, "degree", 210, true);
+            turn2(1, 5, "degree", spin90, 1, true);
         }
     }
 }
@@ -290,12 +322,11 @@ void routerAbladen()
     mediumMotor(longMotor, -30, "degree", 230, true);
     waitForButton();
     move(-1, -3, 1, 1, "degree", 350, -1, true);
-    turn2(1, 5, "degree", 480, 1, true);
+    turn2(1, 5, "degree", spin180, 1, true);
 }
 
 void fallunterscheidung()
 {
-
     //Schreibt Werte aus Positionsarray in passende Variablen
     for (int i = 0; i < 4; i++)
     {
@@ -317,16 +348,6 @@ void fallunterscheidung()
             break;
         }
     }
-
-    int tempred = red;
-    int tempblue = blue;
-    int tempgreen = green;
-    int tempyellow = yellow;
-
-    red = tempyellow;
-    blue = tempgreen;
-    yellow = tempred;
-    green = tempblue;
 
     //Weist den Kombinationen die passenden Fälle zu
     if ((blue == 4 && red == 1 && green == 2 && yellow == 3) || (blue == 1 && red == 2 && green == 3 && yellow == 4))
@@ -502,7 +523,7 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
 }
 
 //Der Roboter kann anhand der Start- und Endposition auf dem Router-Kreis den kürzesten Weg erkennen und fährt diesen anschließend
-void router(int &currentPosition, int currentDirection, int &endPosition, int endDirection, bool stop)
+void router(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop)
 {
     //1 = kurze Seite im Süden, dann im Uhrezeigersinn
     cout << "Enter Router-Kreis at: " << currentPosition << " " << currentDirection << endl;
@@ -527,7 +548,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
     //Dreht den Roboter gegebenenfalls in Fahrtrichtung
     if (direction(currentPosition, currentDirection, 10) != driveDirection)
     {
-        turn2(1, 5, "degree", 480, 1, true);
+        turn2(1, 5, "degree", spin180, 1, true);
     }
 
     //übernimmt Fahrtgeschwindigkeit oder setzt Startspeed
@@ -535,8 +556,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
         cSpeed = 1;
 
     //Strecken
-    int toMiddle = 310;      //Von Crossline bis der Roboter zwischen den Linien steht
-    int degT1continue = 495; //Strecke für 90 Grad turn1 ohne abbremsen
+    int toMiddle = 310; //Von Crossline bis der Roboter zwischen den Linien steht
     motor_port_t turnMotor;
 
     int endSpeed;
@@ -572,7 +592,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
                 case 1:
                 case 6:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 145, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, endSpeed, stopNow);
+                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, endSpeed, stopNow);
                     break;
                 case 2:
                 case 3:
@@ -585,8 +605,8 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
                     break;
                 case 5:
                 case 10:
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 60, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                     line2(1, 3, pGL2, dGL2, "degree", 205, endSpeed, stopNow);
                     break;
                 default:
@@ -624,7 +644,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
                 case 1:
                 case 6:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 145, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, endSpeed, stopNow);
+                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, endSpeed, stopNow);
                     break;
                 case 10:
                 case 9:
@@ -637,8 +657,8 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
                     break;
                 case 2:
                 case 7:
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 60, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
+                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                     line2(1, 3, pGL2, dGL2, "degree", 205, endSpeed, stopNow);
                     break;
                 default:
@@ -653,7 +673,7 @@ void router(int &currentPosition, int currentDirection, int &endPosition, int en
     //Dreht am Ende, falls die Orientierung noch nicht übereinstimmt
     if (direction(endPosition, endDirection, 10) != driveDirection)
     {
-        turn2(1, 5, "degree", 480, 1, true);
+        turn2(1, 5, "degree", spin180, 1, true);
     }
 
     cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << endl;
@@ -663,6 +683,10 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
 {
     //1 = westlichste Seite im Süden, dann im Uhrzeigersinn
     cout << "Enter City-Kreis at: " << currentPosition << " " << currentDirection << endl;
+
+    motor_port_t turnMotor;
+    int endSpeed;
+    bool stopNow;
 
     //Alle Anfahrmöglichkeiten des inneren City-Kreises gespeichert
     int cityPositionsIn[13][7] = {{0},
@@ -761,14 +785,14 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             {
             case -2:
             case -8:
-                turn1(motor_left, cSpeed, true, -4, "degree", 503, -1, true);
-                turn1(motor_right, cSpeed, false, -4, "degree", 512, -1, true);
+                turn1(motor_left, cSpeed, true, -3, "degree", 503, -1, true);
+                turn1(motor_right, cSpeed, false, -3, "degree", 512, -1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
                 break;
             case -4:
             case -10:
-                turn1(motor_right, cSpeed, true, -4, "degree", 503, -1, true);
-                turn1(motor_left, cSpeed, false, -4, "degree", 512, -1, true);
+                turn1(motor_right, cSpeed, true, -3, "degree", 503, -1, true);
+                turn1(motor_left, cSpeed, false, -3, "degree", 512, -1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
                 break;
             }
@@ -894,15 +918,11 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         cout << "driveDirection: " << driveDirection << endl;
 
         //Strecken
-        int toMiddle = 310;      //Von Crossline bis der Roboter zwischen den Linien steht
-        int degT1continue = 495; //Strecke für 90 Grad turn1 ohne abbremsen
-        motor_port_t turnMotor;
-
-        int endSpeed;
-        bool stopNow;
+        int toMiddle = 310; //Von Crossline bis der Roboter zwischen den Linien steht
 
         if (startTemp != currentPosition && currentPosition < 0)
         {
+            //Fährt von innerem Kreis auf startTemp (eventuell gleichzeitig endPosition)
             endSpeed = 3;
             stopNow = false;
             if (startTemp == endPosition && stop == true)
@@ -918,13 +938,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 {
                 case 1:
                 case 9:
-                    turn2(1, 5, "degree", -240, 1, true);
+                    turn2(1, 5, "degree", -spin90, 1, true);
                     line2(1, 3, dGL2, pGL2, "degree", 340, endSpeed, stopNow);
                     driveDirection = true;
                     break;
                 case 16:
                 case 8:
-                    turn2(1, 5, "degree", 240, 1, true);
+                    turn2(1, 5, "degree", spin90, 1, true);
                     line2(1, 3, dGL2, pGL2, "degree", 248, endSpeed, stopNow);
                     driveDirection = false;
                     break;
@@ -936,13 +956,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 {
                 case 6:
                 case 14:
-                    turn2(1, 5, "degree", 240, 1, true);
+                    turn2(1, 5, "degree", spin90, 1, true);
                     line2(1, 3, dGL2, pGL2, "degree", 340, endSpeed, stopNow);
                     driveDirection = false;
                     break;
                 case 7:
                 case 15:
-                    turn2(1, 5, "degree", -240, 1, true);
+                    turn2(1, 5, "degree", -spin90, 1, true);
                     line2(1, 3, dGL2, pGL2, "degree", 248, endSpeed, stopNow);
                     driveDirection = true;
                     break;
@@ -954,12 +974,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 {
                 case 15:
                 case 7:
-                    turn2(1, 5, "degree", 240, 1, true);
+                    turn2(1, 5, "degree", spin90, 1, true);
                     driveDirection = false;
                     break;
                 case 16:
                 case 8:
-                    turn2(1, 5, "degree", -240, 1, true);
+                    turn2(1, 5, "degree", -spin90, 1, true);
                     driveDirection = true;
                     break;
                 }
@@ -978,9 +998,9 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     }
                     else
                     {
-                        turn2(1, 5, "degree", -240, 1, true);
+                        turn2(1, 5, "degree", -spin90, 1, true);
                         move(-1, -3, 1, 1, "degree", 225, -3, false);
-                        turn1(motor_right, -3, true, -3, "degree", 525, -1, true);
+                        turn1(motor_right, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = false;
                     }
                     break;
@@ -989,13 +1009,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     if (startTemp == endPosition && ((endDirection == 1 && startTemp == 2) || (endDirection == 3 && startTemp == 10)))
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_left, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = true;
                     }
                     else
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_right, -3, true, -3, "degree", goTurn90, -1, true);
                         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                         line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
                         driveDirection = false;
@@ -1006,13 +1026,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     if (startTemp == endPosition && ((endDirection == 1 && startTemp == 3) || (endDirection == 3 && startTemp == 11)))
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_right, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = true;
                     }
                     else
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_left, -3, true, -3, "degree", goTurn90, -1, true);
                         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                         line2(3, 3, pGL2, dGL2, "degree", 248, endSpeed, stopNow);
                         driveDirection = false;
@@ -1033,9 +1053,9 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     }
                     else
                     {
-                        turn2(1, 5, "degree", 240, 1, true);
+                        turn2(1, 5, "degree", spin90, 1, true);
                         move(-1, -3, 1, 1, "degree", 225, -3, false);
-                        turn1(motor_left, -3, true, -3, "degree", 525, -1, true);
+                        turn1(motor_left, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = true;
                     }
                     break;
@@ -1044,13 +1064,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     if (startTemp == endPosition && ((endDirection == 1 && startTemp == 13) || (endDirection == 3 && startTemp == 5)))
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_right, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = false;
                     }
                     else
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_left, -3, true, -3, "degree", goTurn90, -1, true);
                         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                         line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
                         driveDirection = true;
@@ -1061,13 +1081,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     if (startTemp == endPosition && ((endDirection == 1 && startTemp == 4) || (endDirection == 3 && startTemp == 12)))
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_left, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = true;
                     }
                     else
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_right, -3, true, -3, "degree", goTurn90, -1, true);
                         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                         line2(3, 3, pGL2, dGL2, "degree", 248, endSpeed, stopNow);
                         driveDirection = false;
@@ -1084,13 +1104,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     if (startTemp == endPosition && ((endDirection == 1 && startTemp == 12) || (endDirection == 3 && startTemp == 4)))
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_right, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = false;
                     }
                     else
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_left, -3, true, -3, "degree", goTurn90, -1, true);
                         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                         line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
                         driveDirection = true;
@@ -1101,13 +1121,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     if (startTemp == endPosition && ((endDirection == 1 && startTemp == 3) || (endDirection == 3 && startTemp == 11)))
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_left, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_left, -3, true, -3, "degree", goTurn90, -1, true);
                         driveDirection = true;
                     }
                     else
                     {
                         move(-1, -3, 1, 1, "degree", 120, 3, false);
-                        turn1(motor_right, -3, true, -3, "degree", 490, -1, true);
+                        turn1(motor_right, -3, true, -3, "degree", goTurn90, -1, true);
                         line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                         line2(3, 3, pGL2, dGL2, "degree", 340, endSpeed, stopNow);
                         driveDirection = false;
@@ -1159,7 +1179,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             //Dreht den Roboter gegebenenfalls in Fahrtrichtung
             if (direction(currentPosition, currentDirection, 16) != driveDirection)
             {
-                turn2(1, 5, "degree", 480, 1, true);
+                turn2(1, 5, "degree", spin180, 1, true);
                 cout << "turn into driveDirection" << endl;
             }
         }
@@ -1199,7 +1219,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     case 1:
                     case 9:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 125, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 60, endSpeed, stopNow);
                         break;
                     case 2:
@@ -1216,12 +1236,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         break;
                     case 13:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 10, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                         line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
                         break;
                     case 5:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                         line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
                         break;
                     case 6:
@@ -1276,12 +1296,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         break;
                     case 2:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                         line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
                         break;
                     case 10:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 10, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                         line2(1, 3, pGL2, dGL2, "degree", 195, endSpeed, stopNow);
                         break;
                     case 3:
@@ -1293,7 +1313,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     case 6:
                     case 14:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 160, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", degT1continue, 3, false);
+                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 60, endSpeed, stopNow);
                         break;
                     case 7:
@@ -1331,11 +1351,11 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 line2(cSpeed, 3, dGL2, pGL2, "degree", miniDistance, 1, true);
                 if (driveDirection == true)
                 {
-                    turn2(1, 5, "degree", 240, 1, true);
+                    turn2(1, 5, "degree", spin90, 1, true);
                 }
                 else
                 {
-                    turn2(1, 5, "degree", -240, 1, true);
+                    turn2(1, 5, "degree", -spin90, 1, true);
                 }
                 break;
             case -2:
@@ -1345,12 +1365,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 case 2:
                 case 10:
                     move(cSpeed, 3, 1, 1, "degree", 20, 3, false);
-                    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
+                    turn1(motor_left, 3, true, 3, "degree", goTurn90, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", 120, 1, true);
                     break;
                 case 3:
                 case 11:
-                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
+                    turn1(motor_right, 3, true, 3, "degree", goTurn90, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", 120, 1, true);
                     break;
                 case 9:
@@ -1366,12 +1386,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 {
                 case 12:
                 case 4:
-                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
+                    turn1(motor_right, 3, true, 3, "degree", goTurn90, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", 120, 1, true);
                     break;
                 case 3:
                 case 11:
-                    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
+                    turn1(motor_left, 3, true, 3, "degree", goTurn90, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", 120, 1, true);
                     break;
                 case 9:
@@ -1390,14 +1410,14 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 case 12:
                     line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                     line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
-                    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
+                    turn1(motor_left, 3, true, 3, "degree", goTurn90, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", 120, 1, true);
                     break;
                 case 5:
                 case 13:
                     line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
                     line2(3, 3, pGL2, dGL2, "degree", miniDistance, 1, true);
-                    turn1(motor_right, 3, true, 3, "degree", 490, 3, false);
+                    turn1(motor_right, 3, true, 3, "degree", goTurn90, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", 120, 1, true);
                     break;
                 case 6:
@@ -1413,7 +1433,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             //Dreht am Ende, falls die Orientierung noch nicht übereinstimmt
             if (direction(endPosition, endDirection, 16) != driveDirection)
             {
-                turn2(1, 5, "degree", 480, 1, true);
+                turn2(1, 5, "degree", spin180, 1, true);
                 cout << "turn to endPosition" << endl;
             }
         }

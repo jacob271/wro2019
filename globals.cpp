@@ -1,4 +1,5 @@
 #include "blocks.h"
+
 //Ports
 //Motoren von links (A) nach rechts (D)
 motor_port_t motor_left = EV3_PORT_A;
@@ -52,12 +53,15 @@ const double wheelCircumferance = 17.6;
 int miniDistance = 50;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
 int miniDistanceShort = 40; //rückwärts an Linie herangefahren
 int moveBackDistance = 193; //Distanz vor einer Drehung zum Router
-int leverDistance = 230;
+int leverDistance = 180;
 int leverUpTime = 400;
 int longMotorUpSpeed = 75;
 int longMotorDownSpeed = -80;
 int longMotorDistance = 310;
 int spin180 = 480;
+int spin90 =240;
+int turn90 = 470;//435
+int goTurn90 = 490;
 
 //Values for Line1
 int LSrMiddle = (92 + 9) / 2;

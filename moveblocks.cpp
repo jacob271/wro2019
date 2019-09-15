@@ -361,13 +361,14 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
   //MediumMotor Option
   StallDetection stall;
-  stall.init(150);
+  stall.init(100);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)
   {
     mediumMotorSpeed = mediumMotorSpeed * (-1);
   }
+  int stallCounter = 0;
 
   int counter = 0;
   while (continueMove)
@@ -393,10 +394,14 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
       }
     }
 
-    if (continueMediumMotor)
+    if (continueMediumMotor && abs(mediumMotorSpeed) > 0)
     {
       int motorCounts = abs(ev3_motor_get_counts(mediumMotor));
-      stall.measure(motorCounts);
+      stallCounter++;
+      if (stallCounter == 10){
+        stallCounter = 0;
+        stall.measure(motorCounts);
+      }
       if (mediumMotorMode == "degree")
       {
         continueMediumMotor = motorCounts < mediumMotorWert;
@@ -516,13 +521,14 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
   //MediumMotor Option
   StallDetection stall;
-  stall.init(400);
+  stall.init(100);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)
   {
     mediumMotorSpeed = mediumMotorSpeed * (-1);
   }
+  int stallCounter = 0;
 
   int counter = 0;
   while (continueMove)
@@ -548,10 +554,15 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       }
     }
 
-    if (continueMediumMotor)
+    if (continueMediumMotor && abs(mediumMotorSpeed) > 0)
     {
       int motorCounts = abs(ev3_motor_get_counts(mediumMotor));
-      stall.measure(motorCounts);
+      stallCounter++;
+      if (stallCounter == 10){
+        stallCounter = 0;
+        stall.measure(motorCounts);
+      }
+       
       if (mediumMotorMode == "degree")
       {
         continueMediumMotor = motorCounts < mediumMotorWert;
@@ -650,18 +661,25 @@ void mediumMotor(motor_port_t mediumMotor, int mediumMotorSpeed, std::string med
 {
   StallDetection stall;
   Stopwatch move;
-  stall.init(400);
+  stall.init(100);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
   if (mediumMotor == longMotor)
   {
     mediumMotorSpeed = mediumMotorSpeed * (-1);
   }
+  int stallCounter = 0;
 
   while (continueMediumMotor)
   {
     int motorCounts = abs(ev3_motor_get_counts(mediumMotor));
-    stall.measure(motorCounts);
+
+    stallCounter++;
+    if (stallCounter == 10){
+      stall.measure(motorCounts);
+      stallCounter = 0;
+    }
+      
     if (mediumMotorMode == "degree")
     {
       continueMediumMotor = motorCounts < mediumMotorWert;

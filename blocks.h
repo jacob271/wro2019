@@ -19,7 +19,6 @@
 using std::cout;
 using std::endl;
 
-
 //-----------------------------------------------------------------------------
 
 //Methods
@@ -31,22 +30,22 @@ void kabelSammeln(bool south);
 void routerScannen(sensor_port_t searchSensor, std::string mode);
 void routerEinsammeln(bool directionEast, int mode, bool crossline);
 void kabelAbladen();
-void routerAbladen();
+void routerAbladen(sensor_port_t followSensor, bool lang);
 void fallunterscheidung();
 bool direction(int position, int direction, int nPositions);
 int getDistance(int startPosition, int startDirection, int endPosition, int nPositions);
 void router(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
 void city(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
 
-
 // SUPPORT BLOCKS
 void motorControl(motor_port_t motor, int speed, int maxSpeed);
-void resetSpeedControl ();
+void resetSpeedControl();
 int getRGB(sensor_port_t port, int color);
 int getHTRGB(sensor_port_t sensor, int mode);
 int speedLevel(int level);
 void waitForButton();
 void display(int inhalt);
+bool colorDetection_rgb_ev3(sensor_port_t sensor);
 int colorDetection(sensor_port_t sensor);
 int colorDetection_rgb(sensor_port_t sensor, std::string mode);
 int findColor(int colors[], std::string mode);
@@ -64,12 +63,12 @@ double accDec(int togo, double brakeFactor, double accFactor, double zeit, int s
 void initializeSpeeds(int &speed1, int &speed2, int &speed3);
 void resetMotors(std::string mode, int leftValue, int rightValue, int maxSpeed);
 void resetMotors();
-int measureMotorRight();    
+int measureMotorRight();
 int measureMotorLeft();
 
 // ACTION BLOCKS
-int move(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double value, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
-int move(int startSpeed, int maxSpeed,  double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop);
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double value, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
@@ -138,7 +137,6 @@ extern int yellow;
 extern int fall1;
 extern int fall2;
 
-
 extern int miniDistance;
 
 extern double pGL1;
@@ -155,7 +153,7 @@ extern const double wheelCircumferance;
 //Distances for main
 extern int miniDistance;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
 extern int miniDistanceShort; //rückwärts an Linie herangefahren
-extern int moveBackDistance; //Distanz vor einer Drehung zum Router
+extern int moveBackDistance;  //Distanz vor einer Drehung zum Router
 extern int leverDistance;
 extern int leverUpTime;
 extern int longMotorUpSpeed;

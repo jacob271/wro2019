@@ -336,22 +336,10 @@ bool lineDetection(std::string mode)
       ev3_speaker_play_tone(NOTE_F4, 5);
     return crossline;
   }
-  else if (mode == "yellowR")
-    return  ev3_color_sensor_get_color(LSr) == 7;
-  else if (mode == "yellowL")
-    return  ev3_color_sensor_get_color(LSl) == 7;
-  else if (mode == "blueR")
-    return  ev3_color_sensor_get_color(LSr) == 2;
-  else if (mode == "blueL")
-    return  ev3_color_sensor_get_color(LSl) == 2;
-  else if (mode == "greenR")
-    return  ev3_color_sensor_get_color(LSr) == 3;
-  else if (mode == "greenL")
-    return  ev3_color_sensor_get_color(LSl) == 3;
-  else if (mode == "redR")
-    return  ev3_color_sensor_get_color(LSr) == 5;
-  else if (mode == "redL")
-    return  ev3_color_sensor_get_color(LSl) == 5;
+  else if (mode == "colorR")
+    return  colorDetection_rgb_ev3(LSr);
+  else if (mode == "colorL")
+    return  colorDetection_rgb_ev3(LSl);
   return false;
 }
 
@@ -369,6 +357,28 @@ void display(int inhalt)
   char buf[10];
   sprintf(buf, "%d", inhalt);
   ev3_lcd_draw_string(buf, 20, 50);
+}
+
+bool colorDetection_rgb_ev3(sensor_port_t sensor){
+  int red = getRGB(sensor,1);
+  int green = getRGB(sensor,2);
+  int blue = getRGB(sensor, 3);
+
+  char buf[10];
+  sprintf(buf, "%d", red);
+  ev3_lcd_draw_string(buf, 20, 90);
+
+  sprintf(buf, "%d", green);
+  ev3_lcd_draw_string(buf, 60, 90);
+
+  sprintf(buf, "%d", blue);
+  ev3_lcd_draw_string(buf, 100, 90);
+
+  cout<< red << " " << green << " " << blue <<endl;
+
+  return red < 125 || blue < 125 || green < 125;
+
+
 }
 
 // Konvertierung der HiTechnic Farbwerte in normale EV3 Farbwerte

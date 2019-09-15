@@ -50,7 +50,7 @@ const double wheelDiameter = 6.24; //6.24;
 const double wheelCircumferance = 17.6;
 
 //Distances for main
-int miniDistance = 50;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+int miniDistance = 110;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
 int miniDistanceShort = 40; //rückwärts an Linie herangefahren
 int moveBackDistance = 193; //Distanz vor einer Drehung zum Router
 int leverDistance = 180;
@@ -60,8 +60,8 @@ int longMotorDownSpeed = -80;
 int longMotorDistance = 310;
 int spin180 = 480;
 int spin90 =240;
-int turn90 = 470;//435
-int goTurn90 = 490;
+int turn90 = 470;//435 //470
+int goTurn90 = 490; //490
 
 //Values for Line1
 int LSrMiddle = (92 + 9) / 2;
@@ -84,3 +84,5 @@ int currentPosition;
 int endPosition;
 int currentColor;
 Stopwatch run;
+
+//StallDetection mediumMotor

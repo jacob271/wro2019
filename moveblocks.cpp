@@ -467,6 +467,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
     //cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << endl;
   }
+  ev3_motor_stop(mediumMotor, mediumMotorStop);
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
   cout << "lc: " << counter / (move.getTime() / 1000) << endl;
@@ -664,6 +665,7 @@ void mediumMotor(motor_port_t mediumMotor, int mediumMotorSpeed, std::string med
   stall.init(100);
   ev3_motor_reset_counts(mediumMotor);
   bool continueMediumMotor = true;
+  mediumMotorSpeed = mediumMotorSpeed * batteryFactor;
   if (mediumMotor == longMotor)
   {
     mediumMotorSpeed = mediumMotorSpeed * (-1);

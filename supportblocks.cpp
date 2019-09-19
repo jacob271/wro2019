@@ -374,9 +374,13 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor){
   sprintf(buf, "%d", blue);
   ev3_lcd_draw_string(buf, 100, 90);
 
-  cout<< red << " " << green << " " << blue <<endl;
+  //cout<< red << " " << green << " " << blue <<endl;
 
-  return red < 125 || blue < 125 || green < 125;
+  bool color = red < 125 || blue < 125 || green < 125;
+
+  if (color)
+    ev3_speaker_play_tone(NOTE_F4, 5);
+  return color;
 
 
 }
@@ -459,11 +463,11 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
   else
   {
     //Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
-    if (red < 16 && green < 16 && blue < 16)
+    if (red < 9 && green < 9 && blue < 9)
       return -1;
     if (red > 150 && green > 150 && blue > 150)
       return 1;
-    if (red > 16 && green > 16 && blue > 16)
+    if (red > 9 && green > 9 && blue > 9)
       return 0;
   }
   return -1;

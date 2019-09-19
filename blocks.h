@@ -29,7 +29,7 @@ void positionenScannen();
 void kabelSammeln(bool south);
 void routerScannen(sensor_port_t searchSensor, std::string mode);
 void routerEinsammeln(bool directionEast, int mode, bool crossline);
-void kabelAbladen();
+void kabelAbladen(bool stop, bool red);
 void routerAbladen(sensor_port_t followSensor, bool lang);
 void fallunterscheidung();
 bool direction(int position, int direction, int nPositions);
@@ -151,7 +151,8 @@ extern const double wheelDiameter;
 extern const double wheelCircumferance;
 
 //Distances for main
-extern int miniDistance;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+extern int miniDistance1;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+extern int miniDistance2;
 extern int miniDistanceShort; //rückwärts an Linie herangefahren
 extern int moveBackDistance;  //Distanz vor einer Drehung zum Router
 extern int leverDistance;

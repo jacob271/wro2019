@@ -50,7 +50,8 @@ const double wheelDiameter = 6.24; //6.24;
 const double wheelCircumferance = 17.6;
 
 //Distances for main
-int miniDistance = 110;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+int miniDistance1 = 125;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+int miniDistance2 = 130;
 int miniDistanceShort = 40; //rückwärts an Linie herangefahren
 int moveBackDistance = 193; //Distanz vor einer Drehung zum Router
 int leverDistance = 180;

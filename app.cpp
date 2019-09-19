@@ -462,12 +462,11 @@ void logic()
 
 void test()
 {
-    line2(1,3,pGL2,dGL2,"crossline",0,3,false);
-    line2(cSpeed, 3, pGL2, dGL2, "degree", 600, 3, false);
-    turn1(motor_left,cSpeed,true,3,"degree",485,3,false);
-    move(cSpeed,3,1,1,"degree",110,3,false);
-    turn1(motor_left,cSpeed,true,3,"degree",485,3,false);
-    line2(cSpeed, 2, pGL2*0.7, dGL2*0.7, "degree", 200, 1, true);
+    line2(cSpeed, 4, pGL2, dGL2, "degree", 450, 4, false);
+    turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
+    move(cSpeed,4, 1, 1, "degree", 90, 4, false);
+    turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
+    line2(cSpeed, 4, pGL2 * 0.7, dGL2 * 0.7, "degree", 200, 1, true);
     //line2(cSpeed, 3, pGL2, dGL2, "degree", 200, 1, true);
     //mediumMotor(longMotor, 60, "degree", 220, true);
     //move(-1, -3, 1, 1, "degree", 95, -1, true);

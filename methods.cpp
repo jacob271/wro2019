@@ -1260,7 +1260,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 {
                     endSpeed = 3;
                     stopNow = false;
-                    if (endPosition == -9 || endPosition == -8 || endPosition == -10)
+                    if (endPosition == -9)
                     {
                         stopNow = true;
                         endSpeed = 1;
@@ -1448,13 +1448,11 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     break;
                 case 9:
                 case 1:
-                    //might not brake before
-                    //waitForButton();
-                    line2(cSpeed, 4, pGL2, dGL2, "degree", 250, 4, false);
-                    turn1(motor_left, cSpeed, true, 3, "degree", 485, 3, false);
-                    move(cSpeed, 3, 1, 1, "degree", 100, 3, false);
-                    turn1(motor_left, cSpeed, true, 3, "degree", 485, 3, false);
-                    line2(cSpeed, 2, pGL2 * 0.7, dGL2 * 0.7, "degree", 200, 2, false);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 300, 4, false);
+                    turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
+                    move(cSpeed, 4, 1, 1, "degree", 90, 4, false);
+                    turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
+                    line2(cSpeed, 4, pGL2 * 0.7, dGL2 * 0.7, "degree", 200, 4, false);
                     break;
                 }
                 break;

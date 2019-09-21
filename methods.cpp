@@ -198,24 +198,30 @@ void positionenScannen()
 
 void kabelSammeln(bool south)
 {
-
     if (south)
     {
-        line2(3, 3, pGL2, dGL2, "degree", 100, 3, false);
-        move(3, 4, 1, 0.57, "degree", 320, 4, false);
-        move(4, 4, 0.57, 1, "degree", 310, 4, false);
+        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 100, 4, false);
+        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, doubleLever, -60, "degree", 120, true);
+        move(4, 4, 1, 0.7, "degree", 300, 4, false);
+        move(4, 2, 1, 1, "degree", 200, 1, true);
+        mediumMotor(doubleLever, 40, "degree", leverDistance, true);
+        mediumMotor(doubleLever, 70, "time", 150, true);
+        move(-1, -4, 1, 1, "degree", 130, -4, false);
+        move(-4, -4, 1, 0.7, "degree", 200, -1, true);
+        turn2(1, 3, "degree", spin90, 1, true);
     }
     else
     {
-        line2(3, 3, pGL2, dGL2, "degree", 140, 3, false);
-        move(3, 4, 0.55, 1, "degree", 320, 4, false);
-        move(4, 4, 1, 0.55, "degree", 310, 4, false);
+        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 4, false);
+        line1(1, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -60, "degree", 120, true);
+        move(4, 4, 0.7, 1, "degree", 300, 4, false);
+        move(4, 2, 1, 1, "degree", 200, 1, true);
+        mediumMotor(doubleLever, 40, "degree", leverDistance, true);
+        mediumMotor(doubleLever, 70, "time", 150, true);
+        move(-1, -4, 1, 1, "degree", 130, -4, false);
+        move(-4, -4, 0.7, 1, "degree", 200, -1, true);
+        turn2(1, 3, "degree", -spin90, 1, true);
     }
-    line2(4, 4, pGL2, dGL2, "degree", 260, 1, true, doubleLever, -100, "degree", 120, true);
-    //move(2, 2, 1, 1, "degree", 30, 1, true);
-    mediumMotor(doubleLever, 40, "degree", leverDistance, true);
-    mediumMotor(doubleLever, 70, "time", 150, true);
-    move(-1, -3, 1, 1, "degree", 230, 1, true);
 }
 
 void routerScannen(sensor_port_t searchSensor, std::string mode)

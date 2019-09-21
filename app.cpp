@@ -30,7 +30,7 @@ void logic()
         }
         else //nicht drehen
         {
-            move(-1, -3, 1, 1, "degree", 56, -1, true);
+            move(-1, -3, 1, 1, "degree", 25, -1, true);
             routerEinsammeln(true, 3, false);
             turn2(1, 5, "degree", -spin90, 1, true);
             router(3, 3, 1, 2, true);
@@ -46,7 +46,7 @@ void logic()
         else
         {
             line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-            line1(3, 3, pGL1, dGL1, LSr, true, "degree", 150, 3, false);
+            line1(3, 3, pGL1, dGL1, LSr, true, "degree", 200, 3, false);
             city(1, 2, -1, 1, true);
             routerAbladen(LSl, false);
             city(-1, 1, -3, 2, true);
@@ -118,7 +118,8 @@ void logic()
         {
             city(-3, 2, 3, 3, true);
             routerEinsammeln(false, 4, true);
-            city(3, 1, 4, 1, true);
+            line2(1,4,pGL2,dGL2,"degree",100,4,false);
+            city(4, 1, 4, 1, true);
             mediumMotor(longMotor, 60, "degree", 250, true);
             if (red == 1)
             {
@@ -462,6 +463,17 @@ void logic()
 
 void test()
 {
+    line1(1,4,pGL1,dGL1,LSl,false,"crossline",0,4,false);
+    move(4,4,1,0.7,"degree",300,4,false);
+    move(4,2,1,1,"degree",200,1,true);
+    mediumMotor(doubleLever, 40, "degree", leverDistance, true);
+    mediumMotor(doubleLever, 70, "time", 150, true);    
+    move(-1,-4,1,1,"degree",130,-4,false);
+    move(-4,-4,1,0.7,"degree",200,-1,true);
+    turn2(1,3,"degree",spin90,1,true);
+    
+    
+    /*
     line2(cSpeed, 4, pGL2, dGL2, "degree", 450, 4, false);
     turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
     move(cSpeed,4, 1, 1, "degree", 90, 4, false);
@@ -474,7 +486,7 @@ void test()
     //move(1, 3, 1, 0.42, "degree", 1700, 1, true);
    //line2(1,3,pGL2,dGL2,"degree",500,1,true,longMotor,100,"degree",400,true);
     //mediumMotor(longMotor, -100, "time", 5000, true);
-    /*
+    
     while(true){
     int left = ev3_color_sensor_get_reflect(LSl);
     int right = ev3_color_sensor_get_reflect(LSr);
@@ -499,8 +511,8 @@ void main_task(intptr_t unused)
     std::streambuf *coutbuf = cout.rdbuf(); //save old buf
     cout.rdbuf(out.rdbuf());                //redirect cout to out.txt!
     start();
-    //test();
-    //return;
+    test();
+    return;
 
     //Anfang
     move(1, 3, 0.4, 1, "degree", 220, 3, false);

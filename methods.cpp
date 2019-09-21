@@ -200,28 +200,29 @@ void kabelSammeln(bool south)
 {
     if (south)
     {
-        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 100, 4, false);
-        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, doubleLever, -60, "degree", 120, true);
+        //line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 100, 4, false);
+        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, doubleLever, -90, "degree", 140, true);
         move(4, 4, 1, 0.7, "degree", 300, 4, false);
         move(4, 2, 1, 1, "degree", 200, 1, true);
         mediumMotor(doubleLever, 40, "degree", leverDistance, true);
         mediumMotor(doubleLever, 70, "time", 150, true);
         move(-1, -4, 1, 1, "degree", 130, -4, false);
         move(-4, -4, 1, 0.7, "degree", 200, -1, true);
-        turn2(1, 3, "degree", spin90, 1, true);
+        turn2(1, 5, "degree", spin90, 1, true);
     }
     else
     {
-        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 4, false);
-        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -60, "degree", 120, true);
+        //line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 4, false);
+        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -90, "degree", 140, true);
         move(4, 4, 0.7, 1, "degree", 300, 4, false);
         move(4, 2, 1, 1, "degree", 200, 1, true);
         mediumMotor(doubleLever, 40, "degree", leverDistance, true);
         mediumMotor(doubleLever, 70, "time", 150, true);
         move(-1, -4, 1, 1, "degree", 130, -4, false);
         move(-4, -4, 0.7, 1, "degree", 200, -1, true);
-        turn2(1, 3, "degree", -spin90, 1, true);
+        turn2(1, 5, "degree", -spin90, 1, true);
     }
+    line2(1,4,pGL2,dGL2,"degree",100,4,false);
 }
 
 void routerScannen(sensor_port_t searchSensor, std::string mode)
@@ -271,7 +272,7 @@ void routerEinsammeln(bool directionEast, int mode, bool crossline)
         {
             mediumMotor(longMotor, -100, "degree", 210, true);
             line2(cSpeed, 4, pGL2, dGL2, "degree", 100, 4, false);
-            line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
+            line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
             line2(cSpeed, 4, pGL2, dGL2, "degree", 235, 1, true);
             mediumMotor(longMotor, 60, "degree", 220, true);
             move(-1, -4, 1, 1, "degree", 95, -1, true);
@@ -345,11 +346,11 @@ void kabelAbladen(bool stop, bool red)
     tslp_tsk(200);
     if (red == true)
     {
-        move(-1, -6, 1, 1, "degree", 360, -1, brake);
+        move(-1, -6, 1, 1, "degree", 280, -1, true);
     }
     else
     {
-        move(-1, -6, 1, 1, "degree", 250, -1, brake);
+        move(-1, -6, 1, 1, "degree", 250, -1, true);
     }
 
     mediumMotor(doubleLever, 70, "degree", leverDistance, true);
@@ -361,13 +362,13 @@ void routerAbladen(sensor_port_t followSensor, bool lang)
     if (followSensor == LSr)
     {
         line1(cSpeed, 30, pGL2, dGL2, followSensor, true, "degree", 50, 30, false);
-        line1(cSpeed, 30, pGL2, dGL2, followSensor, true, "colorL", 0, 30, false);
+        line1(cSpeed, 30, pGL2, dGL2, followSensor, true, "colorL", 0, 1, true);
         //move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
     }
     else
     {
         line1(cSpeed, 30, pGL2, dGL2, followSensor, false, "degree", 50, 30, false);
-        line1(cSpeed, 30, pGL2, dGL2, followSensor, false, "colorR", 0, 30, false);
+        line1(cSpeed, 30, pGL2, dGL2, followSensor, false, "colorR", 0, 1, true);
         //move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
     }
     mediumMotor(longMotor, -30, "degree", 230, true);

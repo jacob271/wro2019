@@ -47,6 +47,7 @@ void logic()
         {
             line1(1, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
             line1(3, 3, pGL1, dGL1, LSr, true, "degree", 200, 3, false);
+            manualSetDriveDirection = false;
             city(1, 2, -1, 1, true);
             routerAbladen(LSl, false);
             city(-1, 1, -3, 2, true);
@@ -165,6 +166,7 @@ void logic()
         {
             line1(1, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false);
             line1(4, 4, pGL1, dGL1, LSl, false, "degree", 150, 4, false);
+            manualSetDriveDirection = true;
             city(6, 2, -5, 3, true);
             routerAbladen(LSr, false);
             city(-5, 3, -3, 2, true);
@@ -215,7 +217,10 @@ void logic()
         }
         else if (routerO[0] == 0)
         {
-            city(-3, 2, 3, 3, true);
+            //city(-3, 2, 3, 3, true);
+            move(-1, -6, 1, 1, "degree", 325, -1, true);
+            turn2(1,5,"degree",spin90,1,true);
+            line2(1,4,pGL2,dGL2,"degree",167,1,true);
             routerEinsammeln(false, 2, true);
             if (blue == 1)
             {
@@ -226,6 +231,7 @@ void logic()
             }
             else
             {
+                manualSetDriveDirection = false;
                 city(3, 3, 2, 3, true);
                 mediumMotor(longMotor, 60, "degree", 250, true);
                 city(2, 3, -1, 1, true);
@@ -256,7 +262,6 @@ void logic()
         turn1(motor_right, 3, true, 3, "degree", goTurn90, 3, false);
     }
     kabelSammeln(false);
-    turn2(1, 5, "degree", -spin90, 1, true);
     bool greenFirst = true; // green == true
     if (routerW[2] == 0)
     {
@@ -379,15 +384,16 @@ void logic()
         }
         if (yellow == 4 || yellow == 2)
         {
+            manualSetDriveDirection = false;
             city(15, 2, -11, 1, true);
             routerAbladen(LSr, false);
             city(-11, 1, 14, 2, false);
         }
         else
         {
-            city(15, 2, -1, 4, true);
+            city(15, 2, -10, 4, true);
             routerAbladen(LSl, false);
-            city(-1, 4, 14, 2, true);
+            city(-10, 4, 14, 2, true);
         }
         //-> base
     }
@@ -447,6 +453,7 @@ void logic()
         }
         if (green == 4 || green == 2)
         {
+            manualSetDriveDirection = true;
             city(8, 2, -7, 3, true);
             routerAbladen(LSl, false);
             city(-7, 3, 13, 3, false);
@@ -523,8 +530,7 @@ void main_task(intptr_t unused)
     routerScannen(HTr, "routerO");
     turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
     kabelSammeln(true);
-    turn2(1, 5, "degree", 240, 1, true);
-    line2(1, 3, pGL2, dGL2, "degree", 100, 3, false);
+    //line2(1, 3, pGL2, dGL2, "degree", 100, 3, false);
     routerScannen(HTl, "routerW");
     fallunterscheidung();
     //Anfang Ende

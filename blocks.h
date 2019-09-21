@@ -168,5 +168,6 @@ extern int goTurn90;
 extern int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
 extern int currentPosition;
 extern int endPosition;
+extern bool manualSetDriveDirection;
 extern int currentColor;
 extern Stopwatch run;

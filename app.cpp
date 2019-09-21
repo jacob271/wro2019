@@ -511,8 +511,8 @@ void main_task(intptr_t unused)
     std::streambuf *coutbuf = cout.rdbuf(); //save old buf
     cout.rdbuf(out.rdbuf());                //redirect cout to out.txt!
     start();
-    test();
-    return;
+    //test();
+    //return;
 
     //Anfang
     move(1, 3, 0.4, 1, "degree", 220, 3, false);

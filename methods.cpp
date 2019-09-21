@@ -213,7 +213,7 @@ void kabelSammeln(bool south)
     else
     {
         line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 4, false);
-        line1(1, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -60, "degree", 120, true);
+        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -60, "degree", 120, true);
         move(4, 4, 0.7, 1, "degree", 300, 4, false);
         move(4, 2, 1, 1, "degree", 200, 1, true);
         mediumMotor(doubleLever, 40, "degree", leverDistance, true);
@@ -902,19 +902,20 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     abstand[n][1] = option2;
 
                     int distance = getDistance(option1, 0, option2, 16);
+
                     if (option1 != currentPosition)
                     {
-                        if (distance >= 0)
+                        if (distance > 0)
                             distance++;
-                        else
+                        else if (distance < 0)
                             distance--;
                     }
 
                     if (option2 != endPosition)
                     {
-                        if (distance >= 0)
+                        if (distance > 0)
                             distance++;
-                        else
+                        else if (distance < 0)
                             distance--;
                     }
                     abstand[n][2] = distance;
@@ -968,9 +969,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         {
             driveDirection = false;
         }
-        else
+        else if (shortestDistance > 0)
         {
             driveDirection = true;
+        } 
+        else
+        {
+            driveDirection = manualSetDriveDirection;
         }
         cout << "driveDirection: " << driveDirection << endl;
 

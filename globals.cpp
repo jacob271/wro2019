@@ -83,6 +83,7 @@ int fall2;
 int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
 int currentPosition;
 int endPosition;
+bool manualSetDriveDirection = false;
 int currentColor;
 Stopwatch run;
 

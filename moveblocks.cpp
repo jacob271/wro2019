@@ -632,6 +632,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
     //cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << endl;
   }
+  ev3_motor_stop(mediumMotor, true);
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
   cout << "lc: " << counter / (move.getTime() / 1000) << endl;

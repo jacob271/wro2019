@@ -201,9 +201,9 @@ void kabelSammeln(bool south)
     if (south)
     {
         //line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 100, 4, false);
-        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, doubleLever, -90, "degree", 140, true);
-        move(4, 4, 1, 0.7, "degree", 300, 4, false);
-        move(4, 2, 1, 1, "degree", 200, 1, true);
+        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, doubleLever, -100, "degree", 200, true);
+        move(4, 4, 1, 0.7, "degree", 300, 35, false);
+        move(35, 30, 1, 1, "degree", 200, 1, true);
         mediumMotor(doubleLever, 40, "degree", leverDistance, true);
         mediumMotor(doubleLever, 70, "time", 150, true);
         move(-1, -4, 1, 1, "degree", 130, -4, false);
@@ -213,9 +213,9 @@ void kabelSammeln(bool south)
     else
     {
         //line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 4, false);
-        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -90, "degree", 140, true);
-        move(4, 4, 0.7, 1, "degree", 300, 4, false);
-        move(4, 2, 1, 1, "degree", 200, 1, true);
+        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -100, "degree", 200, true);
+        move(4, 4, 0.7, 1, "degree", 300, 35, false);
+        move(35, 30, 1, 1, "degree", 200, 1, true);
         mediumMotor(doubleLever, 40, "degree", leverDistance, true);
         mediumMotor(doubleLever, 70, "time", 150, true);
         move(-1, -4, 1, 1, "degree", 130, -4, false);

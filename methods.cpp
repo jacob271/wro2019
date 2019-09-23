@@ -200,19 +200,19 @@ void kabelSammeln(bool south)
 {
     if (south)
     {
-        //line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 100, 4, false);
+        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 100, 4, false);
         line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, doubleLever, -100, "degree", 200, true);
         move(4, 4, 1, 0.7, "degree", 300, 35, false);
         move(35, 30, 1, 1, "degree", 200, 1, true);
-        mediumMotor(doubleLever, 40, "degree", leverDistance, true);
-        mediumMotor(doubleLever, 70, "time", 150, true);
+        mediumMotor(doubleLever, 50, "degree", leverDistance, true);
+        mediumMotor(doubleLever, 90, "time", 150, true);
         move(-1, -4, 1, 1, "degree", 130, -4, false);
         move(-4, -4, 1, 0.7, "degree", 200, -1, true);
         turn2(1, 5, "degree", spin90, 1, true);
     }
     else
     {
-        //line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 4, false);
+        line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 4, false);
         line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, doubleLever, -100, "degree", 200, true);
         move(4, 4, 0.7, 1, "degree", 300, 35, false);
         move(35, 30, 1, 1, "degree", 200, 1, true);
@@ -222,7 +222,7 @@ void kabelSammeln(bool south)
         move(-4, -4, 0.7, 1, "degree", 200, -1, true);
         turn2(1, 5, "degree", -spin90, 1, true);
     }
-    line2(1,4,pGL2,dGL2,"degree",100,4,false);
+    line2(1, 4, pGL2, dGL2, "degree", 100, 4, false);
 }
 
 void routerScannen(sensor_port_t searchSensor, std::string mode)
@@ -672,6 +672,8 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 default:
                     break;
                 }
+            }else{
+                break;
             }
         }
     }
@@ -681,7 +683,9 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
         for (int i = currentPosition; i != endPosition; i--)
         {
             if (i == 0)
+            {
                 i = 10;
+            }
 
             nextPosition = i - 1;
             if (i == 1)
@@ -723,6 +727,8 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 default:
                     break;
                 }
+            }else{
+                break;
             }
         }
     }
@@ -910,6 +916,14 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                             distance++;
                         else if (distance < 0)
                             distance--;
+                        else if ((option1 > currentPosition && currentPosition > 0) || (option1 == 1 && currentPosition == 16))
+                        {
+                            distance++;
+                        }
+                        else if ((option1 < currentPosition && currentPosition > 0) || (option1 == 16 &&currentPosition == 1))
+                        {
+                            distance--;
+                        }
                     }
 
                     if (option2 != endPosition)
@@ -918,6 +932,14 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                             distance++;
                         else if (distance < 0)
                             distance--;
+                        else if ((option2 > endPosition && endPosition > 0) || (option2 == 1 && endPosition == 16))
+                        {
+                            distance--;
+                        }
+                        else if ((option2 < endPosition && endPosition > 0) || (option2 == 16 && endPosition == 1))
+                        {
+                            distance++;
+                        }
                     }
                     abstand[n][2] = distance;
                     cout << "abstand: " << option1 << " " << option2 << " " << abstand[n][2] << endl;
@@ -973,7 +995,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
         else if (shortestDistance > 0)
         {
             driveDirection = true;
-        } 
+        }
         else
         {
             driveDirection = manualSetDriveDirection;

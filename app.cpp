@@ -30,7 +30,7 @@ void logic()
         }
         else //nicht drehen
         {
-            move(-1, -3, 1, 1, "degree", 25, -1, true);
+            move(-1, -4, 1, 1, "degree", 90, -1, true);
             routerEinsammeln(true, 3, false);
             turn2(1, 5, "degree", -spin90, 1, true);
             router(3, 3, 1, 2, true);
@@ -68,20 +68,17 @@ void logic()
                 manualSetDriveDirection = true;
                 city(4, 1, -4, 2, false);
                 routerAbladen(LSr, true);
-                manualSetDriveDirection = false; //todo
                 city(-4, 2, 6, 4, true);
             }
             else
             {
                 city(4, 1, -5, 3, true);
                 routerAbladen(LSr, false);
-                manualSetDriveDirection = false;
                 city(-5, 3, 6, 4, false);
             }
         }
         else if (routerO[2] == 0 && (red == 3 || red == 4))
         {
-            manualSetDriveDirection = true;
             city(-3, 2, 4, 1, false);
             routerEinsammeln(true, 3, true);
             if (red == 3)
@@ -89,22 +86,19 @@ void logic()
                 turn2(1, 5, "degree", spin180, 1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 200, 3, false);
                 routerAbladen(LSr, true);
-                manualSetDriveDirection = false;
                 city(-4, 2, 6, 4, true);
             }
             else
             {
                 turn2(1, 5, "degree", spin90, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false); //todo
+                line2(1, 3, pGL2, dGL2, "degree", 250, 3, false); //todo //paul
                 city(5, 1, -5, 3, true);
                 routerAbladen(LSr, false);
-                manualSetDriveDirection = false;
                 city(-5, 3, 6, 4, false);
             }
         }
         else if (routerO[2] == 0)
         {
-            manualSetDriveDirection = true;
             city(-3, 2, 4, 1, true);
             routerEinsammeln(false, 1, true);
             if (red == 1)
@@ -113,7 +107,6 @@ void logic()
                 city(4, 1, -4, 2, true);
                 mediumMotor(longMotor, 60, "degree", 250, true);
                 routerAbladen(LSr, true);
-                manualSetDriveDirection = false;
                 city(-4, 2, 6, 4, true);
             }
             else
@@ -123,13 +116,11 @@ void logic()
                 mediumMotor(longMotor, 60, "degree", 250, true);
                 city(5, 1, -5, 3, true);
                 routerAbladen(LSr, false);
-                manualSetDriveDirection = false;
                 city(-5, 3, 6, 4, false);
             }
         }
         else
         {
-            manualSetDriveDirection = false;
             city(-3, 2, 3, 3, true);
             routerEinsammeln(false, 4, true);
             line2(1, 4, pGL2, dGL2, "degree", 100, 4, false);
@@ -140,14 +131,12 @@ void logic()
                 manualSetDriveDirection = true;
                 city(4, 1, -4, 2, false);
                 routerAbladen(LSr, true);
-                manualSetDriveDirection = false;
                 city(-4, 2, 6, 4, true);
             }
             else
             {
                 city(4, 1, -5, 3, false);
                 routerAbladen(LSr, false);
-                manualSetDriveDirection = false;
                 city(-5, 3, 6, 4, true);
             }
         }
@@ -215,7 +204,6 @@ void logic()
         }
         else if (routerO[0] == 0 && (blue == 3 || blue == 2))
         {
-            manualSetDriveDirection = false;
             city(-3, 2, 3, 3, false);
             routerEinsammeln(true, 1, true);
             if (blue == 3)
@@ -255,14 +243,13 @@ void logic()
                 city(3, 3, 2, 3, true);
                 mediumMotor(longMotor, 60, "degree", 250, true);
                 line2(1, 4, pGL2, dGL2, "degree", 50, 4, false);
-                    city(2, 3, -1, 1, true);
+                city(2, 3, -1, 1, true);
                 routerAbladen(LSl, false);
                 city(-1, 1, 5, 1, false);
             }
         }
         else
         {
-            manualSetDriveDirection = true;
             city(-3, 2, 4, 1, true);
             routerEinsammeln(false, 3, true);
             manualSetDriveDirection = false;
@@ -411,14 +398,12 @@ void logic()
             manualSetDriveDirection = false;
             city(15, 2, -11, 1, true);
             routerAbladen(LSr, false);
-            manualSetDriveDirection = false;
             city(-11, 1, 14, 2, false);
         }
         else
         {
             city(15, 2, -10, 4, true);
             routerAbladen(LSl, false);
-            manualSetDriveDirection = false;
             city(-10, 4, 14, 2, true);
         }
         //-> base

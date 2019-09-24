@@ -91,7 +91,7 @@ void logic()
             else
             {
                 turn2(1, 5, "degree", spin90, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 250, 3, false); //todo //paul
+                line2(1, 3, pGL2, dGL2, "degree", 235, 3, false); //paul
                 city(5, 1, -5, 3, true);
                 routerAbladen(LSr, false);
                 city(-5, 3, 6, 4, false);

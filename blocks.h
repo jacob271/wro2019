@@ -68,7 +68,9 @@ int measureMotorLeft();
 
 // ACTION BLOCKS
 int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double value, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);
 int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop);
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop);
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode);

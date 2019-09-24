@@ -251,7 +251,7 @@ int move(int startSpeed, int maxSpeed, std::string mode, double wert, int endSpe
 }
 */
 
-int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode)
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop)
 {
   bool dec = false; //Soll prinzipiell nicht abbremsen
   double togo = 0;
@@ -265,6 +265,17 @@ int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std:
   cSpeed = startSpeed;
   resetMotors();
 
+  //MediumMotor Option
+  StallDetection stall;
+  stall.init(100);
+  ev3_motor_reset_counts(mediumMotor);
+  bool continueMediumMotor = true;
+  if (mediumMotor == longMotor)
+  {
+    mediumMotorSpeed = mediumMotorSpeed * (-1);
+  }
+  int stallCounter = 0;
+
   int colorCounter[40] = {0};
 
   for (int i = 0; i < 40; i++)
@@ -275,7 +286,6 @@ int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std:
   bool continueMove = true;
 
   int cCounter = 0;
-
   while (continueMove)
   {
     tslp_tsk(1);
@@ -301,6 +311,37 @@ int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std:
       continueMove = lineDetection(mode) == false;
     }
 
+    if (continueMediumMotor && abs(mediumMotorSpeed) > 0)
+    {
+      int motorCounts = abs(ev3_motor_get_counts(mediumMotor));
+      stallCounter++;
+      if (stallCounter == 10){
+        stallCounter = 0;
+        stall.measure(motorCounts);
+      }
+       
+      if (mediumMotorMode == "degree")
+      {
+        continueMediumMotor = motorCounts < mediumMotorWert;
+      }
+      else
+      {
+        continueMediumMotor = move.getTime() < mediumMotorWert;
+      }
+
+      if (stall.detectStall() && move.getTime() > 200)
+      {
+        continueMediumMotor = false;
+        ev3_speaker_play_tone(NOTE_C4, 100);
+      }
+
+      ev3_motor_set_power(mediumMotor, mediumMotorSpeed);
+    }
+    else
+    {
+      ev3_motor_stop(mediumMotor, mediumMotorStop);
+    }
+
     cSpeed = accDec(togo, bfMove, afMove, move.getTime(), startSpeed, maxSpeed, endSpeed, dec);
     motorCorrection(pGain, cSpeed, resetRightDegree, resetLeftDegree, leftRatio, rightRatio);
 
@@ -311,7 +352,7 @@ int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std:
       tslp_tsk(4);
     }
   }
-
+  ev3_motor_stop(mediumMotor, true);
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
 
@@ -322,10 +363,16 @@ int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std:
   return -1;
 }
 
+//Geradeaus mit mediumMotoren
+int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop)
+{
+  return move(startSpeed, maxSpeed, leftRatio, rightRatio, mode, wert, endSpeed, stop, false, HTr, " ", mediumMotor, mediumMotorSpeed,mediumMotorMode, mediumMotorWert, mediumMotorStop);
+}
+
 //Geradeaus ohne Farbscan-Option
 int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std::string mode, double wert, int endSpeed, bool stop)
 {
-  return move(startSpeed, maxSpeed, leftRatio, rightRatio, mode, wert, endSpeed, stop, false, HTr, " ");
+  return move(startSpeed, maxSpeed, leftRatio, rightRatio, mode, wert, endSpeed, stop, false, HTr, " ", doubleLever,0," ", 0, true);
 }
 
 int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop)

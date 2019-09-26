@@ -849,27 +849,27 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             {
             case -2:
             case -8:
-                turn1(motor_left, cSpeed, true, -3, "degree", 503, -1, true);
-                turn1(motor_right, cSpeed, false, -3, "degree", 512, -1, true);
+                turn1(motor_left, -1, true, -3, "degree", 503, -1, true);//M3
+                turn1(motor_right, -1, false, -3, "degree", 512, -1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
                 break;
             case -4:
             case -10:
-                turn1(motor_right, cSpeed, true, -3, "degree", 503, -1, true);
-                turn1(motor_left, cSpeed, false, -3, "degree", 512, -1, true);
+                turn1(motor_right, -1, true, -3, "degree", 503, -1, true);
+                turn1(motor_left, -1, false, -3, "degree", 512, -1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
                 break;
             }
         case -2:
         case -8:
-            turn1(motor_right, cSpeed, true, -4, "degree", 503, -1, true);
-            turn1(motor_left, cSpeed, false, -4, "degree", 512, -1, true);
+            turn1(motor_right, -1, true, -4, "degree", 503, -1, true);
+            turn1(motor_left, -1, false, -4, "degree", 512, -1, true);
             line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
             break;
         case -4:
         case -10:
-            turn1(motor_left, cSpeed, true, -4, "degree", 503, -1, true);
-            turn1(motor_right, cSpeed, false, -4, "degree", 512, -1, true);
+            turn1(motor_left, -1, true, -4, "degree", 503, -1, true);
+            turn1(motor_right, -1, false, -4, "degree", 512, -1, true);
             line2(1, 3, pGL2, dGL2, "degree", 312, 4, true);
             break;
         }

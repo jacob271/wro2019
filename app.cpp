@@ -26,11 +26,12 @@ void logic()
         {
             routerEinsammeln(false, 3, true);
             router(4, 3, 1, 2, true);
-            mediumMotor(longMotor, 60, "degree", 250, true);
+            mediumMotor(longMotor, 60, "degree", 250, true); // parallel
         }
         else //nicht drehen
         {
-            move(-1, -4, 1, 1, "degree", 90, -1, true);
+            cout<< "Strecke rückwärts"<<endl;
+            move(-1, -4, 1, 1, "degree", 110, -1, true);
             routerEinsammeln(true, 3, false);
             turn2(1, 5, "degree", -spin90, 1, true);
             router(3, 3, 1, 2, true);
@@ -79,8 +80,10 @@ void logic()
         }
         else if (routerO[2] == 0 && (red == 3 || red == 4))
         {
+            //M4
             city(-3, 2, 4, 1, false);
             routerEinsammeln(true, 3, true);
+            routerO[2] = 2;
             if (red == 3)
             {
                 turn2(1, 5, "degree", spin180, 1, true);
@@ -91,7 +94,7 @@ void logic()
             else
             {
                 turn2(1, 5, "degree", spin90, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 235, 3, false); //paul
+                line2(1, 3, pGL2, dGL2, "degree", 215, 3, false); //M2
                 city(5, 1, -5, 3, true);
                 routerAbladen(LSr, false);
                 city(-5, 3, 6, 4, false);
@@ -101,11 +104,12 @@ void logic()
         {
             city(-3, 2, 4, 1, true);
             routerEinsammeln(false, 1, true);
+            routerO[2] = 2;
             if (red == 1)
             {
                 manualSetDriveDirection = true;
                 city(4, 1, -4, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
                 routerAbladen(LSr, true);
                 city(-4, 2, 6, 4, true);
             }
@@ -113,7 +117,7 @@ void logic()
             {
                 manualSetDriveDirection = true;
                 city(4, 1, 5, 1, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
                 city(5, 1, -5, 3, true);
                 routerAbladen(LSr, false);
                 city(-5, 3, 6, 4, false);
@@ -123,9 +127,10 @@ void logic()
         {
             city(-3, 2, 3, 3, true);
             routerEinsammeln(false, 4, true);
-            line2(1, 4, pGL2, dGL2, "degree", 100, 4, false);
-            city(4, 1, 4, 1, true); ///PAAAUUUUULLL paul
-            mediumMotor(longMotor, 60, "degree", 250, true);
+            routerO[2] = 2; //M4
+            //line2(1, 4, pGL2, dGL2, "degree", 100, 4, false);
+            city(3, 1, 4, 1, true); // paul
+            mediumMotor(longMotor, 60, "degree", 250, true); // parallel
             if (red == 1)
             {
                 manualSetDriveDirection = true;
@@ -150,7 +155,7 @@ void logic()
         {
             routerEinsammeln(false, 1, true);
             router(4, 1, 6, 2, true);
-            mediumMotor(longMotor, 60, "degree", 250, true);
+            mediumMotor(longMotor, 60, "degree", 250, true); //parallel
         }
         else //nicht drehen
         {
@@ -206,6 +211,7 @@ void logic()
         {
             city(-3, 2, 3, 3, false);
             routerEinsammeln(true, 1, true);
+            routerO[0] = 2;
             if (blue == 3)
             {
                 turn2(1, 5, "degree", spin180, 1, true);
@@ -229,11 +235,12 @@ void logic()
             turn2(1, 5, "degree", spin90, 1, true);
             line2(1, 4, pGL2, dGL2, "degree", 167, 1, true);
             routerEinsammeln(false, 2, true);
+            routerO[0] = 2;
             if (blue == 1)
             {
                 manualSetDriveDirection = false;
                 city(3, 3, -2, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
                 routerAbladen(LSl, true);
                 city(-2, 2, 5, 1, false);
             }
@@ -241,7 +248,7 @@ void logic()
             {
                 manualSetDriveDirection = false;
                 city(3, 3, 2, 3, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
                 line2(1, 4, pGL2, dGL2, "degree", 50, 4, false);
                 city(2, 3, -1, 1, true);
                 routerAbladen(LSl, false);
@@ -252,9 +259,10 @@ void logic()
         {
             city(-3, 2, 4, 1, true);
             routerEinsammeln(false, 3, true);
+            routerO[1] = 2;
             manualSetDriveDirection = false;
             city(4, 1, 3, 1, true);
-            mediumMotor(longMotor, 60, "degree", 250, true);
+            mediumMotor(longMotor, 60, "degree", 250, true); // parallel
             if (blue == 1)
             {
                 manualSetDriveDirection = false;
@@ -276,12 +284,13 @@ void logic()
     bool greenFirst = true; // green == true
     if (routerW[2] == 0)
     {
+        routerW[2] = 2;
         if (green == 3 || green == 2)
         {
             router(5, 3, 4, 3, true);
             routerEinsammeln(false, 4, true);
             router(4, 1, 6, 2, true);
-            mediumMotor(longMotor, 60, "degree", 250, true);
+            mediumMotor(longMotor, 60, "degree", 250, true); //parallel
         }
         else
         {
@@ -307,15 +316,16 @@ void logic()
     }
     else
     {
+        routerW[0] = 2;//M4
         greenFirst = false;
         if (yellow == 3 || yellow == 4)
         {
             router(5, 3, 3, 3, true);
             routerEinsammeln(false, 2, true);
             router(3, 3, 1, 2, true);
-            mediumMotor(longMotor, 60, "degree", 250, true);
+            mediumMotor(longMotor, 60, "degree", 250, true); //parallel
         }
-        else
+        else 
         {
             router(5, 3, 3, 3, false);
             routerEinsammeln(true, 1, true);
@@ -348,6 +358,7 @@ void logic()
             {
                 city(-9, 4, 5, 3, false);
                 routerEinsammeln(true, 1, true);
+                routerO[2] = 2;
                 turn2(1, 5, "degree", -spin90, 1, true);
                 city(4, 3, 15, 2, false);
             }
@@ -355,15 +366,17 @@ void logic()
             {
                 city(-9, 4, 4, 3, false);
                 routerEinsammeln(true, 1, true);
+                routerO[1] = 2;
                 turn2(1, 5, "degree", -spin90, 1, true);
                 city(3, 3, 15, 2, false);
             }
             else
             {
-                city(-9, 4, 3, 3, false);
-                routerEinsammeln(true, 1, true);
+                city(-9, 4, 2, 1, false);
+                routerEinsammeln(true, 3, true);
+                routerO[0] = 2;
                 turn2(1, 5, "degree", -spin90, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 200, 1, false); //todo
+                line2(1, 3, pGL2, dGL2, "degree", 215, 1, false); //todo
                 city(2, 3, 15, 2, false);
             }
         }
@@ -374,22 +387,25 @@ void logic()
                 city(-9, 4, 5, 3, false);
                 line2(1, 3, pGL2, dGL2, "degree", 50, 1, true); //todo
                 routerEinsammeln(false, 2, true);
+                routerO[2] = 2;
                 city(5, 3, 1, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
             }
             else if (routerO[1] == 0)
             {
                 city(-9, 4, 4, 3, false);
                 routerEinsammeln(false, 2, true);
+                routerO[1] = 2;
                 city(4, 3, 1, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
             }
             else
             {
-                city(-9, 4, 3, 3, false);
-                routerEinsammeln(false, 2, true);
+                city(-9, 4, 3, 1, false);
+                routerEinsammeln(false, 3, true);
+                routerO[0] = 2;
                 city(3, 3, 1, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true);// parallel
             }
             city(1, 2, 15, 2, false);
         }
@@ -417,6 +433,7 @@ void logic()
             {
                 city(-9, 4, 5, 3, false);
                 routerEinsammeln(true, 1, true);
+                routerO[2] = 2;
                 turn2(1, 5, "degree", spin90, 1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 200, 1, false);
                 city(5, 1, 8, 2, false);
@@ -425,6 +442,7 @@ void logic()
             {
                 city(-9, 4, 3, 1, false);
                 routerEinsammeln(true, 3, true);
+                routerO[1] = 2;
                 turn2(1, 5, "degree", spin90, 1, true);
                 city(4, 1, 8, 2, false);
             }
@@ -432,6 +450,7 @@ void logic()
             {
                 city(-9, 4, 2, 1, false);
                 routerEinsammeln(true, 3, true);
+                routerO[0] = 2;
                 turn2(1, 5, "degree", spin90, 1, true);
                 city(3, 1, 8, 2, false);
             }
@@ -442,23 +461,26 @@ void logic()
             {
                 city(-9, 4, 4, 1, false);
                 routerEinsammeln(false, 1, true);
+                routerO[2] = 2;
                 city(4, 1, 6, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
             }
             else if (routerO[1] == 0)
             {
                 city(-9, 4, 3, 1, false);
                 routerEinsammeln(false, 1, true);
+                routerO[1] = 2;
                 city(3, 1, 6, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
             }
             else
             {
                 city(-9, 4, 2, 1, false);
                 line2(1, 3, pGL2, dGL2, "degree", 50, 1, true); //todo
                 routerEinsammeln(false, 1, true);
+                routerO[0] = 2;
                 city(2, 1, 6, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true);
+                mediumMotor(longMotor, 60, "degree", 250, true);// parallel
             }
             city(6, 2, 8, 2, false);
         }

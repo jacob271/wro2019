@@ -85,6 +85,7 @@ int currentPosition;
 int endPosition;
 bool manualSetDriveDirection = false;
 int currentColor;
+bool liftParallel = false;
 Stopwatch run;
 
 //StallDetection mediumMotor

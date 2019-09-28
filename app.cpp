@@ -52,7 +52,7 @@ void logic()
             line1(3, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
             if (liftParallel)
             {
-                line1(3, 3, pGL1, dGL1, LSr, true, "degree", 200, 3, false, longMotor, 60, "degree", 250, true); //parallel
+                line1(3, 3, pGL1, dGL1, LSr, true, "degree", 200, 3, false, longMotor, liftParallelSpeed, "degree", 250, true); //parallel
             }
             else
             {
@@ -139,9 +139,9 @@ void logic()
             city(-3, 2, 3, 3, true);
             routerEinsammeln(false, 4, true);
             liftParallel = true;
-            routerO[2] = 2; //M4
+            routerO[1] = 2; //M4
             line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
-            line2(1, 4, pGL2, dGL2, "degree", 165, 4, false, longMotor, 60, "degree", 250, true); //parallel
+            line2(1, 4, pGL2, dGL2, "degree", 165, 4, false, longMotor, liftParallelSpeed, "degree", 250, true); //parallel
             liftParallel = false;
 
             //city(3, 1, 4, 1, true);
@@ -184,7 +184,7 @@ void logic()
         {
             router(6, 2, 7, 3, false);
             manualSetDriveDirection = false;
-            city(5, 3, -4, 2, false);
+            city(5, 3, -4, 2, true);
             routerAbladen(LSr, true);
             city(-4, 2, -3, 2, true);
         }
@@ -192,7 +192,7 @@ void logic()
         {
             if (liftParallel)
             {
-                line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, longMotor, 60, "degree", 250, true);
+                line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 250, true);
                 liftParallel = false;
             }
             else
@@ -206,7 +206,7 @@ void logic()
             city(-5, 3, -3, 2, true);
         }
         kabelAbladen(true, true);
-        cout << "Zweites Kabel abgeladen" << endl;
+        cout << "Kabel abgeladen" << endl;
         updateLogDatei();
 
         //blau
@@ -307,6 +307,7 @@ void logic()
     }
     kabelSammeln(false);
     bool greenFirst = true; // green == true
+    bool kabelAbladenShort = true;
     if (routerW[2] == 0)
     {
         routerW[2] = 2;
@@ -316,7 +317,7 @@ void logic()
             routerEinsammeln(false, 4, true);
             liftParallel = true;
             router(4, 1, 6, 2, false);
-            line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false, longMotor, 60, "degree", 250, true); //parallel
+            line1(1, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false, longMotor, liftParallelSpeed, "degree", 250, true); //parallel
             liftParallel = false;
         }
         else
@@ -333,12 +334,14 @@ void logic()
             city(6, 2, -7, 3, true);
             routerAbladen(LSl, false);
             city(-7, 3, -9, 4, false);
+            kabelAbladenShort = false;
         }
         else
         {
             city(6, 2, -8, 4, true);
             routerAbladen(LSl, true);
             city(-8, 4, -9, 4, false);
+            kabelAbladenShort = true;
         }
     }
     else
@@ -351,7 +354,7 @@ void logic()
             routerEinsammeln(false, 2, true);
             liftParallel = true;
             router(3, 3, 1, 2, false);
-            line1(3, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false, longMotor, 60, "degree", 250, true); //parallel
+            line1(3, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false, longMotor, liftParallelSpeed, "degree", 250, true); //parallel
             liftParallel = false;
         }
         else
@@ -369,15 +372,18 @@ void logic()
             city(1, 2, -11, 1, true);
             routerAbladen(LSr, false);
             city(-11, 1, -9, 4, false);
+            kabelAbladenShort= false;
         }
         else
         {
             city(1, 2, -10, 4, true);
             routerAbladen(LSr, true);
             city(-10, 4, -9, 4, false);
+            kabelAbladenShort = true;
         }
     }
-    kabelAbladen(true, false);
+    kabelAbladen(true, kabelAbladenShort);
+    cout << "Zweites Kabel abgeladen!" << endl;
 
     if (greenFirst == true)
     {
@@ -488,11 +494,11 @@ void logic()
         {
             if (routerO[2] == 0)
             {
-                city(-9, 4, 4, 1, false);
-                routerEinsammeln(false, 1, true);
+                city(-9, 4, 4, 3, false);
+                routerEinsammeln(false, 4, true);
                 liftParallel = true;
                 routerO[2] = 2;
-                city(4, 1, 6, 2, false);
+                city(4, 1, 8, 2, false);
             }
             else if (routerO[1] == 0)
             {
@@ -500,7 +506,7 @@ void logic()
                 routerEinsammeln(false, 1, true);
                 liftParallel = true;
                 routerO[1] = 2;
-                city(3, 1, 6, 2, false);
+                city(3, 1, 8, 2, false);
             }
             else
             {
@@ -509,9 +515,8 @@ void logic()
                 routerEinsammeln(false, 1, true);
                 liftParallel = true;
                 routerO[0] = 2;
-                city(2, 1, 6, 2, false);
+                city(2, 1, 8, 2, false);
             }
-            city(6, 2, 8, 2, false); //parallel
         }
         if (green == 4 || green == 2)
         {

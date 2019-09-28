@@ -173,4 +173,5 @@ extern int endPosition;
 extern bool manualSetDriveDirection;
 extern int currentColor;
 extern bool liftParallel;
+extern int liftParallelSpeed;
 extern Stopwatch run;

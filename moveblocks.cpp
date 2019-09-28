@@ -739,10 +739,11 @@ void mediumMotor(motor_port_t mediumMotor, int mediumMotorSpeed, std::string med
       continueMediumMotor = move.getTime() < mediumMotorWert;
     }
 
-    if (stall.detectStall() && move.getTime() > 200)
+    if (stall.detectStall() && move.getTime() > 300)
     {
       continueMediumMotor = false;
-      ev3_speaker_play_tone(NOTE_C4, 100);
+      ev3_motor_stop(mediumMotor, mediumMotorStop);
+      ev3_speaker_play_tone(NOTE_C4, 10);
     }
 
     ev3_motor_set_power(mediumMotor, mediumMotorSpeed);

@@ -25,15 +25,13 @@ void logic()
         updateLogDatei();
         if (blue == 1 || blue == 4) //drehen
         {
+            line2(1, 4, pGL2, dGL2, "degree", 36, 4, false);
             routerEinsammeln(false, 3, true);
             liftParallel = true;
             router(4, 3, 1, 2, false);
-            //mediumMotor(longMotor, 60, "degree", 250, true); // parallel
         }
         else //nicht drehen
         {
-            tslp_tsk(300);
-            move(-1, -4, 1, 1, "degree", 20, -1, true); //M1
             routerEinsammeln(true, 3, false);
             turn2(1, 5, "degree", -spin90, 1, true);
             router(3, 3, 1, 2, false);
@@ -120,8 +118,7 @@ void logic()
             if (red == 1)
             {
                 manualSetDriveDirection = true;
-                city(4, 1, -4, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
+                city(4, 1, -4, 2, true); // parallel
                 liftParallel = false;
                 routerAbladen(LSr, true);
                 city(-4, 2, 6, 4, false);
@@ -168,6 +165,7 @@ void logic()
         routerW[2] = 2;
         if (red == 1 || red == 2) //drehen
         {
+            line2(cSpeed, 4, pGL2, dGL2, "degree", 36, 1, true);
             routerEinsammeln(false, 1, true);
             liftParallel = true;
             router(4, 1, 6, 2, false);
@@ -265,8 +263,7 @@ void logic()
             if (blue == 1)
             {
                 manualSetDriveDirection = false;
-                city(3, 3, -2, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
+                city(3, 3, -2, 2, true); // parallel
                 liftParallel = false;
                 routerAbladen(LSl, true);
                 city(-2, 2, 5, 1, false);
@@ -289,8 +286,7 @@ void logic()
             if (blue == 1)
             {
                 manualSetDriveDirection = false;
-                city(4, 1, -2, 2, true);
-                mediumMotor(longMotor, 60, "degree", 250, true); // parallel
+                city(4, 1, -2, 2, true); // parallel
                 liftParallel = false;
                 routerAbladen(LSl, true);
                 city(-2, 2, 5, 1, false);
@@ -372,7 +368,7 @@ void logic()
             city(1, 2, -11, 1, true);
             routerAbladen(LSr, false);
             city(-11, 1, -9, 4, false);
-            kabelAbladenShort= false;
+            kabelAbladenShort = false;
         }
         else
         {
@@ -399,7 +395,7 @@ void logic()
             }
             else if (routerO[1] == 0)
             {
-                city(-9, 4, 4, 3, false);
+                city(-9, 4, 4, 3, true);
                 routerEinsammeln(true, 1, true);
                 routerO[1] = 2;
                 turn2(1, 5, "degree", -spin90, 1, true);
@@ -428,7 +424,7 @@ void logic()
             }
             else if (routerO[1] == 0)
             {
-                city(-9, 4, 4, 3, false);
+                city(-9, 4, 4, 3, true);
                 routerEinsammeln(false, 2, true);
                 liftParallel = true;
                 routerO[1] = 2;
@@ -436,7 +432,7 @@ void logic()
             }
             else
             {
-                city(-9, 4, 3, 1, false);
+                city(-9, 4, 3, 1, true);
                 routerEinsammeln(false, 3, true);
                 liftParallel = true;
                 routerO[0] = 2;
@@ -450,14 +446,19 @@ void logic()
             city(15, 2, -11, 1, true);
             routerAbladen(LSr, false);
             city(-11, 1, 14, 2, false);
+            //-> base
+            line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+            move(cSpeed, 4, 1, 0.9, "degree", 700, 1, true);
         }
         else
         {
             city(15, 2, -10, 4, true);
-            routerAbladen(LSl, false);
-            city(-10, 4, 14, 2, true);
+            routerAbladen(LSl, true);
+            city(-10, 4, 13, 3, false);
+            //-> base
+            turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
+            move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
         }
-        //-> base
     }
     else
     {
@@ -511,7 +512,6 @@ void logic()
             else
             {
                 city(-9, 4, 2, 1, false);
-                line2(1, 3, pGL2, dGL2, "degree", 50, 1, true); //todo
                 routerEinsammeln(false, 1, true);
                 liftParallel = true;
                 routerO[0] = 2;
@@ -529,15 +529,23 @@ void logic()
         {
             city(8, 2, -8, 4, true);
             routerAbladen(LSl, true);
-            city(-8, 4, 13, 3, true);
+            city(-8, 4, 13, 3, false);
         }
         //-> base
+        turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
+        move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
     }
 }
 
 void test()
 {
-    line1(1, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false);
+    for (int i = 1; i < 500; i = i + 1)
+    {
+        line1(1, 3, pGL1 * i, dGL1 * i, LSr, true, "degree", 2500, 1, true);
+        waitForButton();
+    }
+
+    /*line1(1, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false);
     move(4, 4, 1, 0.7, "degree", 300, 4, false);
     move(4, 2, 1, 1, "degree", 200, 1, true);
     mediumMotor(doubleLever, 40, "degree", leverDistance, true);
@@ -546,7 +554,6 @@ void test()
     move(-4, -4, 1, 0.7, "degree", 200, -1, true);
     turn2(1, 3, "degree", spin90, 1, true);
 
-    /*
     line2(cSpeed, 4, pGL2, dGL2, "degree", 450, 4, false);
     turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
     move(cSpeed,4, 1, 1, "degree", 90, 4, false);

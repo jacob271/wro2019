@@ -332,7 +332,7 @@ int move(int startSpeed, int maxSpeed, double leftRatio, double rightRatio, std:
       if (stall.detectStall() && move.getTime() > 200)
       {
         continueMediumMotor = false;
-        ev3_speaker_play_tone(NOTE_C4, 100);
+        ev3_speaker_play_tone(NOTE_C4, 30);
       }
 
       ev3_motor_set_power(mediumMotor, mediumMotorSpeed);
@@ -437,7 +437,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
       continueMove = lineDetection(mode) == false;
       if (continueMove == false)
       {
-        ev3_speaker_play_tone(NOTE_F4, 30);
+        ev3_speaker_play_tone(NOTE_F4, 3);
       }
     }
 
@@ -461,7 +461,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
       if (stall.detectStall() && move.getTime() > 200)
       {
         continueMediumMotor = false;
-        ev3_speaker_play_tone(NOTE_C4, 100);
+        ev3_speaker_play_tone(NOTE_C4, 30);
       }
 
       ev3_motor_set_power(mediumMotor, mediumMotorSpeed);
@@ -543,7 +543,6 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
 
 int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_t followSensor, bool rightEdge, std::string mode, int wert, int endSpeed, bool stop, bool colorSearch, sensor_port_t searchSensor, std::string searchMode, motor_port_t mediumMotor, int mediumMotorSpeed, std::string mediumMotorMode, int mediumMotorWert, bool mediumMotorStop)
 {
-  //cout << "sensorLine1: " << followSensor << endl;
   Stopwatch move;
   Stopwatch slowDown;
   initializeSpeeds(startSpeed, maxSpeed, endSpeed);
@@ -579,6 +578,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
   int stallCounter = 0;
 
   int counter = 0;
+  cout << "beginline1 : " << run.getTime() << endl;
   while (continueMove)
   {
     counter++;   //Überprüfen der Schleifendurchläufe
@@ -598,7 +598,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       continueMove = lineDetection(mode) == false;
       if (continueMove == false)
       {
-        ev3_speaker_play_tone(NOTE_F4, 30);
+        ev3_speaker_play_tone(NOTE_F4, 3);
       }
     }
 
@@ -623,7 +623,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       if (stall.detectStall() && move.getTime() > 200)
       {
         continueMediumMotor = false;
-        ev3_speaker_play_tone(NOTE_C4, 100);
+        ev3_speaker_play_tone(NOTE_C4, 30);
       }
 
       ev3_motor_set_power(mediumMotor, mediumMotorSpeed);
@@ -679,10 +679,13 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
 
     //cout << move.getTime() << " cSpeed: " << cSpeed << " p: " << pCorrection << " d: " << dCorrection << endl;
   }
+  cout << "endline1 : " << run.getTime() << endl;
   ev3_motor_stop(mediumMotor, true);
   brake(stop, endSpeed);
   resetMotors(mode, wert, wert, maxSpeed);
   cout << "lc: " << counter / (move.getTime() / 1000) << endl;
+
+ 
 
   if (colorSearch)
   {

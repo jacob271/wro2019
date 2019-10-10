@@ -42,7 +42,7 @@ void logic()
             router(1, 2, 10, 1, false);
             manualSetDriveDirection = true;
             city(2, 1, -2, 2, false);
-            routerAbladen(LSl, true);
+            routerAbladen(LSr, true);
             city(-2, 2, -3, 2, false); //M2
         }
         else
@@ -77,7 +77,7 @@ void logic()
             {
                 manualSetDriveDirection = true;
                 city(4, 1, -4, 2, false);
-                routerAbladen(LSr, true);
+                routerAbladen(LSl, true);
                 city(-4, 2, 6, 4, false); //M2
             }
             else
@@ -97,7 +97,7 @@ void logic()
             {
                 turn2(1, 5, "degree", spin180, 1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 200, 3, false);
-                routerAbladen(LSr, true);
+                routerAbladen(LSl, true);
                 city(-4, 2, 6, 4, false);
             }
             else
@@ -120,7 +120,7 @@ void logic()
                 manualSetDriveDirection = true;
                 city(4, 1, -4, 2, true); // parallel
                 liftParallel = false;
-                routerAbladen(LSr, true);
+                routerAbladen(LSl, true);
                 city(-4, 2, 6, 4, false);
             }
             else
@@ -147,7 +147,7 @@ void logic()
             {
                 manualSetDriveDirection = true;
                 city(4, 1, -4, 2, false);
-                routerAbladen(LSr, true);
+                routerAbladen(LSl, true);
                 city(-4, 2, 6, 4, false);
             }
             else
@@ -157,8 +157,8 @@ void logic()
                 city(-5, 3, 6, 4, false);
             }
         }
-        line1(3, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-        line1(3, 3, pGL1, dGL1, LSr, true, "degree", 150, 3, false); //todo
+        line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+        line1(3, 3, pGL1, dGL1, LSr, true, "degree", 150, 3, false);
     }
     else //rot
     {
@@ -183,7 +183,7 @@ void logic()
             router(6, 2, 7, 3, false);
             manualSetDriveDirection = false;
             city(5, 3, -4, 2, true);
-            routerAbladen(LSr, true);
+            routerAbladen(LSl, true);
             city(-4, 2, -3, 2, true);
         }
         else
@@ -220,7 +220,7 @@ void logic()
             {
                 manualSetDriveDirection = false;
                 city(3, 3, -2, 2, false);
-                routerAbladen(LSl, true);
+                routerAbladen(LSr, true);
                 city(-2, 4, 5, 1, false);
             }
             else
@@ -239,7 +239,7 @@ void logic()
             {
                 turn2(1, 5, "degree", spin180, 1, true);
                 line2(1, 3, pGL2, dGL2, "degree", 200, 3, false);
-                routerAbladen(LSl, true);
+                routerAbladen(LSr, true);
                 city(-2, 2, 5, 1, false);
             }
             else
@@ -265,7 +265,7 @@ void logic()
                 manualSetDriveDirection = false;
                 city(3, 3, -2, 2, true); // parallel
                 liftParallel = false;
-                routerAbladen(LSl, true);
+                routerAbladen(LSr, true);
                 city(-2, 2, 5, 1, false);
             }
             else
@@ -288,7 +288,7 @@ void logic()
                 manualSetDriveDirection = false;
                 city(4, 1, -2, 2, true); // parallel
                 liftParallel = false;
-                routerAbladen(LSl, true);
+                routerAbladen(LSr, true);
                 city(-2, 2, 5, 1, false);
             }
             else
@@ -335,7 +335,7 @@ void logic()
         else
         {
             city(6, 2, -8, 4, true);
-            routerAbladen(LSl, true);
+            routerAbladen(LSr, true);
             city(-8, 4, -9, 4, false);
             kabelAbladenShort = true;
         }
@@ -373,7 +373,7 @@ void logic()
         else
         {
             city(1, 2, -10, 4, true);
-            routerAbladen(LSr, true);
+            routerAbladen(LSl, true);
             city(-10, 4, -9, 4, false);
             kabelAbladenShort = true;
         }
@@ -528,7 +528,7 @@ void logic()
         else
         {
             city(8, 2, -8, 4, true);
-            routerAbladen(LSl, true);
+            routerAbladen(LSr, true);
             city(-8, 4, 13, 3, false);
         }
         //-> base

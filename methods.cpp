@@ -393,7 +393,7 @@ void routerAbladen(sensor_port_t followSensor, bool lang)
         line1(cSpeed, 30, pGL2, dGL2, followSensor, false, "colorR", 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
         //move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
     }
-    mediumMotor(longMotor, -30, "degree", 230, true);
+    mediumMotor(longMotor, -30, "time", 600, true);
     //Drehen
     /*
     if (followSensor == LSl)
@@ -1385,7 +1385,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         {
                             line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 155, 3, false);
                             turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
-                            line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 60, endSpeed, stopNow);
+                            line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 100, endSpeed, stopNow);
                         }
                         break;
                     case 2:
@@ -1510,7 +1510,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         {
                             line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 155, 3, false);
                             turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
-                            line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 60, 3, false);
+                            line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 100, endSpeed, stopNow);
                         }
                         break;
                     case 7:

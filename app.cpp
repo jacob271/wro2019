@@ -539,49 +539,7 @@ void logic()
 
 void test()
 {
-    for (int i = 1; i < 500; i = i + 1)
-    {
-        line1(1, 3, pGL1 * i, dGL1 * i, LSr, true, "degree", 2500, 1, true);
-        waitForButton();
-    }
-
-    /*line1(1, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false);
-    move(4, 4, 1, 0.7, "degree", 300, 4, false);
-    move(4, 2, 1, 1, "degree", 200, 1, true);
-    mediumMotor(doubleLever, 40, "degree", leverDistance, true);
-    mediumMotor(doubleLever, 70, "time", 150, true);
-    move(-1, -4, 1, 1, "degree", 130, -4, false);
-    move(-4, -4, 1, 0.7, "degree", 200, -1, true);
-    turn2(1, 3, "degree", spin90, 1, true);
-
-    line2(cSpeed, 4, pGL2, dGL2, "degree", 450, 4, false);
-    turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
-    move(cSpeed,4, 1, 1, "degree", 90, 4, false);
-    turn1(motor_left, cSpeed, true, 4, "degree", 475, 4, false);
-    line2(cSpeed, 4, pGL2 * 0.7, dGL2 * 0.7, "degree", 200, 1, true);
-    //line2(cSpeed, 3, pGL2, dGL2, "degree", 200, 1, true);
-    //mediumMotor(longMotor, 60, "degree", 220, true);
-    //move(-1, -3, 1, 1, "degree", 95, -1, true);
-    //routerEinsammeln(true,1,true);
-    //move(1, 3, 1, 0.42, "degree", 1700, 1, true);
-   //line2(1,3,pGL2,dGL2,"degree",500,1,true,longMotor,100,"degree",400,true);
-    //mediumMotor(longMotor, -100, "time", 5000, true);
-    
-    while(true){
-    int left = ev3_color_sensor_get_reflect(LSl);
-    int right = ev3_color_sensor_get_reflect(LSr);
-
-    char buf[10];
-    sprintf(buf, "%d", left);
-    ev3_lcd_draw_string(buf, 20, 90);
-
-    sprintf(buf, "%d", right);
-    ev3_lcd_draw_string(buf, 60, 90);
-
-    ev3_lcd_fill_rect(0,128,320,128,EV3_LCD_BLACK );
-    */
-
-    //router(10, 3, 2, 1, true);
+   
 }
 
 void main_task(intptr_t unused)

@@ -19,7 +19,7 @@ void start() //Konfiguration für den Start
     batteryLevel = ev3_battery_voltage_mV();
 
     batteryFactor = (7950 / batteryLevel); //8045
-    if (batteryLevel >= 7900)
+    if (batteryLevel >= 8050)
     {
         batteryFactor = batteryFactor * 1.02;
     }

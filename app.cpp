@@ -286,14 +286,14 @@ void logic()
             if (blue == 1)
             {
                 manualSetDriveDirection = false;
-                city(4, 1, -2, 2, true); // parallel
+                city(4, 3, -2, 2, true); // parallel
                 liftParallel = false;
                 routerAbladen(LSr, true);
                 city(-2, 2, 5, 1, false);
             }
             else
             {
-                city(4, 1, -1, 1, false); //parallel
+                city(4, 3, -1, 1, false); //parallel
                 routerAbladen(LSl, false);
                 city(-1, 1, 5, 1, false);
             }

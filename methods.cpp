@@ -1264,7 +1264,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     }
                     else
                     {
-                        move(-cSpeed, -6, 1, 1, "degree", 325, -1, true);
+                        move(cSpeed, -6, 1, 1, "degree", 325, -1, true);
                         turn2(1, 5, "degree", -spin90, 1, true);
                         line2(1, 4, pGL2, dGL2, "degree", 167, endSpeed, stopNow);
                         
@@ -1287,7 +1287,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     }
                     else
                     {
-                        move(-cSpeed, -6, 1, 1, "degree", 325, -1, true);
+                        move(cSpeed, -6, 1, 1, "degree", 325, -1, true);
                         turn2(1, 5, "degree", spin90, 1, true);
                         line2(1, 4, pGL2, dGL2, "degree", 167, endSpeed, stopNow);
                         /*

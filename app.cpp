@@ -496,7 +496,7 @@ void logic()
         {
             if (routerO[2] == 0)
             {
-                city(-9, 4, 4, 3, false);
+                city(-9, 4, 4, 3, true);
                 routerEinsammeln(false, 4, true);
                 liftParallel = true;
                 routerO[2] = 2;
@@ -504,7 +504,7 @@ void logic()
             }
             else if (routerO[1] == 0)
             {
-                city(-9, 4, 3, 1, false);
+                city(-9, 4, 3, 1, true);
                 routerEinsammeln(false, 1, true);
                 liftParallel = true;
                 routerO[1] = 2;

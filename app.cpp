@@ -25,7 +25,7 @@ void logic()
         updateLogDatei();
         if (blue == 1 || blue == 4) //drehen
         {
-            line2(1, 4, pGL2, dGL2, "degree", 36, 4, false);
+            line2(1, 4, pGL2, dGL2, "degree", 50, 1, true);
             routerEinsammeln(false, 3, true);
             liftParallel = true;
             router(4, 3, 1, 2, false);
@@ -68,11 +68,12 @@ void logic()
         //rot
         if (routerO[1] == 0 && (red == 3 || red == 4))
         {
+            move(cSpeed, -6, 1, 1, "degree", 50, -1, true);
             turn2(1, 5, "degree", spin180, 1, true);
             routerEinsammeln(true, 0, false); //M7
             routerO[1] = 2;
             turn2(1, 5, "degree", spin90, 1, true);
-            line2(1, 3, pGL2, dGL2, "degree", 150, 3, false); //todo
+            line2(1, 3, pGL2, dGL2, "degree", 150, 3, false);
             if (red == 3)
             {
                 manualSetDriveDirection = true;
@@ -96,7 +97,8 @@ void logic()
             if (red == 3)
             {
                 turn2(1, 5, "degree", spin180, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false);
+                line2(1, 4, pGL2, dGL2, "degree", 150, 6, false);
+                line1(cSpeed, 30, pGL2, dGL2, LSl, false, "degree", 150, 30, false, longMotor, liftParallelSpeed, "degree", 230, true);
                 routerAbladen(LSl, true);
                 city(-4, 2, 6, 4, false);
             }
@@ -165,7 +167,7 @@ void logic()
         routerW[2] = 2;
         if (red == 1 || red == 2) //drehen
         {
-            line2(cSpeed, 4, pGL2, dGL2, "degree", 36, 1, true);
+            line2(cSpeed, 4, pGL2, dGL2, "degree", 50, 1, true);
             routerEinsammeln(false, 1, true);
             liftParallel = true;
             router(4, 1, 6, 2, false);
@@ -215,7 +217,7 @@ void logic()
             routerEinsammeln(true, 0, false);
             routerO[1] = 2;
             turn2(1, 5, "degree", -spin90, 1, true);
-            line2(1, 3, pGL2, dGL2, "degree", 150, 3, false); //todo
+            line2(1, 3, pGL2, dGL2, "degree", 150, 3, false);
             if (blue == 3)
             {
                 manualSetDriveDirection = false;
@@ -238,14 +240,16 @@ void logic()
             if (blue == 3)
             {
                 turn2(1, 5, "degree", spin180, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false);
+                line2(1, 4, pGL2, dGL2, "degree", 150, 6, false);
+                line1(cSpeed, 30, pGL2, dGL2, LSr, true, "degree", 150, 30, false, longMotor, liftParallelSpeed, "degree", 230, true);
+
                 routerAbladen(LSr, true);
                 city(-2, 2, 5, 1, false);
             }
             else
             {
                 turn2(1, 5, "degree", -spin90, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 200, 3, false); //todo
+                line2(1, 3, pGL2, dGL2, "degree", 160, 3, false);
                 city(2, 3, -1, 1, true);
                 routerAbladen(LSl, false);
                 city(-1, 1, 5, 1, false);
@@ -253,10 +257,7 @@ void logic()
         }
         else if (routerO[0] == 0)
         {
-            //city(-3, 2, 3, 3, true);
-            move(-1, -6, 1, 1, "degree", 325, -1, true);
-            turn2(1, 5, "degree", spin90, 1, true);
-            line2(1, 4, pGL2, dGL2, "degree", 167, 1, true);
+            city(-3, 2, 3, 3, true);
             routerEinsammeln(false, 2, true);
             liftParallel = true;
             routerO[0] = 2;
@@ -407,7 +408,7 @@ void logic()
                 routerEinsammeln(true, 3, true);
                 routerO[0] = 2;
                 turn2(1, 5, "degree", -spin90, 1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 215, 1, false); //todo
+                line2(1, 3, pGL2, dGL2, "degree", 215, 1, false);
                 city(2, 3, 15, 2, false);
             }
         }
@@ -416,7 +417,7 @@ void logic()
             if (routerO[2] == 0)
             {
                 city(-9, 4, 5, 3, false);
-                line2(1, 3, pGL2, dGL2, "degree", 50, 1, true); //todo
+                line2(cSpeed, 3, pGL2, dGL2, "degree", 50, 1, true);
                 routerEinsammeln(false, 2, true);
                 liftParallel = true;
                 routerO[2] = 2;
@@ -539,7 +540,6 @@ void logic()
 
 void test()
 {
-   
 }
 
 void main_task(intptr_t unused)

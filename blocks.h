@@ -30,7 +30,7 @@ void kabelSammeln(bool south);
 void routerScannen(sensor_port_t searchSensor, std::string mode);
 void routerEinsammeln(bool directionEast, int mode, bool crossline);
 void kabelAbladen(bool stop, bool red);
-void routerAbladen(sensor_port_t followSensor, bool lang);
+void routerAbladen(sensor_port_t followSensor, bool lang, std::string color);
 void fallunterscheidung();
 bool direction(int position, int direction, int nPositions);
 int getDistance(int startPosition, int startDirection, int endPosition, int nPositions);
@@ -45,7 +45,7 @@ int getHTRGB(sensor_port_t sensor, int mode);
 int speedLevel(int level);
 void waitForButton();
 void display(int inhalt);
-bool colorDetection_rgb_ev3(sensor_port_t sensor);
+bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode);
 int colorDetection(sensor_port_t sensor);
 int colorDetection_rgb(sensor_port_t sensor, std::string mode);
 int findColor(int colors[], std::string mode);
@@ -138,6 +138,7 @@ extern int green;
 extern int yellow;
 extern int fall1;
 extern int fall2;
+extern int routerDelivered;
 
 extern int miniDistance;
 

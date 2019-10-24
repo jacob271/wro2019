@@ -80,6 +80,8 @@ int yellow;
 int fall1;
 int fall2;
 
+int routerDelivered = 0; //Um zu wissen, ob gerade gelb gesucht wird
+
 int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
 int currentPosition;
 int endPosition;

@@ -336,10 +336,22 @@ bool lineDetection(std::string mode)
       ev3_speaker_play_tone(NOTE_F4, 5);
     return crossline;
   }
-  else if (mode == "colorR")
-    return  colorDetection_rgb_ev3(LSr);
-  else if (mode == "colorL")
-    return  colorDetection_rgb_ev3(LSl);
+  else if (mode == "greenR")
+    return  colorDetection_rgb_ev3(LSr, "green");
+  else if (mode == "blueR")
+    return  colorDetection_rgb_ev3(LSr, "color");
+  else if(mode == "redR")
+    return colorDetection_rgb_ev3(LSr,"color");
+  else if(mode == "yellowR")
+    return colorDetection_rgb_ev3(LSr,"yellow");
+  else if (mode == "greenL")
+    return  colorDetection_rgb_ev3(LSl, "green");
+  else if (mode == "blueL")
+    return  colorDetection_rgb_ev3(LSl, "color");
+  else if(mode == "redL")
+    return colorDetection_rgb_ev3(LSl,"color");
+  else if(mode == "yellowL")
+    return colorDetection_rgb_ev3(LSl,"color");
   return false;
 }
 
@@ -359,7 +371,7 @@ void display(int inhalt)
   ev3_lcd_draw_string(buf, 20, 50);
 }
 
-bool colorDetection_rgb_ev3(sensor_port_t sensor){
+bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode){
   int red = getRGB(sensor,1);
   int green = getRGB(sensor,2);
   int blue = getRGB(sensor, 3);
@@ -375,8 +387,20 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor){
   ev3_lcd_draw_string(buf, 100, 90);
 
   //cout<< red << " " << green << " " << blue <<endl;
+  
 
-  bool color = red < 125 || blue < 125 || green < 125;
+  bool color = false;
+  if (mode == "red" || mode == "blue" || mode == "color"){
+    color = red < 140 || blue < 140 || green < 140;
+  }else if (mode == "yellow"){
+    color = ((red + blue + green) > 400) && blue < 380;
+  }
+  else if (mode == "green")
+  {
+    color = red < 280 && blue < 260; 
+  }
+
+  cout << "rgb: " << red << " " << green << " " << blue << endl;
 
   if (color)
     ev3_speaker_play_tone(NOTE_F4, 5);
@@ -465,9 +489,9 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
     //Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
     if (red < 9 && green < 9 && blue < 9)
       return -1;
-    if (red > 150 && green > 150 && blue > 150)
+    if (red > 150 || green > 150 || blue > 150)
       return 1;
-    if ((red > 10 && red < 100)|| ((green > 10 && green < 100)|| (blue > 10 && blue < 100)))
+    if ((red > 8 && red < 100)|| ((green > 8 && green < 100)|| (blue > 8 && blue < 100)))
       return 0;
   }
   return -1;

@@ -50,7 +50,7 @@ const double wheelDiameter = 6.24; //6.24;
 const double wheelCircumferance = 17.6;
 
 //Distances for main
-int miniDistance1 = 125;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+int miniDistance1 = 125; //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
 int miniDistance2 = 130;
 int miniDistanceShort = 40; //rückwärts an Linie herangefahren
 int moveBackDistance = 193; //Distanz vor einer Drehung zum Router
@@ -60,8 +60,8 @@ int longMotorUpSpeed = 75;
 int longMotorDownSpeed = -80;
 int longMotorDistance = 310;
 int spin180 = 500;
-int spin90 =240;
-int turn90 = 470;//435 //470
+int spin90 = 240;
+int turn90 = 470;   //435 //470
 int goTurn90 = 490; //490
 
 //Values for Line1
@@ -73,6 +73,8 @@ double batteryFactor = 0.016; //speed - (batteryLevel - 7700) * batteryFactor
 int positions[4] = {0};
 int routerO[3] = {0};
 int routerW[3] = {0};
+int routerPositions[6][3] = {0};
+int routerColored[6] = {0, 2, 3, 4, 10, 9, 8};
 int blue;
 int red;
 int green;

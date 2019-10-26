@@ -29,12 +29,14 @@ void positionenScannen();
 void kabelSammeln(bool south);
 void routerScannen(sensor_port_t searchSensor, std::string mode);
 void routerEinsammeln(bool directionEast, int mode, bool crossline);
+void routerEinsammelnColored(bool drehen, int mode, bool crossline);
 void kabelAbladen(bool stop, bool red);
 void routerAbladen(sensor_port_t followSensor, bool lang, std::string color);
 void fallunterscheidung();
 bool direction(int position, int direction, int nPositions);
 int getDistance(int startPosition, int startDirection, int endPosition, int nPositions);
 void router(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
+void routerColored(int currentPosition, int currentDirection, int color, bool drehen);
 void city(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
 
 // SUPPORT BLOCKS

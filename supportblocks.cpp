@@ -239,7 +239,7 @@ int frequencyDistribution(int colorCounter[], std::string mode)
 
   if (mode == "color")
   {
-    //Mögliche Werte: 2,3,4,5
+    //Mögliche Werte: 2,3,4,5, 1
     for (int i = 0; i < laenge; i++)
     {
       if (colorCounter[i] == 2)
@@ -268,16 +268,23 @@ int frequencyDistribution(int colorCounter[], std::string mode)
     }
     cout << "y: " << y << endl;
 
-    if (r > b && r > g && r > y){
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 1)
+        w++;
+    }
+    cout << "w: " << w << endl;
+
+    if (r > b && r > g && r > y && r > w){
       ergebnis = 5;
       ergebnisN = r;
-    }else if(g > r && g > b && g > y){
+    }else if(g > r && g > b && g > y && g > w){
       ergebnis = 3;
       ergebnisN = g;
-    }else if(b > r && b > g && b > y){
+    }else if(b > r && b > g && b > y && b> w){
       ergebnis = 2;
       ergebnisN = b;
-    }else{
+    }else if (y > r && y > g && y > b && y > w){
       ergebnis = 4;
       ergebnisN = y;
     }
@@ -332,8 +339,10 @@ bool lineDetection(std::string mode)
     return ev3_color_sensor_get_reflect(LSl) > 50;
   else if (mode == "crossline"){
     bool crossline = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
-    if (crossline)
+    if (crossline){
+      cout << "CROSSLINE"<< endl;
       ev3_speaker_play_tone(NOTE_F4, 5);
+    }
     return crossline;
   }
   else if (mode == "greenR")
@@ -468,6 +477,8 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
   cout << mode << " " << red << " " << green<< " " << blue << " ";
   if (mode == "color")
   {
+    if (red > 150 && blue > 150 && green > 150)
+      return 1;
     if (red < 20 && blue < 20 && green < 20)
       return -1;
     if (red > blue && red > green && red > 80)

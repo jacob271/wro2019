@@ -73,8 +73,8 @@ double batteryFactor = 0.016; //speed - (batteryLevel - 7700) * batteryFactor
 int positions[4] = {0};
 int routerO[3] = {0};
 int routerW[3] = {0};
-int routerPositions[6][3] = {0};
-int routerColored[6] = {0, 2, 3, 4, 10, 9, 8};
+int routerPositions[7] = {0};
+int routerPositionsKreis[7][2] = {{0}, {2, 3}, {3, 4}, {4, 5}, {9, 10}, {8, 9}, {7, 8}};
 int blue;
 int red;
 int green;
@@ -87,6 +87,7 @@ int routerDelivered = 0; //Um zu wissen, ob gerade gelb gesucht wird
 int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
 int currentPosition;
 int endPosition;
+int endDirection;
 bool manualSetDriveDirection = false;
 int currentColor;
 bool liftParallel = false;

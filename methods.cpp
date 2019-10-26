@@ -281,6 +281,8 @@ void routerScannenColor(sensor_port_t searchSensor, std::string mode)
         i++;
         line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
         router[i] = line2(cSpeed, 4, pGL2, dGL2 * 0.6, "degree", 260, 1, true, true, searchSensor, "color");
+        if (router[i] != 2)
+            move(1, 3, 1, 1, "degree", 15, 3, false);
     }
 
     if (mode == "routerO")
@@ -289,6 +291,9 @@ void routerScannenColor(sensor_port_t searchSensor, std::string mode)
         {
             routerO[2 - x] = router[x];
         }
+        routerPositions[4] = routerO[0];
+        routerPositions[5] = routerO[1];
+        routerPositions[6] = routerO[2];
     }
     else
     {
@@ -296,6 +301,10 @@ void routerScannenColor(sensor_port_t searchSensor, std::string mode)
         {
             routerW[x] = router[x];
         }
+
+        routerPositions[1] = routerW[0];
+        routerPositions[2] = routerW[1];
+        routerPositions[3] = routerW[2];
     }
 }
 
@@ -338,27 +347,53 @@ void routerScannen(sensor_port_t searchSensor, std::string mode)
     }
 }
 
-void routerEinsammelnColored(bool drehen)
+void routerEinsammelnColored(bool drehen, bool fromSouth)
 {
     if (drehen == false)
     {
+        motor_port_t turnMotor;
+        if (fromSouth)
+        {
+            turnMotor = motor_left;
+        }
+        else
+        {
+            turnMotor = motor_right;
+        }
+
         line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
         line2(cSpeed, 4, pGL2, dGL2, "degree", 260, 1, true);
-        turn1(motor_left, -1, false, -4, "degree", 450, -1, true);
+        turn1(turnMotor, -1, false, -4, "degree", 450, -1, true);
         mediumMotor(longMotor, -100, "degree", 210, true);
         //move(1,2,1,1,"degree",30,2,false);
         line2(1, 2, pGL2 * 0.3, dGL2 * 0.3, "degree", 240, 1, true);
         mediumMotor(longMotor, 60, "degree", 220, true);
         move(-1, -3, 1, 1, "degree", 95, -1, true);
-        turn2(1, 5, "degree", spin90, 1, true);
-        line2(1, 4, pGL2, dGL2, "degree", 100, 1, true); //M10 Strecke
+        if (fromSouth)
+        {
+            turn2(1, 5, "degree", spin90, 1, true);
+        }
+        else
+        {
+            turn2(1, 5, "degree", -spin90, 1, true);
+        }
+        line2(1, 4, pGL2, dGL2, "degree", 200, 1, true); //M10 Strecke
     }
     else
     {
-        turn2(1, 5, "degree", -spin90, 1, true);
-        mediumMotor(longMotor, -100, "degree", 210, true);
-        turn2(1, 35, "degree", spin90, 1, true);
-        line2(1, 4, pGL2, dGL2, "degree", 200, 1, true); //M10 Strecke
+        if (fromSouth)
+        {
+            turn2(1, 5, "degree", -spin90, 1, true);
+            mediumMotor(longMotor, -100, "degree", 210, true);
+            turn2(1, 35, "degree", spin90, 1, true);
+        }
+        else
+        {
+            turn2(1, 5, "degree", spin90, 1, true);
+            mediumMotor(longMotor, -100, "degree", 210, true);
+            turn2(1, 35, "degree", -spin90, 1, true);
+        }
+        line2(1, 4, pGL2, dGL2, "degree", 350, 1, true); //M10 Strecke
         mediumMotor(longMotor, 60, "degree", 220, true);
     }
 }
@@ -434,8 +469,8 @@ void kabelAbladen(bool stop, bool kurzeDistanz)
     }
     else
     {
-        line2(cSpeed, 4, pGL2, dGL2, "degree", 230, 4, false);
-        move(cSpeed, 3, 1, 1, "redR", 0, 3, false);
+        line2(cSpeed, 4, pGL2, dGL2, "degree", 170, 4, false);
+        move(cSpeed, 3, 1, 1, "greenR", 0, 3, false);
     }
     move(cSpeed, 6, 1, 1, "degree", 190, 1, true);
     //move(cSpeed, 35, "degree", 160, 1, true);
@@ -702,14 +737,61 @@ int getDistance(int startPosition, int startDirection, int endPosition, int nPos
 }
 
 //Der Roboter kann anhand der Start- und Endposition auf dem Router-Kreis den kürzesten Weg erkennen und fährt diesen anschließend
-void routerColored(int currentPosition, int currentDirection, int color, bool drehen)
+void routerColored(int currentPosition, int currentDirection, int color)
 {
-    //array mit Farben, neuen Wert berechnen
+    //1 = kurze Seite im Süden, dann im Uhrezeigersinn
+    cout << "Enter Router-Kreis at: " << currentPosition << " " << currentDirection << endl;
 
-    int endPosition;
+    bool driveDirection = direction(currentPosition, currentDirection, 10);
+    cout << "driveDirection: " << driveDirection << endl;
+
+    bool drehen = false;
+
+    if (color == 4)
+    {
+        if (yellow == 3 || yellow == 4)
+            drehen = true;
+    }
+    else if (color == 3)
+    {
+        if (green == 3 || green == 2)
+            drehen = true;
+    }
+    else if (color == 5)
+    {
+        if (red == 2 || red == 1)
+            drehen = true;
+    }
+    else if (color == 2)
+    {
+        if (blue == 1 || blue == 4)
+            drehen = true;
+    }
+
+    cout << "drehen: " << drehen << endl;
+
+    endPosition = 0;
+    int routerPosition = 0;
+    for (int i = 0; i < 7; i++)
+    {
+        if (routerPositions[i] == color)
+        {
+            if (driveDirection)
+            {
+                endPosition = routerPositionsKreis[i][0];
+            }
+            else
+            {
+                endPosition = routerPositionsKreis[i][1];
+            }
+            routerPosition = i;
+            break;
+        }
+    }
+
+    cout << "endPosition: " << endPosition << endl;
 
     bool stop;
-    int endDirection = 1;
     if (drehen)
     {
         stop = true;
@@ -719,39 +801,12 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
         stop = false;
     }
 
-    //1 = kurze Seite im Süden, dann im Uhrezeigersinn
-    cout << "Enter Router-Kreis at: " << currentPosition << " " << currentDirection << endl;
-
-    //Berechnet die Abstände im und gegen den Uhrzeigersinn auf dem Router-Kreis
-    int distance = getDistance(currentPosition, currentDirection, endPosition, 10);
-
-    cout << "distance: " << distance << std ::endl;
-
-    //Legt anhand der kürzeren Strecke die Fahrtrichtung fest. Falls es keine kürzere gibt entscheidet die aktuelle Orientierung des Roboters
-    bool driveDirection;
-    if (distance >= 0)
-    {
-        driveDirection = true;
-    }
-    else
-    {
-        driveDirection = false;
-    }
-    cout << "driveDirection: " << driveDirection << endl;
-
-    //Dreht den Roboter gegebenenfalls in Fahrtrichtung
-    if (direction(currentPosition, currentDirection, 10) != driveDirection)
-    {
-        turn2(1, 5, "degree", spin180, 1, true);
-    }
-
     //übernimmt Fahrtgeschwindigkeit oder setzt Startspeed
     if (cSpeed < speedLevel(1))
         cSpeed = 1;
 
     //Strecken
     int toMiddle = 310; //Von Crossline bis der Roboter zwischen den Linien steht
-    motor_port_t turnMotor;
 
     int endSpeed;
     bool stopNow;
@@ -761,7 +816,6 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
     //Zählt je nach Fahrtrichtung die Positionen hoch oder runter und fährt von einer zur nächsten
     if (driveDirection == true)
     {
-        turnMotor = motor_left;
         for (int i = currentPosition; i != endPosition; i++)
         {
             if (i == 11)
@@ -791,9 +845,12 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
                     {
                         move(cSpeed, 3, 1, 1, "degree", miniDistance1, 1, true);
                     }
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true);
+                    else
+                    {
+                        line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true);
+                    }
                     turn2(1, 5, "degree", spin90, 1, true);
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 160, endSpeed, stopNow);
                     break;
                 case 2:
                 case 3:
@@ -805,13 +862,15 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
                     line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 5:
+                    move(cSpeed, 3, 1, 1, "degree", 255, 1, true);
+                    turn2(1, 5, "degree", spin90, 1, true);
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 170, endSpeed, stopNow);
+                    break;
                 case 10:
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 50, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", miniDistance1, 1, true);
                     turn2(1, 5, "degree", spin90, 1, true);
                     line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 170, endSpeed, stopNow);
-
                     break;
                 default:
                     break;
@@ -825,7 +884,6 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
     }
     else
     {
-        turnMotor = motor_right;
         for (int i = currentPosition; i != endPosition; i--)
         {
             if (i == 0)
@@ -862,7 +920,7 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
                         line1(cSpeed, 3, pGL1, dGL1, LSl, true, "degree", miniDistance1, 1, true);
                     }
                     turn2(1, 5, "degree", -spin90, 1, true);
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 160, endSpeed, stopNow);
                     break;
                 case 10:
                 case 9:
@@ -874,9 +932,12 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
                     line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 2:
+                    move(cSpeed, 3, 1, 1, "degree", 255, 1, true);
+                    turn2(1, 5, "degree", -spin90, 1, true);
+                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 170, endSpeed, stopNow);
+                    break;
                 case 7:
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 50, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
                     move(cSpeed, 3, 1, 1, "degree", miniDistance1, 1, true);
                     turn2(1, 5, "degree", -spin90, 1, true);
                     line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 170, endSpeed, stopNow);
@@ -891,15 +952,32 @@ void routerColored(int currentPosition, int currentDirection, int color, bool dr
                 break;
             }
         }
-
-        routerEinsammeln(true, )
     }
 
-    //Dreht am Ende, falls die Orientierung noch nicht übereinstimmt
-    if (direction(endPosition, endDirection, 10) != driveDirection)
+    bool fromSouth;
+    if ((driveDirection && routerPosition < 4) || (!driveDirection && routerPosition > 3))
     {
-        turn2(1, 5, "degree", spin180, 1, true);
+        fromSouth = true;
+        endDirection = 1;
     }
+    else
+    {
+        fromSouth = false;
+        endDirection = 3;
+    }
+    if (driveDirection)
+    {
+        endPosition++;
+    }
+    else
+    {
+        endPosition--;
+    }
+
+    routerEinsammelnColored(drehen, fromSouth);
+
+    cout << "fromSouth: " << fromSouth << endl;
+    cout << "endDirection: " << endDirection << endl;
 
     cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << endl;
 }
@@ -2040,4 +2118,214 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
     }
 
     cout << "Exit Router-Kreis at: " << endPosition << " " << endDirection << endl;
+}
+
+void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool endRouter, int endPosition, int endDirection, bool stop)
+{
+    if (startRouter && endRouter)
+    {
+        router(currentPosition, currentDirection, endPosition, endDirection, stop);
+    }
+    else if (!startRouter && !endRouter)
+    {
+        city(currentPosition, currentDirection, endPosition, endDirection, stop);
+    }
+    else if (startRouter && !endRouter)
+    {
+        bool nurCity = false;
+        if (currentPosition == 10)
+        {
+            currentPosition = 2;
+            nurCity = true;
+        }
+        else if (currentPosition == 9)
+        {
+            currentPosition = 3;
+            nurCity = true;
+        }
+        else if (currentPosition == 8)
+        {
+            currentPosition = 4;
+            nurCity = true;
+        }
+        else if (currentPosition == 7)
+        {
+            currentPosition = 5;
+            nurCity = true;
+        }
+
+        if (nurCity)
+        {
+            city(currentPosition, currentDirection, endPosition, endDirection, stop);
+        }
+        else
+        {
+
+            int cityTempPosition = 0;
+            int routerTempPosition = 0;
+            int cityTempDirection = 0;
+            int routerTempDirection = 0;
+            if (currentPosition == 6)
+            {
+                cityTempPosition = 6;
+                cityTempDirection = 2;
+                cout << "transition" << endl;
+                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+            }
+            else if (currentPosition == 1)
+            {
+                cityTempPosition = 1;
+                cityTempDirection = 2;
+                cout << "transition" << endl;
+                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+            }
+            else if (currentDirection == 1)
+            {
+                if (endPosition == -2 || endPosition == -3 || endPosition == -4)
+                {
+                    routerTempPosition = 7;
+                    routerTempDirection = 3;
+                    cityTempPosition = 5;
+                    cityTempDirection = 3;
+                }
+                else
+                {
+                    routerTempPosition = 6;
+                    routerTempDirection = 2;
+                    cityTempPosition = 6;
+                    cityTempDirection = 2;
+                }
+            }
+            else if (currentDirection == 3)
+            {
+                if (endPosition == -2 || endPosition == -3 || endPosition == -4)
+                {
+                    routerTempPosition = 10;
+                    routerTempDirection = 1;
+                    cityTempPosition = 2;
+                    cityTempDirection = 1;
+                }
+                else
+                {
+                    routerTempPosition = 1;
+                    routerTempDirection = 2;
+                    cityTempPosition = 1;
+                    cityTempDirection = 2;
+                }
+            }
+
+            if (currentPosition != 1 && currentPosition != 6)
+            {
+                router(currentPosition, currentDirection, routerTempPosition, routerTempDirection, false);
+                if (routerTempPosition == 6)
+                {
+                    cout << "transition" << endl;
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+                }
+                else if (routerTempPosition == 1)
+                {
+                    cout << "transition" << endl;
+                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+                }
+                city(cityTempPosition, cityTempDirection, endPosition, endDirection, stop);
+            }
+            else
+            {
+                city(cityTempPosition, cityTempDirection, endPosition, endDirection, stop);
+            }
+        }
+    }
+    else if (!startRouter && endRouter)
+    {
+        bool nurRouter = false;
+        if (endPosition == 2)
+        {
+            endPosition = 10;
+            nurRouter = true;
+        }
+        else if (endPosition == 3)
+        {
+            endPosition = 9;
+            nurRouter = true;
+        }
+        else if (endPosition == 4)
+        {
+            endPosition = 8;
+            nurRouter = true;
+        }
+        else if (endPosition == 5)
+        {
+            endPosition = 7;
+            nurRouter = true;
+        }
+
+        if (nurRouter)
+        {
+            router(currentPosition, currentDirection, endPosition, endDirection, stop);
+        }
+        else
+        {
+
+            int cityTempPosition = 0;
+            int routerTempPosition = 0;
+            int cityTempDirection = 0;
+            int routerTempDirection = 0;
+            if (currentPosition == 6)
+            {
+                routerTempPosition = 6;
+                routerTempDirection = 4;
+                cout << "transition" << endl;
+                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+            }
+            else if (currentPosition == 1)
+            {
+                routerTempPosition = 1;
+                routerTempDirection = 4;
+                cout << "transition" << endl;
+                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+            }
+            else if ((currentPosition == 1 || (currentPosition < 17 && currentPosition > 11)) || ((currentPosition == -1) || (currentPosition > -13 && currentPosition < -8)))
+            {
+                routerTempPosition = 1;
+                routerTempDirection = 4;
+                cityTempPosition = 1;
+                cityTempDirection = 4;
+            }
+            else if ((currentPosition > 5 && currentPosition < 12) || (currentPosition < -4 && currentPosition > -9))
+            {
+                routerTempPosition = 6;
+                routerTempDirection = 4;
+                cityTempPosition = 6;
+                cityTempDirection = 4;
+            }
+
+            if (currentPosition != 1 && currentPosition != 6)
+            {
+                city(currentPosition, currentDirection, cityTempPosition, cityTempDirection, false);
+                if (cityTempPosition == 6)
+                {
+                    cout << "transition" << endl;
+                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+                }
+                else if (cityTempPosition == 1)
+                {
+                    cout << "transition" << endl;
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+                }
+                router(routerTempPosition, routerTempDirection, endPosition, endDirection, stop);
+            }
+            else
+            {
+                router(routerTempPosition, routerTempDirection, endPosition, endDirection, stop);
+            }
+        }
+    }
 }

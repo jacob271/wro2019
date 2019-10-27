@@ -393,9 +393,10 @@ void routerEinsammelnColored(bool drehen, bool fromSouth)
             mediumMotor(longMotor, -100, "degree", 210, true);
             turn2(1, 35, "degree", -spin90, 1, true);
         }
-        line2(1, 4, pGL2, dGL2, "degree", 350, 1, true); //M10 Strecke
+        line2(1, 4, pGL2, dGL2, "degree", 370, 1, true); //M10 Strecke
         mediumMotor(longMotor, 60, "degree", 220, true);
     }
+    //if (endPosition == 5 || endPosition == 2 || endPosition == )
 }
 
 void routerEinsammeln(bool directionEast, int mode, bool crossline)
@@ -464,12 +465,12 @@ void kabelAbladen(bool stop, bool kurzeDistanz)
 {
     if (kurzeDistanz == true)
     {
-        line2(cSpeed, 3, pGL2, dGL2, "degree", 70, 3, false);
+        //line2(cSpeed, 3, pGL2, dGL2, "degree", 70, 3, false);
         move(cSpeed, 3, 1, 1, "redR", 0, 3, false);
     }
     else
     {
-        line2(cSpeed, 4, pGL2, dGL2, "degree", 170, 4, false);
+        //line2(cSpeed, 4, pGL2, dGL2, "degree", 150, 4, false);
         move(cSpeed, 3, 1, 1, "greenR", 0, 3, false);
     }
     move(cSpeed, 6, 1, 1, "degree", 190, 1, true);
@@ -504,6 +505,12 @@ void routerAbladen(sensor_port_t followSensor, bool lang, std::string color)
         line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, followSensor, false, color, 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
         //move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
     }
+
+    if (color == "greenR" || color == "greenL")
+    {
+        move(-1, -5, 1, 1, "degree", 10, 1, true);
+    }
+
     mediumMotor(longMotor, -30, "time", 600, true);
     routerDelivered++;
     //Rütteln
@@ -827,7 +834,7 @@ void routerColored(int currentPosition, int currentDirection, int color)
 
             if (i != endPosition)
             {
-                endSpeed = 3;
+                endSpeed = 4;
                 stopNow = false;
                 if (nextPosition == endPosition && stop == true)
                 {
@@ -839,18 +846,18 @@ void routerColored(int currentPosition, int currentDirection, int color)
                 {
                 case 1:
                 case 6:
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 215, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
+                    line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 215, 4, false);
+                    line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false);
                     if (i == 1)
                     {
-                        move(cSpeed, 3, 1, 1, "degree", miniDistance1, 1, true);
+                        move(cSpeed, 4, 1, 1, "degree", miniDistance1, 1, true);
                     }
                     else
                     {
-                        line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true);
+                        line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true);
                     }
                     turn2(1, 5, "degree", spin90, 1, true);
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 160, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 160, endSpeed, stopNow);
                     break;
                 case 2:
                 case 3:
@@ -858,19 +865,19 @@ void routerColored(int currentPosition, int currentDirection, int color)
                 case 7:
                 case 8:
                 case 9:
-                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+                    line2(4, 4, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 5:
-                    move(cSpeed, 3, 1, 1, "degree", 255, 1, true);
+                    move(cSpeed, 4, 1, 1, "degree", 265, 1, true);
                     turn2(1, 5, "degree", spin90, 1, true);
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 170, endSpeed, stopNow);
+                    line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 170, endSpeed, stopNow);
                     break;
                 case 10:
-                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    move(cSpeed, 3, 1, 1, "degree", miniDistance1, 1, true);
+                    line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+                    move(cSpeed, 4, 1, 1, "degree", miniDistance1, 1, true);
                     turn2(1, 5, "degree", spin90, 1, true);
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 170, endSpeed, stopNow);
+                    line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 170, endSpeed, stopNow);
                     break;
                 default:
                     break;
@@ -897,7 +904,7 @@ void routerColored(int currentPosition, int currentDirection, int color)
 
             if (i != endPosition)
             {
-                endSpeed = 3;
+                endSpeed = 4;
                 stopNow = false;
                 if (nextPosition == endPosition && stop == true)
                 {
@@ -909,18 +916,18 @@ void routerColored(int currentPosition, int currentDirection, int color)
                 {
                 case 1:
                 case 6:
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 215, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
+                    line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 215, 4, false);
+                    line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false);
                     if (i == 6)
                     {
-                        move(cSpeed, 3, 1, 1, "degree", miniDistance1, 1, true);
+                        move(cSpeed, 4, 1, 1, "degree", miniDistance1, 1, true);
                     }
                     else
                     {
-                        line1(cSpeed, 3, pGL1, dGL1, LSl, true, "degree", miniDistance1, 1, true);
+                        line1(cSpeed, 4, pGL1, dGL1, LSl, true, "degree", miniDistance1, 1, true);
                     }
                     turn2(1, 5, "degree", -spin90, 1, true);
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 160, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 160, endSpeed, stopNow);
                     break;
                 case 10:
                 case 9:
@@ -928,19 +935,19 @@ void routerColored(int currentPosition, int currentDirection, int color)
                 case 5:
                 case 4:
                 case 3:
-                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+                    line2(4, 4, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 2:
-                    move(cSpeed, 3, 1, 1, "degree", 255, 1, true);
+                    move(cSpeed, 4, 1, 1, "degree", 265, 1, true);
                     turn2(1, 5, "degree", -spin90, 1, true);
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 170, endSpeed, stopNow);
+                    line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 170, endSpeed, stopNow);
                     break;
                 case 7:
-                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    move(cSpeed, 3, 1, 1, "degree", miniDistance1, 1, true);
+                    line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+                    move(cSpeed, 4, 1, 1, "degree", miniDistance1, 1, true);
                     turn2(1, 5, "degree", -spin90, 1, true);
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 170, endSpeed, stopNow);
+                    line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 170, endSpeed, stopNow);
 
                     break;
                 default:
@@ -1039,7 +1046,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
 
             if (i != endPosition)
             {
-                endSpeed = 3;
+                endSpeed = 4;
                 stopNow = false;
                 if (nextPosition == endPosition && stop == true)
                 {
@@ -1053,15 +1060,15 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 6:
                     if (liftParallel)
                     {
-                        line2(cSpeed, 3, pGL2, dGL2, "degree", 215, 3, false, longMotor, liftParallelSpeed, "degree", 100, true);
+                        line2(cSpeed, 4, pGL2, dGL2, "degree", 215, 4, false, longMotor, liftParallelSpeed, "degree", 100, true);
                         liftParallel = false;
                     }
                     else
                     {
-                        line2(cSpeed, 3, pGL2, dGL2, "degree", 215, 3, false);
+                        line2(cSpeed, 4, pGL2, dGL2, "degree", 215, 4, false);
                     }
-                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
+                    turn1(turnMotor, 4, true, 3, "degree", goTurn90, 4, false);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
                     break;
                 case 2:
                 case 3:
@@ -1069,14 +1076,14 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 7:
                 case 8:
                 case 9:
-                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+                    line2(4, 4, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 5:
                 case 10:
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
-                    line2(1, 3, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 30, 4, false);
+                    turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);
+                    line2(1, 4, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
                     break;
                 default:
                     break;
@@ -1104,7 +1111,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
 
             if (i != endPosition)
             {
-                endSpeed = 3;
+                endSpeed = 4;
                 stopNow = false;
                 if (nextPosition == endPosition && stop == true)
                 {
@@ -1118,15 +1125,15 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 6:
                     if (liftParallel)
                     {
-                        line2(cSpeed, 3, pGL2, dGL2, "degree", 215, 3, false, longMotor, liftParallelSpeed, "degree", 100, true);
+                        line2(cSpeed, 4, pGL2, dGL2, "degree", 215, 4, false, longMotor, liftParallelSpeed, "degree", 100, true);
                         liftParallel = false;
                     }
                     else
                     {
-                        line2(cSpeed, 3, pGL2, dGL2, "degree", 215, 3, false);
+                        line2(cSpeed, 4, pGL2, dGL2, "degree", 215, 4, false);
                     }
-                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
+                    turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
                     break;
                 case 10:
                 case 9:
@@ -1134,14 +1141,14 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 5:
                 case 4:
                 case 3:
-                    line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                    line2(3, 3, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+                    line2(4, 4, pGL2, dGL2, "degree", toMiddle, endSpeed, stopNow);
                     break;
                 case 2:
                 case 7:
-                    line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                    turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
-                    line2(1, 3, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 30, 4, false);
+                    turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);
+                    line2(cSpeed, 4, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
                     break;
                 default:
                     break;
@@ -2171,7 +2178,7 @@ void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool
                 cityTempDirection = 2;
                 cout << "transition" << endl;
                 line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 460, 3, false);
             }
             else if (currentPosition == 1)
             {
@@ -2179,7 +2186,7 @@ void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool
                 cityTempDirection = 2;
                 cout << "transition" << endl;
                 line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 460, 3, false);
             }
             else if (currentDirection == 1)
             {
@@ -2223,13 +2230,13 @@ void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool
                 {
                     cout << "transition" << endl;
                     line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 460, 3, false);
                 }
                 else if (routerTempPosition == 1)
                 {
                     cout << "transition" << endl;
                     line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 460, 3, false);
                 }
                 city(cityTempPosition, cityTempDirection, endPosition, endDirection, stop);
             }
@@ -2280,7 +2287,7 @@ void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool
                 routerTempDirection = 4;
                 cout << "transition" << endl;
                 line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 460, 3, false);
             }
             else if (currentPosition == 1)
             {
@@ -2288,7 +2295,7 @@ void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool
                 routerTempDirection = 4;
                 cout << "transition" << endl;
                 line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+                line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 460, 3, false);
             }
             else if ((currentPosition == 1 || (currentPosition < 17 && currentPosition > 11)) || ((currentPosition == -1) || (currentPosition > -13 && currentPosition < -8)))
             {
@@ -2312,13 +2319,13 @@ void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool
                 {
                     cout << "transition" << endl;
                     line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 450, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 460, 3, false);
                 }
                 else if (cityTempPosition == 1)
                 {
                     cout << "transition" << endl;
                     line1(cSpeed, 3, pGL1, dGL1, LSl, false, "crossline", 0, 3, false);
-                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 450, 3, false);
+                    line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 460, 3, false);
                 }
                 router(routerTempPosition, routerTempDirection, endPosition, endDirection, stop);
             }

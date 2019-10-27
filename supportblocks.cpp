@@ -406,7 +406,7 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode){
   }
   else if (mode == "green")
   {
-    color = red < 280 && blue < 260; 
+    color = red < 140 || blue < 120 || green < 140; 
   }
 
   cout << "rgb: " << red << " " << green << " " << blue << endl;

@@ -549,6 +549,9 @@ void logicColored()
     }
     else
     {
+        if(endPosition == 10){
+            turn2(1,5,"degree",spin180,1,true);
+        }
         megaKreis(true, endPosition, endDirection, false, -2, 2, true);
         routerAbladen(LSr, true, "blueL");
         city(-2,2, -3, 2, false);
@@ -565,6 +568,9 @@ void logicColored()
     }
     else
     {
+        if(endPosition == 7||endPosition == 8){
+            turn2(1,5,"degree",spin180,1,true);
+        }
         megaKreis(true, endPosition, endDirection, false, -4, 2, true);
         routerAbladen(LSl, true, "redR");
         city(-4,2,5,1,false);
@@ -576,14 +582,14 @@ void logicColored()
     if (green == 4 || green == 2)
     {
         megaKreis(true, endPosition, endDirection, false, 7, 2, false);
-        city(7,2,-7,3,true);
+        city(7,2,-7,3,true);      
         routerAbladen(LSl, false, "greenR");
         city(-7, 3, -9, 4, true);
     }
     else
     {
         megaKreis(true, endPosition, endDirection, false, 7, 2, false);
-        city(7,2,-8,4,true);
+        city(7,2,-8,4,true);        
         routerAbladen(LSr, true, "greenL");
         city(-8, 4, -9, 4, true);
     }

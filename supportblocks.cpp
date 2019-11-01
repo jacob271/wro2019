@@ -117,13 +117,13 @@ int speedLevel(int level)
   case 2:
     return (int)((46 * batteryFactor) * (level / abs(level))); //miniDistance //43
   case 3:
-    return (int)((90 * batteryFactor) * (level / abs(level))); //Standard Drive Speed (move Straight/line follows) //60
+    return (int)((90 * batteryFactor) * (level / abs(level))); //Standard Drive Speed (move Straight/line follows) //60 //90
   case 4:
     return (int)((76 * batteryFactor) * (level / abs(level))); //fast drive speed and turn1 //73
   case 5:
-    return (int)((60 * batteryFactor) * (level / abs(level))); //turn2 speed //56
+    return (int)((60 * batteryFactor) * (level / abs(level))); //turn2 speed //56 //70
   case 6:
-    return (int)((50* batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50
+    return (int)((50* batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50 //50
 
   default:
     return (int)(abs(level) * batteryFactor * (level / abs(level)));

@@ -126,7 +126,12 @@ int speedLevel(int level)
     return (int)((60 * batteryFactor) * (level / abs(level))); //turn2 speed //56 //70
   case 6:
     return (int)((50 * batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50 //50
-
+  case 7:
+    if(liftParallel == true){
+      return (int)((60 * batteryFactor) * (level / abs(level)));
+    }else{
+      return (int)((90 * batteryFactor) * (level / abs(level)));
+    }
   default:
     return (int)(abs(level) * batteryFactor * (level / abs(level)));
   }
@@ -356,7 +361,7 @@ bool lineDetection(std::string mode)
   else if (mode == "redR")
     return colorDetection_rgb_ev3(LSr, "color");
   else if (mode == "yellowR")
-    return colorDetection_rgb_ev3(LSr, "yellow");
+    return colorDetection_rgb_ev3(LSr, "color");
   else if (mode == "greenL")
     return colorDetection_rgb_ev3(LSl, "green");
   else if (mode == "blueL")
@@ -364,7 +369,7 @@ bool lineDetection(std::string mode)
   else if (mode == "redL")
     return colorDetection_rgb_ev3(LSl, "color");
   else if (mode == "yellowL")
-    return colorDetection_rgb_ev3(LSl, "yellow");
+    return colorDetection_rgb_ev3(LSl, "color");
   return false;
 }
 
@@ -429,7 +434,7 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode)
   }  
   else if (mode == "yellow")
   {
-    color = red > 180 && green > 110 && blue < 110;
+    color = red > 180 && green > 120 && blue < 110;
   }
   else if (mode == "green")
   {

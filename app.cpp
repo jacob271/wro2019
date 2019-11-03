@@ -170,7 +170,9 @@ void logic()
             line2(cSpeed, 4, pGL2, dGL2, "degree", 50, 1, true);
             routerEinsammeln(false, 1, true);
             liftParallel = true;
-            router(4, 1, 6, 2, false);
+            line2(cSpeed, 3, pGL2, dGL2, "crossline", 0, 3, false);
+            line2(3, 3, pGL2, dGL2, "degree", 280, 3, false);
+            router(5, 1, 6, 2, false);
         }
         else //nicht drehen
         {

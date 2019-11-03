@@ -200,7 +200,7 @@ void kabelSammeln(bool south)
 {
     if (south)
     {
-        line2(cSpeed, 4, pGL2, dGL2, "degree", 100, 4, false, doubleLever, -70, "degree", leverDistance/2, true);
+        line2(cSpeed, 4, pGL2, dGL2, "degree", 150, 4, false, doubleLever, -70, "degree", leverDistance/2, true);
         line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false, doubleLever, -70, "degree", leverDistance/2, true);
         turn1(motor_left, cSpeed, true, 4, "degree", 270, 4, false);
         turn1(motor_right, cSpeed, true, 4, "degree", 250, 1, true);
@@ -225,7 +225,7 @@ void kabelSammeln(bool south)
     }
     else
     {
-        line2(cSpeed, 4, pGL2, dGL2, "degree", 100, 4, false, doubleLever, -70, "degree", leverDistance/2, true);
+        line2(cSpeed, 4, pGL2, dGL2, "degree", 150, 4, false, doubleLever, -70, "degree", leverDistance/2, true);
         line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false, doubleLever, -70, "degree", leverDistance/2, true);
         turn1(motor_right, cSpeed, true, 4, "degree", 270, 4, false);
         turn1(motor_left, cSpeed, true, 4, "degree", 250, 1, true);
@@ -707,7 +707,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                     {
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 215, 3, false);
                     }
-                    turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);
+                    turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
                     break;
                 case 2:
@@ -722,7 +722,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 5:
                 case 10:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                    turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);
+                    turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
                     line2(1, 3, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
                     break;
                 default:
@@ -772,7 +772,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                     {
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 215, 3, false);
                     }
-                    turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);//old3
+                    turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 110, endSpeed, stopNow);
                     break;
                 case 10:
@@ -787,7 +787,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 2:
                 case 7:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                    turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);//old3
+                    turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
                     line2(1, 3, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
                     break;
                 default:
@@ -1409,7 +1409,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         else
                         {
                             line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 155, 3, false);
-                            turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);//old3
+                            turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
                             line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 100, endSpeed, stopNow);
                         }
                         break;
@@ -1427,12 +1427,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         break;
                     case 13:
                         line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 10, 3, false);
-                        turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);//old3
+                        turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
                         line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 195, endSpeed, stopNow);
                         break;
                     case 5:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                        turn1(turnMotor, 4, true, 4, "degree", goTurn90, 4, false);//old3
+                        turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
                         line1(cSpeed, 3, pGL1, dGL1, LSl, false, "degree", 195, endSpeed, stopNow);
                         break;
                     case 6:
@@ -1508,12 +1508,12 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         break;
                     case 2:
                         line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
+                        turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3 new
                         line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 195, endSpeed, stopNow);
                         break;
                     case 10:
                         line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 10, 3, false);
-                        turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
+                        turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3 new
                         line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 195, endSpeed, stopNow);
                         break;
                     case 3:
@@ -1534,7 +1534,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                         else
                         {
                             line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 155, 3, false);
-                            turn1(turnMotor, 3, true, 3, "degree", goTurn90, 3, false);
+                            turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3 new
                             line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 100, endSpeed, stopNow);
                         }
                         break;

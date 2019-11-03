@@ -205,7 +205,7 @@ void kabelSammeln(bool south)
         turn1(motor_left, cSpeed, true, 4, "degree", 270, 4, false);
         turn1(motor_right, cSpeed, true, 4, "degree", 250, 1, true);
         line2(4, 30, pGL2 * 0.5, dGL2 * 0.5, "degree", 70, 30, false);
-        move(cSpeed, 30, 1, 1, "degree", 60, 1, true);
+        move(cSpeed, 20, 1, 1, "degree", 60, 1, true);
         mediumMotor(doubleLever, 50, "degree", leverDistance, false);
         mediumMotor(doubleLever, 100, "time", 300, true);
         move(-1, -4, 1, 1, "degree", 285, -1, true);
@@ -230,7 +230,7 @@ void kabelSammeln(bool south)
         turn1(motor_right, cSpeed, true, 4, "degree", 270, 4, false);
         turn1(motor_left, cSpeed, true, 4, "degree", 250, 1, true);
         line2(4, 30, pGL2 * 0.5, dGL2 * 0.5, "degree", 70, 30, false);
-        move(cSpeed, 30, 1, 1, "degree", 60, 1, true);
+        move(cSpeed, 20, 1, 1, "degree", 60, 1, true);
         mediumMotor(doubleLever, 50, "degree", leverDistance, false);
         mediumMotor(doubleLever, 100, "time", 300, true);
         move(-1, -4, 1, 1, "degree", 285, -1, true);
@@ -723,7 +723,7 @@ void router(int currentPosition, int currentDirection, int endPosition, int endD
                 case 10:
                     line2(cSpeed, 3, pGL2, dGL2, "degree", 30, 3, false);
                     turn1(turnMotor, 5, true, 5, "degree", goTurn90, 5, false);//old3
-                    line2(1, 3, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
+                    line2(cSpeed, 3, pGL2, dGL2, "degree", 155, endSpeed, stopNow);
                     break;
                 default:
                     break;

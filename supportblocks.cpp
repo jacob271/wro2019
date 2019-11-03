@@ -344,9 +344,9 @@ bool lineDetection(std::string mode)
     return ev3_color_sensor_get_reflect(LSl) > 50;
   else if (mode == "crossline")
   {
-    bool crossline = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
-    if (crossline)
-      ev3_speaker_play_tone(NOTE_F4, 5);
+    bool crossline = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 95;
+    //if (crossline)
+      //ev3_speaker_play_tone(NOTE_F4, 5);
     return crossline;
   }
   else if (mode == "greenR")

@@ -437,7 +437,7 @@ int line2(int startSpeed, int maxSpeed, double pGain, double dGain, std::string 
       continueMove = lineDetection(mode) == false;
       if (continueMove == false)
       {
-        ev3_speaker_play_tone(NOTE_F4, 3);
+        //ev3_speaker_play_tone(NOTE_F4, 3);
       }
     }
 
@@ -598,7 +598,7 @@ int line1(int startSpeed, int maxSpeed, double pGain, double dGain, sensor_port_
       continueMove = lineDetection(mode) == false;
       if (continueMove == false)
       {
-        ev3_speaker_play_tone(NOTE_F4, 3);
+        //ev3_speaker_play_tone(NOTE_F4, 3);
       }
     }
 

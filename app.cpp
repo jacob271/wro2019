@@ -539,6 +539,7 @@ void logic()
 }
 void test()
 {
+    /*
     while(true){
         waitForButton();
         int red = getRGB(LSr,1);
@@ -546,6 +547,14 @@ void test()
         int blue = getRGB(LSr, 3);
         cout << "red: " << red << " green: " << green << " blue: " << blue << endl;
     }
+    */
+   while(true){
+       waitForButton();
+       int left = ev3_color_sensor_get_reflect(LSl);
+       int right = ev3_color_sensor_get_reflect(LSr);
+       cout << "left: " << left << " right: " << right << endl;
+
+   }
 }
 
 void main_task(intptr_t unused)

@@ -62,7 +62,7 @@ int longMotorDistance = 310;
 int spin180 = 500;
 int spin90 =240;
 int turn90 = 470;//435 //470
-int goTurn90 = 490; //490
+int goTurn90 = 510; //490
 
 //Values for Line1
 int LSrMiddle = (92 + 9) / 2;

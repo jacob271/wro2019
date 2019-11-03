@@ -7,35 +7,37 @@
 
 //speedControl
 
-void motorControl(motor_port_t motor, int speed, int maxSpeed){
-  double pGain = 0;//1.5;// * speed/100;
-  double dGain = 0;//1.5;//0.5 + 1 * speed/100;
+void motorControl(motor_port_t motor, int speed, int maxSpeed)
+{
+  double pGain = 0; //1.5;// * speed/100;
+  double dGain = 0; //1.5;//0.5 + 1 * speed/100;
   int cPower = abs(ev3_motor_get_power(motor));
   int error = abs(speed) - cPower;
-  
-  int newSpeed = abs(speed) + error*pGain + (speedControlLastError - error) * dGain;
-  newSpeed = newSpeed * (maxSpeed/abs(maxSpeed));
 
-  if (motor == motor_left){
-      newSpeed = newSpeed * (-1);
+  int newSpeed = abs(speed) + error * pGain + (speedControlLastError - error) * dGain;
+  newSpeed = newSpeed * (maxSpeed / abs(maxSpeed));
+
+  if (motor == motor_left)
+  {
+    newSpeed = newSpeed * (-1);
   }
 
-   ev3_motor_set_power(motor, newSpeed);
+  ev3_motor_set_power(motor, newSpeed);
 
-   speedControlD[speedControlIndex] = error;
+  speedControlD[speedControlIndex] = error;
 
-    speedControlIndex++;
-    if (speedControlIndex > 3)
-    {
-      speedControlIndex = 0;
-    }
-    speedControlLastError = speedControlD[speedControlIndex];
-
+  speedControlIndex++;
+  if (speedControlIndex > 3)
+  {
+    speedControlIndex = 0;
+  }
+  speedControlLastError = speedControlD[speedControlIndex];
 
   //cout << speed << " " << cPower  <<" " << error << " " << newSpeed << endl;
 }
 
-void resetSpeedControl (){
+void resetSpeedControl()
+{
   speedControlD[4] = {0};
   speedControlIndex = 0;
   speedControlLastError = 0.0;
@@ -109,8 +111,8 @@ int speedLevel(int level)
   }
   */
 
-//Normale speeds Wettbewerb 
- switch (abs(level))
+  //Normale speeds Wettbewerb
+  switch (abs(level))
   {
   case 1:
     return (int)((18 * batteryFactor) * (level / abs(level))); //Start und EndSpeed //14
@@ -123,12 +125,12 @@ int speedLevel(int level)
   case 5:
     return (int)((60 * batteryFactor) * (level / abs(level))); //turn2 speed //56 //70
   case 6:
-    return (int)((50* batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50 //50
+    return (int)((50 * batteryFactor) * (level / abs(level))); //langsamer speed um router und kabel abzusetzen //50 //50
 
   default:
     return (int)(abs(level) * batteryFactor * (level / abs(level)));
   }
-  
+
   /*boosted
   switch (abs(level))
   {
@@ -149,15 +151,14 @@ int speedLevel(int level)
     return (int)(abs(level) * batteryFactor * (level / abs(level)));
   }
   */
-
 }
 
 // Rotationsssensorkorrektur für moves
 void motorCorrection(double pGain, int cSpeed, int rightreset, int leftreset, double leftRatio, double rightRatio)
 {
   double pCorrection;
-  pCorrection = ( (ev3_motor_get_counts(motor_left) - leftreset)/leftRatio + (ev3_motor_get_counts(motor_right) - rightreset)/rightRatio) * (abs(pGain*70)); //*70    +0.4 *cSpeed
-  
+  pCorrection = ((ev3_motor_get_counts(motor_left) - leftreset) / leftRatio + (ev3_motor_get_counts(motor_right) - rightreset) / rightRatio) * (abs(pGain * 70)); //*70    +0.4 *cSpeed
+
   motorControl(motor_left, (leftRatio * cSpeed + pCorrection), cSpeed);
   motorControl(motor_right, (rightRatio * cSpeed - pCorrection), cSpeed);
   //ev3_motor_set_power(motor_left, (-1) * speedControl((cSpeed + pCorrection),motor_left));
@@ -207,7 +208,8 @@ void brake(bool stop, int endSpeed)
     ev3_motor_stop(motor_left, true);
     ev3_motor_stop(motor_right, true);
     Stopwatch brake;
-    while (brake.getTime()<0){
+    while (brake.getTime() < 0)
+    {
       ev3_motor_stop(motor_left, true);
       ev3_motor_stop(motor_right, true);
     }
@@ -230,10 +232,10 @@ int frequencyDistribution(int colorCounter[], std::string mode)
   int laenge = 40;
   cout << "frequencyDistribution " << mode << " " << laenge << endl;
   int r = 0; //red
-  int b = 0;  //blue/black
-  int g = 0;  //green
-  int y = 0;  //yellow
-  int w = 0;  //white
+  int b = 0; //blue/black
+  int g = 0; //green
+  int y = 0; //yellow
+  int w = 0; //white
   int ergebnis = -1;
   int ergebnisN = 0;
 
@@ -268,16 +270,23 @@ int frequencyDistribution(int colorCounter[], std::string mode)
     }
     cout << "y: " << y << endl;
 
-    if (r > b && r > g && r > y){
+    if (r > b && r > g && r > y)
+    {
       ergebnis = 5;
       ergebnisN = r;
-    }else if(g > r && g > b && g > y){
+    }
+    else if (g > r && g > b && g > y)
+    {
       ergebnis = 3;
       ergebnisN = g;
-    }else if(b > r && b > g && b > y){
+    }
+    else if (b > r && b > g && b > y)
+    {
       ergebnis = 2;
       ergebnisN = b;
-    }else{
+    }
+    else
+    {
       ergebnis = 4;
       ergebnisN = y;
     }
@@ -299,16 +308,19 @@ int frequencyDistribution(int colorCounter[], std::string mode)
     }
     cout << "w: " << w << endl;
 
-    if (b > w){
+    if (b > w)
+    {
       ergebnis = 0;
       ergebnisN = b;
-    }else{
+    }
+    else
+    {
       ergebnis = 1;
       ergebnisN = w;
     }
   }
 
-  cout << "Detected color: " << ergebnis << " N: " << ergebnisN <<endl;
+  cout << "Detected color: " << ergebnis << " N: " << ergebnisN << endl;
 
   return ergebnis;
 }
@@ -330,28 +342,29 @@ bool lineDetection(std::string mode)
     return ev3_color_sensor_get_reflect(LSr) > 50;
   else if (mode == "whiteleft")
     return ev3_color_sensor_get_reflect(LSl) > 50;
-  else if (mode == "crossline"){
+  else if (mode == "crossline")
+  {
     bool crossline = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
     if (crossline)
       ev3_speaker_play_tone(NOTE_F4, 5);
     return crossline;
   }
   else if (mode == "greenR")
-    return  colorDetection_rgb_ev3(LSr, "green");
+    return colorDetection_rgb_ev3(LSr, "green");
   else if (mode == "blueR")
-    return  colorDetection_rgb_ev3(LSr, "color");
-  else if(mode == "redR")
-    return colorDetection_rgb_ev3(LSr,"color");
-  else if(mode == "yellowR")
-    return colorDetection_rgb_ev3(LSr,"yellow");
+    return colorDetection_rgb_ev3(LSr, "color");
+  else if (mode == "redR")
+    return colorDetection_rgb_ev3(LSr, "color");
+  else if (mode == "yellowR")
+    return colorDetection_rgb_ev3(LSr, "yellow");
   else if (mode == "greenL")
-    return  colorDetection_rgb_ev3(LSl, "green");
+    return colorDetection_rgb_ev3(LSl, "green");
   else if (mode == "blueL")
-    return  colorDetection_rgb_ev3(LSl, "color");
-  else if(mode == "redL")
-    return colorDetection_rgb_ev3(LSl,"color");
-  else if(mode == "yellowL")
-    return colorDetection_rgb_ev3(LSl,"color");
+    return colorDetection_rgb_ev3(LSl, "color");
+  else if (mode == "redL")
+    return colorDetection_rgb_ev3(LSl, "color");
+  else if (mode == "yellowL")
+    return colorDetection_rgb_ev3(LSl, "color");
   return false;
 }
 
@@ -371,9 +384,10 @@ void display(int inhalt)
   ev3_lcd_draw_string(buf, 20, 50);
 }
 
-bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode){
-  int red = getRGB(sensor,1);
-  int green = getRGB(sensor,2);
+bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode)
+{
+  int red = getRGB(sensor, 1);
+  int green = getRGB(sensor, 2);
   int blue = getRGB(sensor, 3);
 
   char buf[10];
@@ -387,8 +401,8 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode){
   ev3_lcd_draw_string(buf, 100, 90);
 
   //cout<< red << " " << green << " " << blue <<endl;
-  
 
+  /*
   bool color = false;
   if (mode == "red" || mode == "blue" || mode == "color"){
     color = red < 140 || blue < 120 || green < 140;
@@ -405,8 +419,36 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode){
   if (color)
     ev3_speaker_play_tone(NOTE_F4, 5);
   return color;
+  */
 
+  //colorDetectionPaul
+  bool color = false;
+  if (mode == "color")
+  {
+    color = red < 140 || blue < 120 || green < 140;
+  }
+  else if(mode == "red")
+  {
+    color = red > 180 && blue < 80 && green < 80;
+  }
+  else if(mode == "blue")
+  {
+    color = red < 50 && blue > 100 && green < 100;
+  }
+  else if (mode == "yellow")
+  {
+    color = red > 200 && green > 130 && blue < 100;
+  }
+  else if (mode == "green")
+  {
+    color = red < 100 && green > 100 && blue < 100;
+  }
 
+  cout << "rgb: " << red << " " << green << " " << blue << endl;
+
+  if (color)
+    ev3_speaker_play_tone(NOTE_F4, 5);
+  return color;
 }
 
 // Konvertierung der HiTechnic Farbwerte in normale EV3 Farbwerte
@@ -465,7 +507,7 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
 
   tslp_tsk(6);
 
-  cout << mode << " " << red << " " << green<< " " << blue << " ";
+  cout << mode << " " << red << " " << green << " " << blue << " ";
   if (mode == "color")
   {
     if (red < 20 && blue < 20 && green < 20)
@@ -491,7 +533,7 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
       return -1;
     if (red > 150 || green > 150 || blue > 150)
       return 1;
-    if ((red > 8 && red < 100)|| ((green > 8 && green < 100)|| (blue > 8 && blue < 100)))
+    if ((red > 8 && red < 100) || ((green > 8 && green < 100) || (blue > 8 && blue < 100)))
       return 0;
   }
   return -1;

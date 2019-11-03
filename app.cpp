@@ -537,10 +537,15 @@ void logic()
         move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
     }
 }
-
 void test()
 {
-
+    while(true){
+        waitForButton();
+        int red = getRGB(LSr,1);
+        int green = getRGB(LSr,2);
+        int blue = getRGB(LSr, 3);
+        cout << "red: " << red << " green: " << green << " blue: " << blue << endl;
+    }
 }
 
 void main_task(intptr_t unused)

@@ -539,22 +539,31 @@ void logic()
 }
 void test()
 {
-    /*
-    while(true){
+    while (true)
+    {
+        line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, LSl, true, "degree", 1000, 30, true);
         waitForButton();
-        int red = getRGB(LSr,1);
-        int green = getRGB(LSr,2);
+        line1(cSpeed, 30, pGL1 * 0.5, dGL1 * 0.7, LSl, true, "degree", 1000, 1, true);
+        waitForButton();
+    }
+    /*
+    while (true)
+    {
+        waitForButton();
+        int red = getRGB(LSr, 1);
+        int green = getRGB(LSr, 2);
         int blue = getRGB(LSr, 3);
         cout << "red: " << red << " green: " << green << " blue: " << blue << endl;
     }
+    
+    while (true)
+    {
+        waitForButton();
+        int left = ev3_color_sensor_get_reflect(LSl);
+        int right = ev3_color_sensor_get_reflect(LSr);
+        cout << "left: " << left << " right: " << right << endl;
+    }
     */
-   while(true){
-       waitForButton();
-       int left = ev3_color_sensor_get_reflect(LSl);
-       int right = ev3_color_sensor_get_reflect(LSr);
-       cout << "left: " << left << " right: " << right << endl;
-
-   }
 }
 
 void main_task(intptr_t unused)
@@ -570,7 +579,7 @@ void main_task(intptr_t unused)
     //Anfang
     move(1, 3, 0.4, 1, "degree", 220, 3, false);
     move(cSpeed, 3, 1, 0.4, "degree", 205, 3, false);
-    move(3, 3, 1, 1, "degree", 80,3, false);
+    move(3, 3, 1, 1, "degree", 80, 3, false);
     positionenScannen();
     city(9, 4, 5, 3, false);
     routerScannen(HTr, "routerO");

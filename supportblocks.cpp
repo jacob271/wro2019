@@ -346,7 +346,7 @@ bool lineDetection(std::string mode)
   {
     bool crossline = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 95;
     //if (crossline)
-      //ev3_speaker_play_tone(NOTE_F4, 5);
+    //ev3_speaker_play_tone(NOTE_F4, 5);
     return crossline;
   }
   else if (mode == "greenR")
@@ -364,7 +364,7 @@ bool lineDetection(std::string mode)
   else if (mode == "redL")
     return colorDetection_rgb_ev3(LSl, "color");
   else if (mode == "yellowL")
-    return colorDetection_rgb_ev3(LSl, "color");
+    return colorDetection_rgb_ev3(LSl, "yellow");
   return false;
 }
 
@@ -426,23 +426,24 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode)
   if (mode == "color")
   {
     color = red < 140 || blue < 120 || green < 140;
-  }
-  else if(mode == "red")
-  {
-    color = red > 180 && blue < 80 && green < 80;
-  }
-  else if(mode == "blue")
-  {
-    color = red < 50 && blue > 100 && green < 100;
-  }
+  }  
   else if (mode == "yellow")
   {
-    color = red > 200 && green > 130 && blue < 100;
+    color = red > 180 && green > 110 && blue < 110;
   }
   else if (mode == "green")
   {
     color = red < 100 && green > 100 && blue < 100;
   }
+
+  /*else if (mode == "red")
+  {
+    color = red > 150 && blue < 110 && green < 110;//red 200
+  }
+  else if (mode == "blue")
+  {
+    color = red < 60 && blue > 90 && green < 110;
+  } */
 
   cout << "rgb: " << red << " " << green << " " << blue << endl;
 

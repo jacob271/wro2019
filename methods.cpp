@@ -356,15 +356,15 @@ void kabelAbladen(bool stop, bool kurzeDistanz)
 {
     if (kurzeDistanz == true)
     {
-        line2(cSpeed, 3, pGL2, dGL2, "degree", 70, 3, false);
-        move(cSpeed, 3, 1, 1, "redR", 0, 3, false);
+        line2(cSpeed, 5, pGL2, dGL2, "degree", 70, 5, false);
+        move(cSpeed, 4, 1, 1, "redR", 0, 4, false);
     }
     else
     {
-        line2(cSpeed, 4, pGL2, dGL2, "degree", 230, 4, false);
-        move(cSpeed, 3, 1, 1, "redR", 0, 3, false);
+        line2(cSpeed, 5, pGL2, dGL2, "degree", 230, 5, false);
+        move(cSpeed, 4, 1, 1, "redR", 0, 4, false);
     }
-    move(cSpeed, 6, 1, 1, "degree", 190, 1, true);
+    move(cSpeed, 6, 1, 1, "degree", 200, 1, true);
     //move(cSpeed, 35, "degree", 160, 1, true);
     //tslp_tsk(300);
     mediumMotor(doubleLever, -50, "time", 300, false);
@@ -387,34 +387,34 @@ void routerAbladen(sensor_port_t followSensor, bool lang, std::string color)
     if (followSensor == LSr)
     {
         line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, followSensor, true, "degree", 50, 30, false, longMotor, liftParallelSpeed, "degree", 230, true);
-        line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, followSensor, true, color, 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+        line1(cSpeed, 20, pGL1 * 0.9, dGL1 * 0.9, followSensor, true, color, 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
         //move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
     }
     else
     {
         line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, followSensor, false, "degree", 50, 30, false, longMotor, liftParallelSpeed, "degree", 230, true);
-        line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, followSensor, false, color, 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+        line1(cSpeed, 20, pGL1 * 0.9, dGL1 * 0.9, followSensor, false, color, 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
         //move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
     }
-    mediumMotor(longMotor, -30, "time", 600, true);
+    mediumMotor(longMotor, -20, "time", 900, true);
     routerDelivered++;
     //Rütteln
 
-    if (followSensor == LSl)
+    if (followSensor == LSr)
     {
-        turn2(1, 5, "degree", 20, 1, true);
+        turn2(1, 5, "degree", 15, 1, true);
         tslp_tsk(100);
-        turn2(1, 5, "degree", -40, 1, true);
+        turn2(1, 5, "degree", -30, 1, true);
         tslp_tsk(100);
-        turn2(1, 5, "degree", 20, 1, true);
+        turn2(1, 5, "degree", 15, 1, true);
     }
     else
     {
-        turn2(1, 5, "degree", -20, 1, true);
+        turn2(1, 5, "degree", -15, 1, true);
         tslp_tsk(100);
-        turn2(1, 5, "degree", 40, 1, true);
+        turn2(1, 5, "degree", 30, 1, true);
         tslp_tsk(100);
-        turn2(1, 5, "degree", -20, 1, true);
+        turn2(1, 5, "degree", -15, 1, true);
     }
     mediumMotor(longMotor, -30, "time", 200, true);
 

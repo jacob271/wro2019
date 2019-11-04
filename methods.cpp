@@ -1730,7 +1730,7 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     break;
                 case 5:
                 case 13:
-                    line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
+                    line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
                     if (endTemp == 13)
                     {
                         line2(cSpeed, 4, pGL2, dGL2, "degree", miniDistance2 - 10, 1, true);

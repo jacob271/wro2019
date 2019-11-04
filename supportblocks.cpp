@@ -389,7 +389,8 @@ void display(int inhalt)
   ev3_lcd_draw_string(buf, 20, 50);
 }
 
-bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode)
+bool 
+colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode)
 {
   int red = getRGB(sensor, 1);
   int green = getRGB(sensor, 2);

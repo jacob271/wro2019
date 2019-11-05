@@ -540,33 +540,85 @@ void logic()
         move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
     }
 }
-void test()
+
+void logicColored()
 {
-    while (true)
+    routerColored(5, 1, 2);
+    if (blue == 4 || blue == 2)
     {
-        line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, LSl, true, "degree", 1000, 30, true);
-        waitForButton();
-        line1(cSpeed, 30, pGL1 * 0.5, dGL1 * 0.7, LSl, true, "degree", 1000, 1, true);
-        waitForButton();
+        megaKreis(true, endPosition, endDirection, false, -1, 1, true);
+        routerAbladen(LSl, false, "blueR");
+        city(-1,1, -3, 2, false);
     }
-    /*
-    while (true)
+    else
     {
-        waitForButton();
-        int red = getRGB(LSr, 1);
-        int green = getRGB(LSr, 2);
-        int blue = getRGB(LSr, 3);
-        cout << "red: " << red << " green: " << green << " blue: " << blue << endl;
+        if(endPosition == 10){
+            turn2(1,5,"degree",spin180,1,true);
+        }
+        megaKreis(true, endPosition, endDirection, false, -2, 2, true);
+        routerAbladen(LSr, true, "blueL");
+        city(-2,2, -3, 2, false);
     }
     
-    while (true)
+    kabelAbladen(true, true);
+    city(-3, 2, 4, 1, false);
+    routerColored(8, 1, 5);
+    if (red == 4 || red == 2)
     {
-        waitForButton();
-        int left = ev3_color_sensor_get_reflect(LSl);
-        int right = ev3_color_sensor_get_reflect(LSr);
-        cout << "left: " << left << " right: " << right << endl;
+        megaKreis(true, endPosition, endDirection, false, -5, 3, true);
+        routerAbladen(LSr, false, "redL");
+        megaKreis(false, -5, 3, true, 6, 4, false);
     }
-    */
+    else
+    {
+        if(endPosition == 7||endPosition == 8){
+            turn2(1,5,"degree",spin180,1,true);
+        }
+        megaKreis(true, endPosition, endDirection, false, -4, 2, true);
+        routerAbladen(LSl, true, "redR");
+        city(-4,2,5,1,false);
+        megaKreis(true, 7, 1, true, 6, 4, false);
+    }    
+    kabelSammeln(false);
+    //otherside
+    routerColored(5, 3, 3);
+    if (green == 4 || green == 2)
+    {
+        megaKreis(true, endPosition, endDirection, false, 7, 2, false);
+        city(7,2,-7,3,true);      
+        routerAbladen(LSl, false, "greenR");
+        city(-7, 3, -9, 4, true);
+    }
+    else
+    {
+        megaKreis(true, endPosition, endDirection, false, 7, 2, false);
+        city(7,2,-8,4,true);        
+        routerAbladen(LSr, true, "greenL");
+        city(-8, 4, -9, 4, true);
+    }
+    kabelAbladen(true, false);
+    megaKreis(false, -9, 4, true, 1, 4, false);
+    routerColored(1, 4, 4);
+    if (yellow == 4 || yellow == 2)
+    {
+        megaKreis(true, endPosition, endDirection, false, -11, 1, true);
+        routerAbladen(LSr, false, "yellowL");
+        city(-11, 1, 14, 2, false);
+        line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+        move(cSpeed, 4, 1, 0.9, "degree", 700, 1, true);
+    }
+    else
+    {
+        megaKreis(true, endPosition, endDirection, false, -10, 4, true);
+        routerAbladen(LSl, true, "yellowR");
+        city(-10, 4, 13, 3, false);
+        turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
+        move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
+    }
+}
+
+void test()
+{
 }
 
 void main_task(intptr_t unused)
@@ -584,19 +636,18 @@ void main_task(intptr_t unused)
     move(cSpeed, 3, 1, 0.4, "degree", 205, 3, false);
     move(3, 3, 1, 1, "degree", 80, 3, false);
     positionenScannen();
-    city(9, 4, 5, 3, false);
-    routerScannen(HTr, "routerO");
-    turn1(motor_left, 3, true, 3, "degree", 490, 3, false);
+    city(9, 4, 6, 4, false);
+    routerScannenColor(HTr, "routerO");
     kabelSammeln(true);
     //line2(1, 3, pGL2, dGL2, "degree", 100, 3, false);
-    routerScannen(HTl, "routerW");
+    routerScannenColor(HTl, "routerW");
     fallunterscheidung();
     cout << "fallunterscheidung fertig: " << endl;
     updateLogDatei();
 
     //Anfang Ende
 
-    logic();
+    logicColored();
 
     int neededTime = run.getTime();
 

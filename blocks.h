@@ -28,14 +28,18 @@ void updateLogDatei();
 void positionenScannen();
 void kabelSammeln(bool south);
 void routerScannen(sensor_port_t searchSensor, std::string mode);
+void routerScannenColor(sensor_port_t searchSensor, std::string mode);
 void routerEinsammeln(bool directionEast, int mode, bool crossline);
+void routerEinsammelnColored(bool drehen, bool fromSouth);
 void kabelAbladen(bool stop, bool red);
 void routerAbladen(sensor_port_t followSensor, bool lang, std::string color);
 void fallunterscheidung();
 bool direction(int position, int direction, int nPositions);
 int getDistance(int startPosition, int startDirection, int endPosition, int nPositions);
 void router(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
+void routerColored(int currentPosition, int currentDirection, int color);
 void city(int currentPosition, int currentDirection, int endPosition, int endDirection, bool stop);
+void megaKreis(bool startRouter, int currentPosition, int currentDirection, bool endRouter, int endPosition, int endDirection, bool stop);
 
 // SUPPORT BLOCKS
 void motorControl(motor_port_t motor, int speed, int maxSpeed);
@@ -132,6 +136,9 @@ extern const double wheelCircumferance;
 extern int positions[];
 extern int routerO[];
 extern int routerW[];
+extern int routerPositions[];
+extern int routerPositionsKreis[][2];
+
 extern int blue;
 extern int red;
 extern int green;
@@ -171,6 +178,8 @@ extern int goTurn90;
 extern int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
 extern int currentPosition;
 extern int endPosition;
+extern int endDirection;
+
 extern bool manualSetDriveDirection;
 extern int currentColor;
 extern bool liftParallel;

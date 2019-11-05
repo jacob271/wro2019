@@ -236,144 +236,141 @@ void brake(bool stop, int endSpeed)
 //Auswerten der Farberkennung
 int frequencyDistribution(int colorCounter[], std::string mode)
 {
+  int laenge = 40;
+  cout << "frequencyDistribution " << mode << " " << laenge << endl;
+  int r = 0; //red
+  int b = 0;  //blue/black
+  int g = 0;  //green
+  int y = 0;  //yellow
+  int w = 0;  //white
+  int ergebnis = -1;
+  int ergebnisN = 0;
 
-	int laenge = 40;
-	cout << "frequencyDistribution " << mode << " " << laenge << endl;
-	int r = 0; //red
-	int b = 0; //blue/black
-	int g = 0; //green
-	int y = 0; //yellow
-	int w = 0; //white
-	int ergebnis = -1;
-	int ergebnisN = 0;
+  if (mode == "color")
+  {
+    //Mögliche Werte: 2,3,4,5, 1
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 2)
+        b++;
+    }
+    cout << "b: " << b << endl;
 
-	if (mode == "color")
-	{
-		//Mögliche Werte: 2,3,4,5
-		for (int i = 0; i < laenge; i++)
-		{
-			if (colorCounter[i] == 2)
-				b++;
-		}
-		cout << "b: " << b << endl;
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 3)
+        g++;
+    }
+    cout << "g: " << g << endl;
 
-		for (int i = 0; i < laenge; i++)
-		{
-			if (colorCounter[i] == 3)
-				g++;
-		}
-		cout << "g: " << g << endl;
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 5)
+        r++;
+    }
+    cout << "r: " << r << endl;
 
-		for (int i = 0; i < laenge; i++)
-		{
-			if (colorCounter[i] == 5)
-				r++;
-		}
-		cout << "r: " << r << endl;
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 4)
+        y++;
+    }
+    cout << "y: " << y << endl;
 
-		for (int i = 0; i < laenge; i++)
-		{
-			if (colorCounter[i] == 4)
-				y++;
-		}
-		cout << "y: " << y << endl;
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 1)
+        w++;
+    }
+    cout << "w: " << w << endl;
 
-		if (r > b && r > g && r > y)
-		{
-			ergebnis = 5;
-			ergebnisN = r;
-		}
-		else if (g > r && g > b && g > y)
-		{
-			ergebnis = 3;
-			ergebnisN = g;
-		}
-		else if (b > r && b > g && b > y)
-		{
-			ergebnis = 2;
-			ergebnisN = b;
-		}
-		else
-		{
-			ergebnis = 4;
-			ergebnisN = y;
-		}
-	}
-	else
-	{
-		//Mögliche Werte: 0,1
-		for (int i = 0; i < laenge; i++)
-		{
-			if (colorCounter[i] == 0)
-				b++;
-		}
-		cout << "b: " << b << endl;
+    if (r > b && r > g && r > y && r > w){
+      ergebnis = 5;
+      ergebnisN = r;
+    }else if(g > r && g > b && g > y && g > w){
+      ergebnis = 3;
+      ergebnisN = g;
+    }else if(b > r && b > g && b > y && b> w){
+      ergebnis = 2;
+      ergebnisN = b;
+    }else if (y > r && y > g && y > b && y > w){
+      ergebnis = 4;
+      ergebnisN = y;
+    }
+  }
+  else
+  {
+    //Mögliche Werte: 0,1
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 0)
+        b++;
+    }
+    cout << "b: " << b << endl;
 
-		for (int i = 0; i < laenge; i++)
-		{
-			if (colorCounter[i] == 1)
-				w++;
-		}
-		cout << "w: " << w << endl;
+    for (int i = 0; i < laenge; i++)
+    {
+      if (colorCounter[i] == 1)
+        w++;
+    }
+    cout << "w: " << w << endl;
 
-		if (b > w)
-		{
-			ergebnis = 0;
-			ergebnisN = b;
-		}
-		else
-		{
-			ergebnis = 1;
-			ergebnisN = w;
-		}
-	}
+    if (b > w){
+      ergebnis = 0;
+      ergebnisN = b;
+    }else{
+      ergebnis = 1;
+      ergebnisN = w;
+    }
+  }
 
-	cout << "Detected color: " << ergebnis << " N: " << ergebnisN << endl;
+  cout << "Detected color: " << ergebnis << " N: " << ergebnisN <<endl;
 
-	return ergebnis;
+  return ergebnis;
 }
 
 // Meldet zurück, ob die Linie nach gewünschten Modus gesehen wurde
 bool lineDetection(std::string mode)
 {
-	if (mode == "blackright")
-		return ev3_color_sensor_get_reflect(LSr) < 40; // 25
-	else if (mode == "blackleft")
-		return ev3_color_sensor_get_reflect(LSl) < 40; // 25
-	else if (mode == "blackboth")
-		return ev3_color_sensor_get_reflect(LSr) < 40 && ev3_color_sensor_get_reflect(LSl) < 40;
-	else if (mode == "blackone")
-		return ev3_color_sensor_get_reflect(LSr) < 40 || ev3_color_sensor_get_reflect(LSl) < 40;
-	else if (mode == "whiteboth")
-		return ev3_color_sensor_get_reflect(LSr) > 50 || ev3_color_sensor_get_reflect(LSl) > 50;
-	else if (mode == "whiteright")
-		return ev3_color_sensor_get_reflect(LSr) > 50;
-	else if (mode == "whiteleft")
-		return ev3_color_sensor_get_reflect(LSl) > 50;
-	else if (mode == "crossline")
-	{
-		bool crossline = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 95;
-		//if (crossline)
-		//ev3_speaker_play_tone(NOTE_F4, 5);
-		return crossline;
-	}
-	else if (mode == "greenR")
-		return colorDetection_rgb_ev3(LSr, "green");
-	else if (mode == "blueR")
-		return colorDetection_rgb_ev3(LSr, "color");
-	else if (mode == "redR")
-		return colorDetection_rgb_ev3(LSr, "color");
-	else if (mode == "yellowR")
-		return colorDetection_rgb_ev3(LSr, "yellow");
-	else if (mode == "greenL")
-		return colorDetection_rgb_ev3(LSl, "green");
-	else if (mode == "blueL")
-		return colorDetection_rgb_ev3(LSl, "color");
-	else if (mode == "redL")
-		return colorDetection_rgb_ev3(LSl, "color");
-	else if (mode == "yellowL")
-		return colorDetection_rgb_ev3(LSl, "color");
-	return false;
+  if (mode == "blackright")
+    return ev3_color_sensor_get_reflect(LSr) < 40; // 25
+  else if (mode == "blackleft")
+    return ev3_color_sensor_get_reflect(LSl) < 40; // 25
+  else if (mode == "blackboth")
+    return ev3_color_sensor_get_reflect(LSr) < 40 && ev3_color_sensor_get_reflect(LSl) < 40;
+  else if (mode == "blackone")
+    return ev3_color_sensor_get_reflect(LSr) < 40 || ev3_color_sensor_get_reflect(LSl) < 40;
+  else if (mode == "whiteboth")
+    return ev3_color_sensor_get_reflect(LSr) > 50 || ev3_color_sensor_get_reflect(LSl) > 50;
+  else if (mode == "whiteright")
+    return ev3_color_sensor_get_reflect(LSr) > 50;
+  else if (mode == "whiteleft")
+    return ev3_color_sensor_get_reflect(LSl) > 50;
+  else if (mode == "crossline"){
+    bool crossline = (ev3_color_sensor_get_reflect(LSl) + ev3_color_sensor_get_reflect(LSr)) < 100;
+    if (crossline){
+      cout << "CROSSLINE"<< endl;
+      ev3_speaker_play_tone(NOTE_F4, 5);
+    }
+    return crossline;
+  }
+  else if (mode == "greenR")
+    return  colorDetection_rgb_ev3(LSr, "green");
+  else if (mode == "blueR")
+    return  colorDetection_rgb_ev3(LSr, "color");
+  else if(mode == "redR")
+    return colorDetection_rgb_ev3(LSr,"color");
+  else if(mode == "yellowR")
+    return colorDetection_rgb_ev3(LSr,"yellow");
+  else if (mode == "greenL")
+    return  colorDetection_rgb_ev3(LSl, "green");
+  else if (mode == "blueL")
+    return  colorDetection_rgb_ev3(LSl, "color");
+  else if(mode == "redL")
+    return colorDetection_rgb_ev3(LSl,"color");
+  else if(mode == "yellowL")
+    return colorDetection_rgb_ev3(LSl,"color");
+  return false;
 }
 
 // Warten, bis die Taste nach links gedrückt wurde
@@ -419,7 +416,7 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode)
   }
   else if (mode == "green")
   {
-    color = red < 280 && blue < 260; 
+    color = red < 140 || blue < 120 || green < 140; 
   }
 
   cout << "rgb: " << red << " " << green << " " << blue << endl;
@@ -506,46 +503,48 @@ int colorDetection(sensor_port_t sensor)
 // Kompliziertere Farbwerterkennung
 int colorDetection_rgb(sensor_port_t sensor, std::string mode)
 {
-	rgb_raw_t rgb;
-	bool_t valRgb = ht_nxt_color_sensor_measure_rgb(sensor, &rgb);
-	assert(valRgb);
+  rgb_raw_t rgb;
+  bool_t valRgb = ht_nxt_color_sensor_measure_rgb(sensor, &rgb);
+  assert(valRgb);
 
-	int red = rgb.r;
-	int green = rgb.g;
-	int blue = rgb.b;
+  int red = rgb.r;
+  int green = rgb.g;
+  int blue = rgb.b;
 
-	tslp_tsk(6);
+  tslp_tsk(6);
 
-	cout << mode << " " << red << " " << green << " " << blue << " ";
-	if (mode == "color")
-	{
-		if (red < 20 && blue < 20 && green < 20)
-			return -1;
-		if (red > blue && red > green && red > 80)
-		{
-			if (red > green * 1.65)
-				return 5;
-			else
-			{
-				return 4;
-			}
-		}
-		if (blue > green && blue > red && blue > 60)
-			return 2;
-		if (green > blue && green > red && green > 50)
-			return 3;
-	}
-	else
-	{
-		//Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
-		if (red < 9 && green < 9 && blue < 9)
-			return -1;
-		if (red > 150 || green > 150 || blue > 150)
-			return 1;
-		if ((red > 8 && red < 100) || ((green > 8 && green < 100) || (blue > 8 && blue < 100)))
-			return 0;
-	}
-	return -1;
+  cout << mode << " " << red << " " << green<< " " << blue << " ";
+  if (mode == "color")
+  {
+    if (red > 150 && blue > 150 && green > 150)
+      return 1;
+    if (red < 20 && blue < 20 && green < 20)
+      return -1;
+    if (red > blue && red > green && red > 80)
+    {
+      if (red > green * 1.65)
+        return 5;
+      else
+      {
+        return 4;
+      }
+    }
+    if (blue > green && blue > red && blue > 60)
+      return 2;
+    if (green > blue && green > red && green > 50)
+      return 3;
+  }
+  else
+  {
+    //Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
+    if (red < 9 && green < 9 && blue < 9)
+      return -1;
+    if (red > 150 || green > 150 || blue > 150)
+      return 1;
+    if ((red > 8 && red < 100)|| ((green > 8 && green < 100)|| (blue > 8 && blue < 100)))
+      return 0;
+  }
+  return -1;
 }
 
 //Ergänzt das Array mit der letzten verbleibenden Farbe

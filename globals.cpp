@@ -50,7 +50,7 @@ const double wheelDiameter = 6.24; //6.24;
 const double wheelCircumferance = 17.6;
 
 //Distances for main
-int miniDistance1 = 125;      //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
+int miniDistance1 = 125; //55  //Distanz um direkt wieder perfekt auf Linie zu stehen
 int miniDistance2 = 130;
 int miniDistanceShort = 40; //rückwärts an Linie herangefahren
 int moveBackDistance = 193; //Distanz vor einer Drehung zum Router
@@ -73,6 +73,8 @@ double batteryFactor = 0.016; //speed - (batteryLevel - 7700) * batteryFactor
 int positions[4] = {0};
 int routerO[3] = {0};
 int routerW[3] = {0};
+int routerPositions[7] = {0};
+int routerPositionsKreis[7][2] = {{0}, {2, 3}, {3, 4}, {4, 5}, {9, 10}, {8, 9}, {7, 8}};
 int blue;
 int red;
 int green;
@@ -85,6 +87,7 @@ int routerDelivered = 0; //Um zu wissen, ob gerade gelb gesucht wird
 int entscheidung; //ob oben oder unten rum zum wegbringen // 1 == obenrum, 0 == untenrum
 int currentPosition;
 int endPosition;
+int endDirection;
 bool manualSetDriveDirection = false;
 int currentColor;
 bool liftParallel = false;

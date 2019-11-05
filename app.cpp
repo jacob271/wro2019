@@ -139,25 +139,26 @@ void logic()
             routerEinsammeln(false, 4, true);
             liftParallel = true;
             routerO[1] = 2; //M4
-            line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
-            line2(1, 4, pGL2, dGL2, "degree", 165, 4, false, longMotor, liftParallelSpeed, "degree", 250, true); //parallel
-            liftParallel = false;
+            //line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
+            //line2(1, 4, pGL2, dGL2, "degree", 165, 4, false, longMotor, liftParallelSpeed, "degree", 250, true); //parallel
+            
 
             //city(3, 1, 4, 1, true);
             //mediumMotor(longMotor, 60, "degree", 250, true);
             if (red == 1)
             {
                 manualSetDriveDirection = true;
-                city(4, 1, -4, 2, false);
+                city(3, 1, -4, 2, false);
                 routerAbladen(LSl, true, "redR");
                 city(-4, 2, 6, 4, false);
             }
             else
             {
-                city(4, 1, -5, 3, false);
+                city(3, 1, -5, 3, false);
                 routerAbladen(LSr, false, "redL");
                 city(-5, 3, 6, 4, false);
             }
+			liftParallel = false;
         }
         line1(cSpeed, 3, pGL1, dGL1, LSr, true, "crossline", 0, 3, false);
         line1(3, 3, pGL1, dGL1, LSr, true, "degree", 150, 3, false);

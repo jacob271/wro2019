@@ -396,6 +396,9 @@ void routerAbladen(sensor_port_t followSensor, bool lang, std::string color)
         line1(cSpeed, 20, pGL1 * 0.9, dGL1 * 0.9, followSensor, false, color, 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
         //move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
     }
+	if (color == "yellowR"){
+		move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
+	}
     mediumMotor(longMotor, -20, "time", 900, true);
     routerDelivered++;
     //Rütteln
@@ -1625,8 +1628,8 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                 case 11:
                     if (liftParallel && currentPosition == 4)
                     {
-                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false, longMotor, liftParallelSpeed, "degree", 250, true);
-                        line2(3, 3, pGL2, dGL2, "degree", miniDistance2, 1, true, longMotor, liftParallelSpeed, "degree", 250, true);
+                        line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 250, true);
+                        line2(4, 4, pGL2, dGL2, "degree", miniDistance2, 1, true, longMotor, liftParallelSpeed, "degree", 250, true);
                         mediumMotor(longMotor, liftParallelSpeed, "degree", 250, true);
                         turn2(1, 5, "degree", -spin90, 1, true);
                         line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", 100, 6, false);
@@ -1710,8 +1713,8 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
                     }
                     else if (liftParallel)
                     {
-                        line2(1, 3, pGL2, dGL2, "crossline", 0, 3, false);
-                        line2(3, 4, pGL2, dGL2, "degree", 295, 1, true);
+                        line2(1, 4, pGL2, dGL2, "crossline", 0, 4, false);
+                        line2(4, 4, pGL2, dGL2, "degree", 295, 1, true);
                         mediumMotor(longMotor, liftParallelSpeed, "degree", 250, true);
                         turn1(motor_right, -1, false, -4, "degree", turn90, -1, true);
                         line2(cSpeed, 4, pGL2, dGL2, "degree", 130, 4, false);

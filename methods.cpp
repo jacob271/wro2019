@@ -190,8 +190,9 @@ void positionenScannen()
         ev3_speaker_play_tone(NOTE_F4, 3);
         positions[i] = line1(cSpeed, 90, pGL1, dGL1 * 0.6, LSr, false, "degree", 147, 60, false, true, HTr, "color");
     }
-    positions[3] = findColor(positions, "positions");
-    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 315, 3, false); //330
+    //positions[3] = findColor(positions, "positions");
+	positions[3] = line1(cSpeed, 90, pGL1, dGL1 * 0.6, LSr, false, "degree", 147, 60, false, true, HTr, "color");
+    line1(cSpeed, 90, pGL1, dGL1, LSr, false, "degree", 168, 3, false); //315
     turn1(motor_right, 3, true, 3, "degree", goTurn90, 3, false);
     line1(cSpeed, 3, pGL1, dGL1, LSr, true, "degree", 620, 3, false);
 }

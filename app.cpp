@@ -40,10 +40,10 @@ void logic()
 		if (blue == 1 || blue == 3)
 		{
 			//router(1, 2, 10, 1, false);
-			line1(cSpeed,4,pGL1,dGL1,LSr,true,"crossline",0,4,false, longMotor, liftParallelSpeed, "degree", 230, true);
-			line1(cSpeed,4,pGL1,dGL1,LSr,true,"degree",miniDistance1,1,true, longMotor, liftParallelSpeed, "degree", 230, true);
-			turn2(1,5,"degree",-spin90,1,true);
-			line2(cSpeed,4,pGL2,dGL2,"degree",100,4,false);
+			line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
+			line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", miniDistance1, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+			turn2(1, 5, "degree", -spin90, 1, true);
+			line2(cSpeed, 4, pGL2, dGL2, "degree", 100, 4, false);
 			manualSetDriveDirection = true;
 			city(2, 1, -2, 2, false);
 			routerAbladen(LSr, true, "blueL");
@@ -189,10 +189,10 @@ void logic()
 		if (red == 1 || red == 3)
 		{
 			//router(6, 2, 7, 3, false);
-			line1(cSpeed,4,pGL1,dGL1,LSl,false,"crossline",0,4,false, longMotor, liftParallelSpeed, "degree", 230, true);
-			line1(cSpeed,4,pGL1,dGL1,LSl,false,"degree",miniDistance1,1,true, longMotor, liftParallelSpeed, "degree", 230, true);
-			turn2(1,5,"degree",spin90,1,true);
-			line2(cSpeed,4,pGL2,dGL2,"degree",100,4,false);
+			line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
+			line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+			turn2(1, 5, "degree", spin90, 1, true);
+			line2(cSpeed, 4, pGL2, dGL2, "degree", 100, 4, false);
 
 			manualSetDriveDirection = false;
 			city(5, 3, -4, 2, true);
@@ -554,78 +554,155 @@ void logic()
 
 void logicColored()
 {
-    routerColored(5, 1, 2);
-    if (blue == 4 || blue == 2)
-    {
-        megaKreis(true, endPosition, endDirection, false, -1, 1, true);
-        routerAbladen(LSl, false, "blueR");
-        city(-1,1, -3, 2, false);
-    }
-    else
-    {
-        if(endPosition == 10){
-            turn2(1,5,"degree",spin180,1,true);
-        }
-        megaKreis(true, endPosition, endDirection, false, -2, 2, true);
-        routerAbladen(LSr, true, "blueL");
-        city(-2,2, -3, 2, false);
-    }
-    
-    kabelAbladen(true, true);
-    city(-3, 2, 4, 1, false);
-    routerColored(8, 1, 5);
-    if (red == 4 || red == 2)
-    {
-        megaKreis(true, endPosition, endDirection, false, -5, 3, true);
-        routerAbladen(LSr, false, "redL");
-        megaKreis(false, -5, 3, true, 6, 4, false);
-    }
-    else
-    {
-        if(endPosition == 7||endPosition == 8){
-            turn2(1,5,"degree",spin180,1,true);
-        }
-        megaKreis(true, endPosition, endDirection, false, -4, 2, true);
-        routerAbladen(LSl, true, "redR");
-        city(-4,2,5,1,false);
-        megaKreis(true, 7, 1, true, 6, 4, false);
-    }    
-    kabelSammeln(false);
-    //otherside
-    routerColored(5, 3, 3);
-    if (green == 4 || green == 2)
-    {
-        megaKreis(true, endPosition, endDirection, false, 7, 2, false);
-        city(7,2,-7,3,true);      
-        routerAbladen(LSl, false, "greenR");
-        city(-7, 3, -9, 4, true);
-    }
-    else
-    {
-        megaKreis(true, endPosition, endDirection, false, 7, 2, false);
-        city(7,2,-8,4,true);        
-        routerAbladen(LSr, true, "greenL");
-        city(-8, 4, -9, 4, true);
-    }
-    kabelAbladen(true, false);
-    megaKreis(false, -9, 4, true, 1, 4, false);
-    routerColored(1, 4, 4);
-    if (yellow == 4 || yellow == 2)
-    {
-        megaKreis(true, endPosition, endDirection, false, -11, 1, true);
-        routerAbladen(LSr, false, "yellowL");
-        city(-11, 1, 14, 2, false);
-        line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
-        move(cSpeed, 4, 1, 0.9, "degree", 700, 1, true);
-    }
-    else
-    {
-        megaKreis(true, endPosition, endDirection, false, -10, 4, true);
-        routerAbladen(LSl, true, "yellowR");
-        city(-10, 4, 13, 3, false);
-        turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
-        move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
-    }
+	bool g = false;
+	bool b = false;
+	bool y = false;
+	bool r = false;
+	for (int i = 0; i < 3; i++)
+	{
+		if (routerO[i] == 2 || routerW[i] == 2)
+		{
+			b = true;
+		}
+		else if (routerO[i] == 3 || routerW[i] == 3)
+		{
+			g = true;
+		}
+		else if (routerO[i] == 4 || routerW[i] == 4)
+		{
+			y = true;
+		}
+		else if (routerO[i] == 5 || routerW[i] == 5)
+		{
+			r = true;
+		}
+	}
+
+	//Für 3 schwarze Router in einer Reihe
+	for (int i = 0; i < 3; i++)
+	{
+		if (routerO[i] == 0)
+		{
+			if (!g)
+			{
+				routerO[i] = 3;
+				g = true;
+			}
+			else if (!b)
+			{
+				routerO[i] = 2;
+				b = true;
+			}
+			else if (!y)
+			{
+				routerO[i] = 4;
+				y = true;
+			}
+			else if (!r)
+			{
+				routerO[i] = 5;
+				r = true;
+			}
+		}
+		if (routerW[i] == 0)
+		{
+			if (!g)
+			{
+				routerW[i] = 3;
+				g = true;
+			}
+			else if (!b)
+			{
+				routerW[i] = 2;
+				b = true;
+			}
+			else if (!y)
+			{
+				routerW[i] = 4;
+				y = true;
+			}
+			else if (!r)
+			{
+				routerW[i] = 5;
+				r = true;
+			}
+		}
+	}
+
+	routerColored(5, 1, 2);
+	if (blue == 4 || blue == 2)
+	{
+		megaKreis(true, endPosition, endDirection, false, -1, 1, true);
+		routerAbladen(LSl, false, "blueR");
+		city(-1, 1, -3, 2, false);
+	}
+	else
+	{
+		if (endPosition == 10)
+		{
+			turn2(1, 5, "degree", spin180, 1, true);
+		}
+		megaKreis(true, endPosition, endDirection, false, -2, 2, true);
+		routerAbladen(LSr, true, "blueL");
+		city(-2, 2, -3, 2, false);
+	}
+
+	kabelAbladen(true, true);
+	city(-3, 2, 4, 1, true);
+	routerColored(8, 1, 5);
+	if (red == 4 || red == 2)
+	{
+		megaKreis(true, endPosition, endDirection, false, -5, 3, true);
+		routerAbladen(LSr, false, "redL");
+		megaKreis(false, -5, 3, true, 6, 4, false);
+	}
+	else
+	{
+		if (endPosition == 7 || endPosition == 8)
+		{
+			turn2(1, 5, "degree", spin180, 1, true);
+		}
+		megaKreis(true, endPosition, endDirection, false, -4, 2, true);
+		routerAbladen(LSl, true, "redR");
+		city(-4, 2, 5, 1, false);
+		megaKreis(true, 7, 1, true, 6, 4, false);
+	}
+	kabelSammeln(false);
+	//otherside
+	routerColored(5, 3, 3);
+	if (green == 4 || green == 2)
+	{
+		megaKreis(true, endPosition, endDirection, false, 7, 2, false);
+		city(7, 2, -7, 3, true);
+		routerAbladen(LSl, false, "greenR");
+		city(-7, 3, -9, 4, true);
+	}
+	else
+	{
+		megaKreis(true, endPosition, endDirection, false, 7, 2, false);
+		city(7, 2, -8, 4, true);
+		routerAbladen(LSr, true, "greenL");
+		city(-8, 4, -9, 4, true);
+	}
+	kabelAbladen(true, false);
+	megaKreis(false, -9, 4, true, 1, 4, true);
+	routerColored(1, 4, 4);
+	if (yellow == 4 || yellow == 2)
+	{
+		megaKreis(true, endPosition, endDirection, false, -11, 1, true);
+		routerAbladen(LSr, false, "yellowL");
+		city(-11, 1, 14, 2, false);
+		line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+		move(cSpeed, 4, 1, 0.9, "degree", 700, 1, true);
+	}
+	else
+	{
+		megaKreis(true, endPosition, endDirection, false, -10, 4, true);
+		routerAbladen(LSl, true, "yellowR");
+		city(-10, 4, 13, 3, false);
+		turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
+		move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
+	}
 }
 
 void test()
@@ -642,22 +719,22 @@ void main_task(intptr_t unused)
 	//test();
 	//return;
 
-    //Anfang
-    move(1, 3, 0.4, 1, "degree", 220, 3, false);
-    move(cSpeed, 3, 1, 0.4, "degree", 205, 3, false);
-    move(3, 3, 1, 1, "degree", 80, 3, false);
-    positionenScannen();
-    city(9, 4, 6, 4, false);
-    routerScannenColor(HTr, "routerO");
-    kabelSammeln(true);
-    //line2(1, 3, pGL2, dGL2, "degree", 100, 3, false);
-    routerScannenColor(HTl, "routerW");
-    fallunterscheidung();
-    cout << "fallunterscheidung fertig: " << endl;
-    updateLogDatei();
+	//Anfang
+	move(1, 3, 0.4, 1, "degree", 220, 3, false);
+	move(cSpeed, 3, 1, 0.4, "degree", 205, 3, false);
+	move(3, 3, 1, 1, "degree", 80, 3, false);
+	positionenScannen();
+	city(9, 4, 6, 4, false);
+	routerScannenColor(HTr, "routerO");
+	kabelSammeln(true);
+	//line2(1, 3, pGL2, dGL2, "degree", 100, 3, false);
+	routerScannenColor(HTl, "routerW");
+	fallunterscheidung();
+	cout << "fallunterscheidung fertig: " << endl;
+	updateLogDatei();
 	//Anfang Ende
 
-    logicColored();
+	logicColored();
 
 	int neededTime = run.getTime();
 

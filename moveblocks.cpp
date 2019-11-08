@@ -88,7 +88,7 @@ void turn1(motor_port_t turnMotor, int startSpeed, bool brakeOtherMotor, int max
       double otherSpeed = (abs(startSpeed) - (abs(ev3_motor_get_counts(otherMotor) - resetOtherMotor) / OMbrakeDistance) * abs(startSpeed - endSpeed)) * (maxSpeed / abs(maxSpeed));
       //(Startspeed - prozentual zurückgelegte Bresmstrecke * zu bremsende Geschwindidkeit) * vorwärts oder rückwärts aus maxSpeed
       motorControl(otherMotor, otherSpeed, maxSpeed);
-      cout << "DEC: " << otherSpeed << endl;
+      //cout << "DEC: " << otherSpeed << endl;
     }
 
     if (stop == false) //Beschleunigen otherMotor am Ende

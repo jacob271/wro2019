@@ -451,8 +451,10 @@ void logic()
             routerAbladen(LSr, false, "yellowL");
             city(-11, 1, 14, 2, false);
             //-> base
-            line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
-            move(cSpeed, 4, 1, 0.9, "degree", 700, 1, true);
+            line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
+            move(cSpeed, 4, 1, 0.9, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+			move(-1,-4,1,1,"degree",90,-1,true);
+
         }
         else
         {
@@ -461,7 +463,8 @@ void logic()
             city(-10, 4, 13, 3, false);
             //-> base
             turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
-            move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
+            move(cSpeed, 4, 1, 1, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+			move(-1,-4,1,1,"degree",90,-1,true);
         }
     }
     else
@@ -537,19 +540,25 @@ void logic()
         }
         //-> base
         turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
-        move(cSpeed, 4, 1, 1, "degree", 400, 1, true);
+        move(cSpeed, 4, 1, 1, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+		move(-1,-4,1,1,"degree",90,-1,true);
     }
 }
 void test()
 {
-    while (true)
+    line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, LSl, false, "degree", 50, 30, false, longMotor, liftParallelSpeed, "degree", 230, true);
+    line1(cSpeed, 20, pGL1 * 0.9, dGL1 * 0.9, LSl, false, "yellowR", 0, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+	tslp_tsk(500);
+	move(cSpeed, 30, 1, 1, "degree", 5, 1, true);
+	return;
+	/*while (true)
     {
         line1(cSpeed, 30, pGL1 * 0.9, dGL1 * 0.9, LSl, true, "degree", 1000, 30, true);
         waitForButton();
         line1(cSpeed, 30, pGL1 * 0.5, dGL1 * 0.7, LSl, true, "degree", 1000, 1, true);
         waitForButton();
     }
-    /*
+    */
     while (true)
     {
         waitForButton();
@@ -558,7 +567,7 @@ void test()
         int blue = getRGB(LSr, 3);
         cout << "red: " << red << " green: " << green << " blue: " << blue << endl;
     }
-    
+    /*
     while (true)
     {
         waitForButton();

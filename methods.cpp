@@ -923,13 +923,13 @@ void city(int currentPosition, int currentDirection, int endPosition, int endDir
             case -8:
                 turn1(motor_left, -1, true, -3, "degree", 503, -1, true); //M3
                 turn1(motor_right, -1, false, -3, "degree", 512, -1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 270, 4, false);
+                line2(1, 3, pGL2, dGL2, "degree", 180, 4, false);
                 break;
             case -4:
             case -10:
                 turn1(motor_right, -1, true, -3, "degree", 503, -1, true);
                 turn1(motor_left, -1, false, -3, "degree", 512, -1, true);
-                line2(1, 3, pGL2, dGL2, "degree", 270, 4, false);
+                line2(1, 3, pGL2, dGL2, "degree", 180, 4, false);
                 break;
             }
         case -2:

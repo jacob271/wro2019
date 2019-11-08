@@ -371,6 +371,7 @@ bool lineDetection(std::string mode)
   else if(mode == "yellowL")
     return colorDetection_rgb_ev3(LSl,"color");
   return false;
+
 }
 
 // Warten, bis die Taste nach links gedrückt wurde
@@ -430,15 +431,15 @@ bool colorDetection_rgb_ev3(sensor_port_t sensor, std::string mode)
 	bool color = false;
 	if (mode == "color")
 	{
-		color = red < 140 || blue < 120 || green < 140;
+		color = red < 130 || blue < 120 || green < 130;
 	}
 	else if (mode == "yellow")
 	{
-		color = ((red + blue + green) > 400) && blue < 380;
+		color = ((red + blue + green) < 750) && blue < 350;
 	}
 	else if (mode == "green")
 	{
-		color = red < 100 && green > 100 && blue < 100;
+		color = red < 220 && green > 100 && blue < 250;
 	}
 
 	/*else if (mode == "red")
@@ -537,12 +538,12 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
   else
   {
     //Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
-    if (red < 9 && green < 9 && blue < 9)
-      return -1;
-    if (red > 150 || green > 150 || blue > 150)
-      return 1;
-    if ((red > 8 && red < 100)|| ((green > 8 && green < 100)|| (blue > 8 && blue < 100)))
-      return 0;
+		if (red > 150 || green > 150 || blue > 150)
+			return 1;
+		if (red < 25 || green < 25 || blue < 25)
+			return -1;
+		if ((red > 25 && red < 80) || ((green > 25 && green < 80) || (blue > 25 && blue < 80)))
+			return 0;
   }
   return -1;
 }

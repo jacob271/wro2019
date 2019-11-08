@@ -230,11 +230,11 @@ void kabelSammeln(bool south)
         line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false, doubleLever, -70, "degree", leverDistance/2, true);
         turn1(motor_right, cSpeed, true, 4, "degree", 270, 4, false);
         turn1(motor_left, cSpeed, true, 4, "degree", 240, 1, true);
-        line2(4, 30, pGL2 * 0.5, dGL2 * 0.5, "degree", 70, 30, false);
+        line2(4, 30, pGL2 * 0.5, dGL2 * 0.5, "degree", 70, 30, false, longMotor, liftParallelSpeed, "degree", 230, true);
         move(cSpeed, 20, 1, 1, "degree", 60, 1, true);
         mediumMotor(doubleLever, 50, "degree", leverDistance, false);
         mediumMotor(doubleLever, 100, "time", 300, true);
-        move(-1, -4, 1, 1, "degree", 285, -1, true);
+        move(-1, -4, 1, 1, "degree", 285, -1, true, longMotor, liftParallelSpeed, "degree", 230, true);
         turn2(1, 5, "degree", -spin90, 1, true);
 
         /*

@@ -540,9 +540,9 @@ int colorDetection_rgb(sensor_port_t sensor, std::string mode)
 		//Spezialwünsche von Paul: -1 = kein Objekt, 1 = weiß, 0 = schwarz
 		if (red > 150 || green > 150 || blue > 150)
 			return 1;
-		if (red < 20 || green < 20 || blue < 20)
+		if (red < 25 || green < 25 || blue < 25)
 			return -1;
-		if ((red > 19 && red < 80) || ((green > 19 && green < 80) || (blue > 19 && blue < 80)))
+		if ((red > 25 && red < 80) || ((green > 25 && green < 80) || (blue > 25 && blue < 80)))
 			return 0;
 	}
 	return -1;

@@ -40,10 +40,10 @@ void logic()
 		if (blue == 1 || blue == 3)
 		{
 			//router(1, 2, 10, 1, false);
-			line1(cSpeed,4,pGL1,dGL1,LSr,true,"crossline",0,4,false, longMotor, liftParallelSpeed, "degree", 230, true);
-			line1(cSpeed,4,pGL1,dGL1,LSr,true,"degree",miniDistance1,1,true, longMotor, liftParallelSpeed, "degree", 230, true);
-			turn2(1,5,"degree",-spin90,1,true);
-			line2(cSpeed,4,pGL2,dGL2,"degree",100,4,false);
+			line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
+			line1(cSpeed, 4, pGL1, dGL1, LSr, true, "degree", miniDistance1, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+			turn2(1, 5, "degree", -spin90, 1, true);
+			line2(cSpeed, 4, pGL2, dGL2, "degree", 100, 4, false);
 			manualSetDriveDirection = true;
 			city(2, 1, -2, 2, false);
 			routerAbladen(LSr, true, "blueL");
@@ -189,10 +189,10 @@ void logic()
 		if (red == 1 || red == 3)
 		{
 			//router(6, 2, 7, 3, false);
-			line1(cSpeed,4,pGL1,dGL1,LSl,false,"crossline",0,4,false, longMotor, liftParallelSpeed, "degree", 230, true);
-			line1(cSpeed,4,pGL1,dGL1,LSl,false,"degree",miniDistance1,1,true, longMotor, liftParallelSpeed, "degree", 230, true);
-			turn2(1,5,"degree",spin90,1,true);
-			line2(cSpeed,4,pGL2,dGL2,"degree",100,4,false);
+			line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
+			line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+			turn2(1, 5, "degree", spin90, 1, true);
+			line2(cSpeed, 4, pGL2, dGL2, "degree", 100, 4, false);
 
 			manualSetDriveDirection = false;
 			city(5, 3, -4, 2, true);
@@ -457,21 +457,25 @@ void logic()
 			manualSetDriveDirection = false;
 			city(15, 2, -11, 1, true);
 			routerAbladen(LSr, false, "yellowL");
-			city(-11, 1, 14, 2, false);
+			city(-11, 1, 14, 4, false);
+			/*
 			//-> base
 			line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
 			move(cSpeed, 4, 1, 0.9, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
 			move(-1, -4, 1, 1, "degree", 105, -1, true);
+			*/
 		}
 		else
 		{
 			city(15, 2, -10, 4, true);
 			routerAbladen(LSl, true, "yellowR");
-			city(-10, 4, 13, 3, false);
+			city(-10, 4, 14, 4, false);
+			/*
 			//-> base
 			turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
 			move(cSpeed, 4, 1, 1, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
 			move(-1, -4, 1, 1, "degree", 105, -1, true);
+			*/
 		}
 	}
 	else
@@ -537,19 +541,153 @@ void logic()
 			manualSetDriveDirection = true;
 			city(8, 2, -7, 3, true);
 			routerAbladen(LSl, false, "greenR");
-			city(-7, 3, 13, 3, false);
+			city(-7, 3, 14, 4, false);
 		}
 		else
 		{
 			city(8, 2, -8, 4, true);
 			routerAbladen(LSr, true, "greenL");
-			city(-8, 4, 13, 3, false);
+			city(-8, 4, 14, 4, false);
 		}
+		/*
 		//-> base
 		turn1(motor_right, 4, true, 4, "degree", 480, 4, false);
 		move(cSpeed, 4, 1, 1, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
 		move(-1, -4, 1, 1, "degree", 105, -1, true);
+		*/
 	}
+}
+
+void surprise()
+{
+	turn90 = 510;
+	goTurn90 = 520;
+	if (routerO[0] == 1)
+	{
+		city(14, 4, 1, 4, false);
+		line1(4, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false);
+		line1(4, 4, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true);
+		turn2(1, 5, "degree", spin90, 1, true);
+		line2(1, 4, pGL2, dGL2, "degree", 100, 4, false);
+	}
+	else if (routerO[1] == 1)
+	{
+		city(14, 4, 3, 1, false);
+	}
+	else
+	{
+		city(14, 4, 4, 1, false);
+	}
+
+	line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+	line2(cSpeed, 4, pGL2, dGL2, "degree", 260, 1, true);
+	turn1(motor_left, -1, false, -4, "degree", 450, -1, true);
+	mediumMotor(doubleLever, -70, "degree", leverDistance, true);
+	mediumMotor(longMotor, 60, "degree", 220, true);
+	line2(1, 2, pGL2 * 0.3, dGL2 * 0.3, "degree", 660, 1, true); //paul
+
+	turn1(motor_left, 1, false, 7, "degree", turn90, 1, true);
+	surprise1 = true;
+	liftParallel = true;
+	if (routerO[0] == 1)
+	{
+		router(3, 1, 6, 2, false);
+	}
+	else if (routerO[1] == 1)
+	{
+		router(4, 1, 6, 2, false);
+	}
+	else
+	{
+		move(1, 4, 1, 1, "degree", 105, 1, true);
+		router(5, 1, 6, 2, false);
+	}
+	liftParallel = false;
+	line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 700, 4, false);
+	line1(cSpeed, 4, pGL1, dGL1, LSl, false, "crossline", 0, 4, false);
+	line1(cSpeed, 4, pGL1, dGL1, LSl, false, "degree", 200, 4, false);
+	line1(cSpeed, 50, pGL1, dGL1, LSl, false, "crossline", 0, 50, false);
+	line1(cSpeed, 50, pGL1, dGL1, LSl, false, "degree", miniDistance1, 1, true);
+
+	turn1(motor_left, 1, false, 40, "degree", turn90, 1, true);
+	move(1, 4, 1, 1, "degree", 50, 1, true);
+	move(-1, -4, 1, 1, "degree", 50, -1, true);
+	turn1(motor_right, -1, false, -4, "degree", turn90, -1, true);
+
+	line1(1, 4, pGL1, dGL1, LSr, true, "degree", 360, 4, false);
+	city(7, 4, 6, 4, false);
+
+	line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false);
+	line1(4, 4, pGL1, dGL1, LSr, true, "degree", 150, 4, false);
+	line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false);
+	move(4, 4, 1, 1, "degree", miniDistance1, 1, true);
+	turn2(1, 5, "degree", -spin90, 1, true);
+	line2(1, 4, pGL2, dGL2, "degree", 60, 4, false);
+	if (routerW[2] == 1)
+	{
+	}
+	else if (routerW[1] == 1)
+	{
+		router(5, 3, 4, 3, false);
+	}
+	else
+	{
+		router(5, 3, 3, 3, false);
+	}
+
+	line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false);
+	line2(cSpeed, 4, pGL2, dGL2, "degree", 260, 1, true);
+	turn1(motor_right, -1, false, -4, "degree", 450, -1, true);
+	mediumMotor(doubleLever, -70, "degree", leverDistance, true);
+	mediumMotor(longMotor, 60, "degree", 220, true);
+	line2(1, 2, pGL2 * 0.3, dGL2 * 0.3, "degree", 240, 1, true); //paul
+
+	if (routerW[2] == 1)
+	{
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+		move(1, 45, 1, 1, "degree", 40, 1, true);
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+		line2(1, 2, pGL2 * 0.3, dGL2 * 0.3, "degree", 240, 2, false);  //paul
+		line2(1, 40, pGL2 * 0.3, dGL2 * 0.3, "crossline", 0, 1, true); //paul
+		turn1(motor_left, 1, false, 7, "degree", turn90, 1, true);
+		move(1, 45, 1, 1, "degree", 435, 1, true);
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+	}
+	else if (routerW[1] == 1)
+	{
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+		move(1, 45, 1, 1, "degree", 40, 1, true);
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+		line2(1, 2, pGL2 * 0.3, dGL2 * 0.3, "degree", 240, 2, false);  //paul
+		line2(1, 40, pGL2 * 0.3, dGL2 * 0.3, "crossline", 0, 1, true); //paul
+		turn1(motor_left, 1, false, 7, "degree", turn90, 1, true);
+		move(1, 45, 1, 1, "degree", 105, 1, true);
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+	}
+	else
+	{
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+		move(1, 7, 1, 1, "degree", 105, 1, true);
+		turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+		move(1, 4, 1, 1, "degree", 50, 4, false);
+		line1(cSpeed, 50, pGL1 * 0.9, dGL1 * 0.9, LSr, true, "degree", 200, 50, false);
+		line1(cSpeed, 4, pGL1, dGL1, LSr, true, "crossline", 0, 4, false);
+		line1(4, 4, pGL1, dGL1, LSr, true, "degree", 170, 4, false);
+	}
+	line1(cSpeed, 50, pGL1, dGL1, LSr, true, "crossline", 0, 50, false);
+	line1(50, 50, pGL1 * 0.7, dGL1 * 0.7, LSr, true, "degree", 300, 1, true);
+	turn1(motor_right, 1, false, 7, "degree", turn90, 1, true);
+	move(1, 4, 1, 1, "degree", 50, 1, true);
+	move(-1, -4, 1, 1, "degree", 50, -1, true);
+	turn1(motor_right, -1, false, -7, "degree", turn90, -1, true);
+	line1(1, 4, pGL1, dGL1, LSr, true, "degree", 300, 4, false);
+	city(15, 2, 14, 2, false);
+
+	//--> base
+	line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
+	move(cSpeed, 4, 1, 0.9, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+	move(-1, -4, 1, 1, "degree", 105, -1, true);
+	surprise1 = false;
 }
 void test()
 {
@@ -617,6 +755,7 @@ void main_task(intptr_t unused)
 	//Anfang Ende
 
 	logic();
+	surprise();
 
 	int neededTime = run.getTime();
 

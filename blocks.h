@@ -176,3 +176,4 @@ extern int currentColor;
 extern bool liftParallel;
 extern int liftParallelSpeed;
 extern Stopwatch run;
+extern bool surprise1;

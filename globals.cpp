@@ -91,4 +91,5 @@ bool liftParallel = false;
 int liftParallelSpeed = 70;
 Stopwatch run;
 
+bool surprise1 = false;
 //StallDetection mediumMotor

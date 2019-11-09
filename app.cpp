@@ -685,7 +685,7 @@ void surprise()
 
 	//--> base
 	line2(cSpeed, 4, pGL2, dGL2, "crossline", 0, 4, false, longMotor, liftParallelSpeed, "degree", 230, true);
-	move(cSpeed, 4, 1, 0.9, "time", 1000, 1, true, longMotor, liftParallelSpeed, "degree", 230, true);
+	move(cSpeed, 4, 1, 0.9, "time", 1000, 1, true, doubleLever, 70, "degree", leverDistance, true);
 	move(-1, -4, 1, 1, "degree", 105, -1, true);
 	surprise1 = false;
 }

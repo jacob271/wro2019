@@ -134,7 +134,7 @@ int speedLevel(int level)
 	case 7:
 		if (surprise1 == true)
 		{
-			return (int)((45 * batteryFactor) * (level / abs(level)));
+			return (int)((55 * batteryFactor) * (level / abs(level)));
 		}
 		else if (liftParallel == true)
 		{
